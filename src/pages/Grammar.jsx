@@ -1,11 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Feedback from '../components/Feedback.jsx'
+import Icon from '../components/Icon.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
+import Ring from '../components/Ring.jsx'
 import SessionSummary from '../components/SessionSummary.jsx'
 import { daItems, daTopics } from '../data/grammar.da.js'
 import { enItems, enTopics } from '../data/grammar.en.js'
+import SentenceEditor from '../components/SentenceEditor.jsx'
 import { grade } from '../lib/grader.js'
-import { navigate } from '../lib/router.jsx'
+import { editorMode, parsePrompt } from '../lib/items.js'
+import { scrollTop } from '../lib/media.js'
+import { play as playSound } from '../lib/sound.js'
 import { buildSession, topicStats } from '../lib/srs.js'
 import { useProgress } from '../lib/state.jsx'
 
@@ -100,74 +105,94 @@ export default function Grammar({ params }) {
 
   return (
     <>
-      <section className="card">
+      <div className="page-head">
+        <span className="eyebrow">Træning</span>
         <h1>Grammatik</h1>
-        <p className="muted">
-          Femten opgaver ad gangen. Forkerte svar kommer igen, indtil de sidder fast. Vælg et emne — eller
-          træn blandet, når grundreglerne er på plads.
+        <p>
+          Femten opgaver ad gangen. Forkerte svar kommer igen, indtil de sidder fast. Vælg et emne — eller træn
+          blandet, når grundreglerne er på plads.
         </p>
-        <div className="row">
-          <button
-            className={lang === 'da' ? 'primary' : undefined}
-            onClick={() => {
-              setLang('da')
-              setTopic('alle')
-            }}
-          >
-            Dansk retskrivning
-          </button>
-          <button
-            className={lang === 'en' ? 'primary' : undefined}
-            onClick={() => {
-              setLang('en')
-              setTopic('alle')
-            }}
-          >
-            Engelsk grammatik
-          </button>
-        </div>
-      </section>
+      </div>
 
       <section className="card">
         <div className="spread">
-          <h2>Emner</h2>
-          <span className="small muted">{filtered.length} opgaver valgt</span>
+          <div className="segmented">
+            <button
+              className={lang === 'da' ? 'on' : ''}
+              onClick={() => {
+                setLang('da')
+                setTopic('alle')
+              }}
+            >
+              Dansk
+            </button>
+            <button
+              className={lang === 'en' ? 'on' : ''}
+              onClick={() => {
+                setLang('en')
+                setTopic('alle')
+              }}
+            >
+              Engelsk
+            </button>
+          </div>
+          <span className="chip">
+            <Icon name="layers" size={13} /> {filtered.length} opgaver valgt
+          </span>
         </div>
 
-        <div className="grid grid-2" style={{ marginTop: '0.75rem' }}>
-          <button
-            className={'choice' + (topic === 'alle' ? ' selected' : '')}
-            onClick={() => setTopic('alle')}
-            style={{ flexDirection: 'column', alignItems: 'flex-start' }}
-          >
-            <strong>Blandet</strong>
-            <span className="small muted">Alle emner. Systemet vælger ud fra dine svage punkter.</span>
+        <div className="grid grid-2 mt">
+          <button className={'pick' + (topic === 'alle' ? ' on' : '')} onClick={() => setTopic('alle')}>
+            <div className="pick-head">
+              <Icon name="spark" size={18} style={{ color: 'var(--accent)' }} />
+              <b>Blandet</b>
+            </div>
+            <span className="pick-desc">
+              Alle emner. Systemet prioriterer det, du er svagest i, og det der er forfaldent til gentagelse.
+            </span>
           </button>
 
           {topics.map((entry) => {
             const stat = stats[entry.id]
+            const rate = stat && stat.rate !== null ? Math.round(stat.rate * 100) : null
             return (
               <button
                 key={entry.id}
-                className={'choice' + (topic === entry.id ? ' selected' : '')}
+                className={'pick' + (topic === entry.id ? ' on' : '')}
                 onClick={() => setTopic(entry.id)}
-                style={{ flexDirection: 'column', alignItems: 'flex-start' }}
               >
-                <strong>{entry.title}</strong>
-                <span className="small muted">{entry.blurb}</span>
-                <span className="small muted mono">
-                  {stat && stat.rate !== null ? Math.round(stat.rate * 100) + ' % korrekte' : 'ikke trænet endnu'}
-                </span>
+                <div className="pick-head">
+                  <b>{entry.title}</b>
+                  {rate === null ? (
+                    <span className="chip" style={{ marginLeft: 'auto' }}>ny</span>
+                  ) : (
+                    <span
+                      className={'chip ' + (rate >= 85 ? 'good' : rate >= 60 ? 'warn' : 'error')}
+                      style={{ marginLeft: 'auto' }}
+                    >
+                      {rate} %
+                    </span>
+                  )}
+                </div>
+                <span className="pick-desc">{entry.blurb}</span>
+                <div className="pick-foot">
+                  <ProgressBar value={stat ? stat.mastered : 0} max={stat ? stat.total : 1} tone="ok" thin />
+                  <span className="small muted num" style={{ flex: 'none' }}>
+                    {stat ? stat.mastered : 0}/{stat ? stat.total : 0}
+                  </span>
+                </div>
               </button>
             )
           })}
         </div>
 
-        <div className="row" style={{ marginTop: '1rem' }}>
-          <button className="primary" onClick={() => start()} disabled={filtered.length === 0}>
-            Start session
+        <div className="row mt">
+          <button className="primary btn-lg" onClick={() => start()} disabled={filtered.length === 0}>
+            <Icon name="play" size={18} /> Start session
           </button>
-          <button onClick={() => navigate('/progress')}>Se fremskridt</button>
+          <span className="small muted">
+            {Math.min(SESSION_SIZE, filtered.length)} opgaver · ca. {Math.max(3, Math.round(Math.min(SESSION_SIZE, filtered.length) * 0.5))} minutter
+          </span>
         </div>
       </section>
     </>
@@ -176,23 +201,53 @@ export default function Grammar({ params }) {
 
 function Drill({ session, onAnswer, onNext, onQuit }) {
   const item = session.items[session.index]
-  const [given, setGiven] = useState('')
-  const [result, setResult] = useState(null)
-  const inputRef = useRef(null)
+  const correctCount = session.results.filter((entry) => entry.correct).length
 
-  useEffect(() => {
-    setGiven('')
-    setResult(null)
-    if (item.type !== 'mc') inputRef.current?.focus()
-  }, [item])
+  return (
+    <section className="card">
+      <div className="drill-head">
+        <div className="drill-meta">
+          <Ring value={session.index} max={session.items.length} size={46} thickness={5} tone="" label={session.index + 1} />
+          <div>
+            <div className="small muted">
+              Opgave {session.index + 1} af {session.items.length}
+            </div>
+            <div className="small muted num">{correctCount} korrekte indtil nu</div>
+          </div>
+        </div>
+        <div className="row" style={{ gap: '0.4rem' }}>
+          <span className="chip">Niveau {item.level}</span>
+          <button className="btn-ghost icon-btn" onClick={onQuit} title="Afbryd sessionen" aria-label="Afbryd sessionen">
+            <Icon name="x" size={18} />
+          </button>
+        </div>
+      </div>
+
+      <Question
+        key={item.id}
+        item={item}
+        onAnswer={onAnswer}
+        onNext={onNext}
+        isLast={session.index + 1 === session.items.length}
+      />
+    </section>
+  )
+}
+
+function Question({ item, onAnswer, onNext, isLast }) {
+  const mode = useMemo(() => editorMode(item), [item])
+  const parsed = useMemo(() => parsePrompt(item), [item])
+  const [given, setGiven] = useState(() => (mode === 'edit' ? parsed.sentence : ''))
+  const [result, setResult] = useState(null)
 
   function submit(value) {
     if (result) return
     const answer = value ?? given
-    if (item.type !== 'mc' && !String(answer).trim()) return
+    if (mode !== 'choice' && !String(answer).trim()) return
     const graded = grade(item, answer)
     setGiven(answer)
     setResult(graded)
+    playSound(graded.correct ? 'correct' : 'wrong')
     onAnswer(item, graded.correct, answer)
   }
 
@@ -202,11 +257,12 @@ function Drill({ session, onAnswer, onNext, onQuit }) {
       if (event.key === 'Enter') {
         if (result) {
           event.preventDefault()
+          scrollTop()
           onNext()
         }
         return
       }
-      if (result || item.type !== 'mc') return
+      if (result || mode !== 'choice') return
       const number = Number(event.key)
       if (Number.isInteger(number) && number >= 1 && number <= item.options.length) {
         event.preventDefault()
@@ -217,74 +273,97 @@ function Drill({ session, onAnswer, onNext, onQuit }) {
     return () => window.removeEventListener('keydown', onKey)
   })
 
+  const canSubmit = mode === 'choice' || Boolean(String(given).trim())
+
   return (
-    <section className="card">
-      <div className="spread">
-        <span className="progress-line">
-          Opgave {session.index + 1} af {session.items.length}
-        </span>
-        <span className="pill">Niveau {item.level}</span>
-      </div>
-      <ProgressBar value={session.index} max={session.items.length} tone="" />
+    <>
+      <p className="task-instruction">{parsed.instruction || item.prompt}</p>
+      {parsed.trailing ? <p className="small muted" style={{ marginTop: '-0.4rem' }}>{parsed.trailing}</p> : null}
 
-      <p className="prompt-box">{item.prompt}</p>
-
-      {item.type === 'mc' ? (
-        <div className="choices">
-          {item.options.map((option, index) => {
-            let className = 'choice'
-            if (result) {
-              if (option === item.answer) className += ' correct'
-              else if (option === given) className += ' wrong'
-            }
-            return (
-              <button key={option} className={className} onClick={() => submit(option)} disabled={Boolean(result)}>
-                <span className="key">{index + 1}</span>
-                <span>{option}</span>
-              </button>
-            )
-          })}
-        </div>
-      ) : (
-        <div className="field">
-          <label htmlFor="answer">
-            {item.type === 'fill' ? 'Skriv det manglende ord' : 'Skriv hele sætningen korrekt'}
-          </label>
-          <input
-            id="answer"
-            type="text"
-            ref={inputRef}
-            value={given}
-            autoComplete="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            disabled={Boolean(result)}
-            onChange={(event) => setGiven(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && !result) {
-                event.preventDefault()
-                submit()
+      {mode === 'choice' ? (
+        <>
+          {parsed.sentence ? (
+            <p className="sentence">
+              {parsed.hasBlank ? (
+                <>
+                  {parsed.sentence.split('____')[0]}
+                  <span className={'blank-slot' + (result ? ' filled' : '')}>{result ? given : '?'}</span>
+                  {parsed.sentence.split('____')[1]}
+                </>
+              ) : (
+                parsed.sentence
+              )}
+            </p>
+          ) : null}
+          <div className="choices">
+            {item.options.map((option, index) => {
+              let className = 'choice'
+              let mark = null
+              if (result) {
+                if (option === item.answer) {
+                  className += ' correct'
+                  mark = 'check'
+                } else if (option === given) {
+                  className += ' wrong'
+                  mark = 'x'
+                }
               }
-            }}
-          />
-        </div>
+              return (
+                <button
+                  key={option}
+                  className={className}
+                  style={{ '--i': index }}
+                  onClick={() => submit(option)}
+                  disabled={Boolean(result)}
+                >
+                  <span className="key">{index + 1}</span>
+                  <span className="choice-text">{option}</span>
+                  {mark ? <Icon name={mark} size={18} strokeWidth={2.4} className="mark" /> : null}
+                </button>
+              )
+            })}
+          </div>
+        </>
+      ) : (
+        <SentenceEditor
+          item={item}
+          mode={mode}
+          value={given}
+          onChange={setGiven}
+          onSubmit={() => submit()}
+          locked={Boolean(result)}
+        />
       )}
 
       {result ? <Feedback item={item} result={result} given={given} /> : null}
 
-      <div className="row" style={{ marginTop: '1rem' }}>
+      <div className="spread mt">
         {result ? (
-          <button className="primary" onClick={onNext}>
-            {session.index + 1 === session.items.length ? 'Afslut session' : 'Næste opgave'}
+          <button
+            className="primary btn-lg"
+            onClick={() => {
+              scrollTop()
+              onNext()
+            }}
+          >
+            {isLast ? 'Afslut session' : 'Næste opgave'}
+            <Icon name="arrow" size={18} />
           </button>
         ) : (
-          <button className="primary" onClick={() => submit()} disabled={item.type !== 'mc' && !given.trim()}>
-            Svar
+          <button className="primary btn-lg" onClick={() => submit()} disabled={!canSubmit}>
+            <Icon name="check" size={18} /> Svar
           </button>
         )}
-        <button onClick={onQuit}>Afbryd</button>
-        <span className="small muted">Tastatur: {item.type === 'mc' ? '1-3 vælger, ' : ''}Enter går videre.</span>
+        <span className="small muted row" style={{ gap: '0.35rem' }}>
+          <Icon name="keyboard" size={15} />
+          {mode === 'choice' ? (
+            <>
+              <span className="kbd">1</span>–<span className="kbd">{item.options.length}</span> vælger ·
+            </>
+          ) : null}
+          <span className="kbd">Enter</span> {result ? 'går videre' : 'svarer'}
+        </span>
       </div>
-    </section>
+    </>
   )
 }

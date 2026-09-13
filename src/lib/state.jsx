@@ -49,6 +49,20 @@ export function ProgressProvider({ children }) {
         })
       },
 
+      recordReport(reportId, score) {
+        update((prev) => {
+          const prevRun = prev.reports[reportId] || { runs: 0, bestScore: 0 }
+          return {
+            ...prev,
+            reports: {
+              ...prev.reports,
+              [reportId]: { runs: prevRun.runs + 1, bestScore: Math.max(prevRun.bestScore, score) },
+            },
+            streak: bumpStreak(prev.streak),
+          }
+        })
+      },
+
       setExamDate(date) {
         update((prev) => ({ ...prev, examDate: date || null }))
       },

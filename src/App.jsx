@@ -5,13 +5,17 @@ import Grammar from './pages/Grammar.jsx'
 import Home from './pages/Home.jsx'
 import Plan from './pages/Plan.jsx'
 import Progress from './pages/Progress.jsx'
+import Rules from './pages/Rules.jsx'
 import Scenarios from './pages/Scenarios.jsx'
+import Write from './pages/Write.jsx'
 
 const ROUTES = {
   '/': Home,
   '/grammar': Grammar,
   '/dictation': Dictation,
   '/scenarios': Scenarios,
+  '/write': Write,
+  '/rules': Rules,
   '/progress': Progress,
   '/plan': Plan,
 }
@@ -22,7 +26,10 @@ export default function App() {
 
   return (
     <Shell path={route.path}>
-      <Page params={route.params} />
+      {/* Nøglen indeholder parametrene, så et link som
+          #/grammar?topic=kommatering&start=1 starter en ny session, også når
+          man allerede står på siden. */}
+      <Page key={route.path + '?' + new URLSearchParams(route.params).toString()} params={route.params} />
     </Shell>
   )
 }

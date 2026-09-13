@@ -10,6 +10,7 @@ export function emptyState() {
     sessions: [],
     streak: { current: 0, longest: 0, lastDay: null },
     scenarios: {},
+    reports: {},
     planDone: {},
   }
 }
@@ -56,6 +57,7 @@ function migrate(state) {
     sessions: Array.isArray(state.sessions) ? state.sessions : base.sessions,
     streak: { ...base.streak, ...(state.streak || {}) },
     scenarios: state.scenarios && typeof state.scenarios === 'object' ? state.scenarios : base.scenarios,
+    reports: state.reports && typeof state.reports === 'object' ? state.reports : base.reports,
     planDone: state.planDone && typeof state.planDone === 'object' ? state.planDone : base.planDone,
   }
 }

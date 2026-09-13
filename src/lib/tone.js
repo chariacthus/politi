@@ -23,7 +23,7 @@ const DEESCALATING = [
   { pattern: /\bnu (skal|sker) (du|der|det)\b|\bdet der sker nu\b|\bjeg (vil|skal) bede dig om at\b/i, text: 'Du fortæller hvad der sker nu. Forudsigelighed dæmper modstand.' },
 ]
 
-const WRITING_ISSUES = [
+export const WRITING_ISSUES = [
   { pattern: /\bafsted\b/i, fix: 'af sted', text: 'Det skrives i to ord: "af sted".' },
   { pattern: /\bigang\b/i, fix: 'i gang', text: 'Det skrives i to ord: "i gang".' },
   { pattern: /\bistedet\b/i, fix: 'i stedet', text: 'Det skrives i to ord: "i stedet".' },
@@ -35,6 +35,11 @@ const WRITING_ISSUES = [
   { pattern: /\bhan (tog|hentede|viste) hans\b/i, fix: 'sin', text: 'Brug "sin", når ejeren er sætningens grundled: "han tog sin telefon".' },
   { pattern: /!{2,}/, fix: null, text: 'Flere udråbstegn i træk læses som råb. Ét er rigeligt.' },
 ]
+
+/** Retskrivningsfælder i en fritekst — bruges både i scenarier og i rapportmodulet. */
+export function writingIssues(text) {
+  return WRITING_ISSUES.filter((rule) => rule.pattern.test(text)).map((rule) => rule.text)
+}
 
 export function analyzeReply(text, turn = {}) {
   const input = String(text || '').trim()

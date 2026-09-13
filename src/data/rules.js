@@ -1,0 +1,532 @@
+// Regelbogen: forklaringen bag hvert emne. Drills tester — det her lærer.
+// Hver regel har en hovedregel, en huskeregel, forklarende afsnit med
+// eksempler (forkert over for rigtigt) og de fejl, folk oftest laver.
+
+export const rules = [
+  {
+    id: 'kommatering',
+    lang: 'da',
+    title: 'Kommatering',
+    short: 'Kommaet viser, hvor sætningen har led, der kan stå alene — og hvor den ikke har.',
+    rule: 'Sæt altid komma EFTER en ledsætning (slutkomma). Kommaet foran ledsætningen (startkomma) er valgfrit — men du skal vælge ét system og holde det.',
+    trick: 'Find udsagnsordet. Har en sætningsdel sit eget grundled og udsagnsled, er den en sætning — og sætninger skilles med komma.',
+    sections: [
+      {
+        heading: 'Ledsætning foran hovedsætningen',
+        text: 'Starter sætningen med "da", "hvis", "når", "fordi", "selvom" eller lignende, skal der komma, når hovedsætningen begynder. Det er obligatorisk i begge kommasystemer — og den klart hyppigste kommafejl.',
+        examples: [
+          { wrong: 'Da patruljen ankom var døren åben.', right: 'Da patruljen ankom, var døren åben.' },
+          { wrong: 'Hvis du ikke standser nu skriver jeg en rapport.', right: 'Hvis du ikke standser nu, skriver jeg en rapport.' },
+        ],
+      },
+      {
+        heading: 'Indskudt ledsætning',
+        text: 'En ledsætning midt inde i hovedsætningen lukkes altid med komma. Startkommaet må du selv om, men slutkommaet er der ingen vej udenom.',
+        examples: [
+          { wrong: 'Manden der stod ved indgangen var bevæbnet.', right: 'Manden, der stod ved indgangen, var bevæbnet.', note: 'Uden startkomma: "Manden der stod ved indgangen, var bevæbnet." — også korrekt.' },
+        ],
+      },
+      {
+        heading: 'To helsætninger',
+        text: 'To sætninger, der hver for sig kan stå alene, skilles med komma — også når der står "og", "men" eller "for" imellem.',
+        examples: [
+          { wrong: 'Han nægtede at udtale sig og han bad om en advokat.', right: 'Han nægtede at udtale sig, og han bad om en advokat.' },
+        ],
+      },
+      {
+        heading: 'Hvor der IKKE skal komma',
+        text: 'Aldrig mellem grundled og udsagnsled, uanset hvor langt grundleddet er. Aldrig foran "og" i en opremsning. Og ikke foran en infinitiv med "at", som ikke er en ledsætning.',
+        examples: [
+          { wrong: 'Betjenten på stedet, tilkaldte assistance.', right: 'Betjenten på stedet tilkaldte assistance.' },
+          { wrong: 'Vi medbragte lygte, radio, og handsker.', right: 'Vi medbragte lygte, radio og handsker.' },
+          { wrong: 'Han begyndte at løbe, mod udgangen.', right: 'Han begyndte at løbe mod udgangen.' },
+        ],
+      },
+      {
+        heading: 'Indskud og tiltale',
+        text: 'Forklarende indskud om et navneord sættes i komma i begge ender. Det samme gælder tiltale.',
+        examples: [
+          { wrong: 'Peter min nabo så bilen køre væk.', right: 'Peter, min nabo, så bilen køre væk.' },
+          { wrong: 'Kom her Thomas.', right: 'Kom her, Thomas.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Komma sat inde i ledsætningen i stedet for foran den ("Jeg vidste, ikke at han var eftersøgt").',
+      'Manglende slutkomma efter en indskudt sætning — den halve kommatering er den værste.',
+      'Komma mellem grundled og udsagnsled, fordi grundleddet er langt.',
+      'Blanding af nyt og grammatisk komma i samme tekst.',
+    ],
+  },
+  {
+    id: 'nutids-r',
+    lang: 'da',
+    title: 'Nutids-r',
+    short: 'Nutid får -r. Navnemåde gør ikke.',
+    rule: 'Står udsagnsordet i nutid, ender det på -r: han husker. Står det i navnemåde — efter "at" eller efter kan, skal, vil, må, bør — er der intet -r: at huske.',
+    trick: 'Erstat ordet med "at gå" eller "går". Kan du sige "at gå", er der intet -r. Kan du sige "går", skal der -r på.',
+    sections: [
+      {
+        heading: 'Nutid',
+        text: 'Handlingen sker nu eller sker generelt. Formen er den samme i alle personer på dansk: jeg husker, du husker, patruljen husker.',
+        examples: [
+          { wrong: 'Vidnet forklare, at han så bilen.', right: 'Vidnet forklarer, at han så bilen.' },
+          { wrong: 'Jeg håbe på en plads på Politiskolen.', right: 'Jeg håber på en plads på Politiskolen.' },
+        ],
+      },
+      {
+        heading: 'Navnemåde efter "at"',
+        text: 'Efter "at" står grundformen uden -r. Det gælder også, når der er ord imellem.',
+        examples: [
+          { wrong: 'Han plejer at kommer for sent.', right: 'Han plejer at komme for sent.' },
+          { wrong: 'Det er vigtigt at møder til tiden.', right: 'Det er vigtigt at møde til tiden.' },
+        ],
+      },
+      {
+        heading: 'Navnemåde efter modalverbum',
+        text: 'Efter kan, skal, vil, må, bør og tør står grundformen — også selvom "at" ikke er der.',
+        examples: [
+          { wrong: 'Han kan ikke svarer på spørgsmålet.', right: 'Han kan ikke svare på spørgsmålet.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Fejlen kommer af udtalen: i talesprog lyder "at komme" og "kommer" næsten ens.',
+      'Lange sætninger, hvor "at" står langt fra udsagnsordet, er dem, der går galt.',
+    ],
+  },
+  {
+    id: 'ligge-laegge',
+    lang: 'da',
+    title: 'Ligge / lægge',
+    short: 'Ligge er en tilstand. Lægge er en handling med et objekt.',
+    rule: 'Man LÆGGER noget (nogen gør noget ved noget). Noget LIGGER (det befinder sig et sted). Samme mønster gælder sidde/sætte og stå/stille.',
+    trick: 'Kan du sætte "noget" ind efter ordet? Så er det lægge: "han lægger [kniven]". Kan du ikke, er det ligge: "kniven ligger".',
+    sections: [
+      {
+        heading: 'Bøjningen er det halve af svaret',
+        text: 'Ligge: ligger — lå — har ligget. Lægge: lægger — lagde — har lagt. Kender du de to rækker udenad, laver du sjældent fejlen.',
+        examples: [
+          { wrong: 'Han lagde på gulvet, da vi kom ind.', right: 'Han lå på gulvet, da vi kom ind.' },
+          { wrong: 'Rapporten har lagt i bakken i to dage.', right: 'Rapporten har ligget i bakken i to dage.' },
+        ],
+      },
+      {
+        heading: 'Bydeform',
+        text: 'Bydeformen af lægge er "læg". Bydeformen af ligge ("lig") bruges stort set ikke — så en kommando er næsten altid "læg".',
+        examples: [
+          { wrong: 'Lig dig ned!', right: 'Læg dig ned!' },
+          { wrong: 'Vil du ligge hænderne på rattet?', right: 'Vil du lægge hænderne på rattet?' },
+        ],
+      },
+      {
+        heading: 'Sidde og sætte',
+        text: 'Nøjagtig samme logik: sidde (sidder — sad — har siddet) er tilstanden, sætte (sætter — satte — har sat) er handlingen.',
+        examples: [
+          { wrong: 'Vil du sidde dig herovre?', right: 'Vil du sætte dig herovre?' },
+        ],
+      },
+    ],
+    mistakes: [
+      'I flere dialekter bruges "ligge" om begge dele. Det er udbredt i tale — men tæller som fejl på skrift.',
+      'Perfektum går oftest galt: "har lagt" (lægge) over for "har ligget" (ligge).',
+    ],
+  },
+  {
+    id: 'nogen-nogle',
+    lang: 'da',
+    title: 'Nogen / nogle',
+    short: 'Nogle betyder "et antal". Nogen bruges i ental og ved nægtelse, spørgsmål og betingelse.',
+    rule: 'Kan ordet erstattes med "nogle stykker", skrives det nogle. Står der ikke, ikke nogen, har du, hvis eller et spørgsmål, skrives det nogen.',
+    trick: 'Prøv med "nogle stykker". Passer det, er det nogle med L.',
+    sections: [
+      {
+        heading: 'Nogle = flere (positivt udsagn)',
+        text: 'Bruges om et ubestemt antal, hvor der faktisk er nogen.',
+        examples: [
+          { wrong: 'Der var nogen vidner på stedet.', right: 'Der var nogle vidner på stedet.' },
+          { wrong: 'Jeg har nogen spørgsmål til dig.', right: 'Jeg har nogle spørgsmål til dig.' },
+        ],
+      },
+      {
+        heading: 'Nogen = nægtelse, spørgsmål, betingelse',
+        text: 'Ved "ikke", i spørgsmål og efter "hvis" bruges nogen — også når der er tale om flere.',
+        examples: [
+          { wrong: 'Der var ikke nogle vidner på stedet.', right: 'Der var ikke nogen vidner på stedet.' },
+          { wrong: 'Har du set nogle mistænkelige personer?', right: 'Har du set nogen mistænkelige personer?' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Nægtelsen kan stå langt fra ordet: "Han kunne ikke huske nogen af navnene."',
+      'I talesprog udtales de to ens — reglen kan kun høres, hvis du kender den.',
+    ],
+  },
+  {
+    id: 'ad-af',
+    lang: 'da',
+    title: 'Ad / af',
+    short: 'Ad handler om retning og bevægelse. Af handler om oprindelse, ejerforhold og fjernelse.',
+    rule: 'Bevæger noget sig langs, gennem eller ind ad noget, hedder det ad. Kommer noget fra noget — eller fjernes fra noget — hedder det af.',
+    trick: 'Sæt "hen ad vejen" ind som prøve. Handler det om en bevægelse, er svaret ad.',
+    sections: [
+      {
+        heading: 'Ad: bevægelse og retning',
+        text: 'Ned ad trappen, ad motorvejen, ind ad døren, ud ad vinduet. Også i faste udtryk: én ad gangen, ad åre, grine ad nogen.',
+        examples: [
+          { wrong: 'Han løb af trappen.', right: 'Han løb ad trappen.' },
+          { wrong: 'Han grinede af os og løb af vejen.', right: 'Han grinede ad os og løb ad vejen.' },
+        ],
+      },
+      {
+        heading: 'Af: oprindelse, del, fjernelse',
+        text: 'To af vidnerne, lavet af træ, tage jakken af, holde af nogen — og "ud af bilen", når man forlader den.',
+        examples: [
+          { wrong: 'Han blev bedt om at stige ud ad bilen.', right: 'Han blev bedt om at stige ud af bilen.', note: 'Men: "kigge ud ad vinduet" — dér er det en bevægelse gennem åbningen.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Parret ud af / ud ad forveksles oftest: ud af bilen (forlade den) mod ud ad vinduet (gennem åbningen).',
+      '"Grine ad" bliver næsten altid skrevet forkert som "grine af".',
+    ],
+  },
+  {
+    id: 'hans-sin',
+    lang: 'da',
+    title: 'Hans / sin',
+    short: 'Sin peger tilbage på grundleddet i samme sætning. Hans peger på en anden.',
+    rule: 'Er ejeren sætningens grundled, skrives sin/sit/sine. Er ejeren en anden — eller er ordet selv en del af grundleddet — skrives hans/hendes/deres.',
+    trick: 'Spørg: "hvem ejer det — er det ham, der gør noget i sætningen?" Ja → sin. Nej → hans.',
+    sections: [
+      {
+        heading: 'Grundreglen',
+        text: 'Sin, sit og sine bruges kun, når ejeren er grundled i den samme sætning.',
+        examples: [
+          { wrong: 'Hun hentede hendes taske i bilen.', right: 'Hun hentede sin taske i bilen.', note: '"Hendes" ville betyde en anden kvindes taske.' },
+          { wrong: 'Han kørte hans egen bil hjem.', right: 'Han kørte sin egen bil hjem.' },
+        ],
+      },
+      {
+        heading: 'Kun ved ental',
+        text: 'Sin/sit/sine findes kun med én ejer. Er ejeren flere, hedder det deres — også når det peger tilbage på grundleddet.',
+        examples: [
+          { wrong: 'Vidnerne hentede sine jakker.', right: 'Vidnerne hentede deres jakker.' },
+        ],
+      },
+      {
+        heading: 'Når ordet er en del af grundleddet',
+        text: 'Står ejestedordet selv inde i grundleddet, kan sin ikke bruges.',
+        examples: [
+          { wrong: 'Manden og sin bror blev begge afhørt.', right: 'Manden og hans bror blev begge afhørt.' },
+          { wrong: 'Han fortalte, at sin kone var hjemme.', right: 'Han fortalte, at hans kone var hjemme.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'I ledsætninger går det galt: grundleddet skifter, når ledsætningen begynder.',
+      'Fejlen ændrer meningen — i en rapport kan "hans bil" og "sin bil" være to forskellige biler.',
+    ],
+  },
+  {
+    id: 'endelser',
+    lang: 'da',
+    title: 'Endelser: -ene og -ende',
+    short: '-ene er bestemt flertal. -ende er tillægsform af et udsagnsord.',
+    rule: 'Dørene, betjentene, vidnerne: bestemt flertal på -ene. Ventende, løbende, truende: lang tillægsform på -ende.',
+    trick: 'Kan du sætte "de" foran og mene "dem alle sammen"? Så er det -ene. Beskriver ordet en handling, der er i gang? Så er det -ende.',
+    sections: [
+      {
+        heading: 'Bestemt flertal',
+        text: 'Navneord i bestemt flertal ender på -ene (eller -erne): husene, portene, vidnerne.',
+        examples: [
+          { wrong: 'Vagterne lukkede portende.', right: 'Vagterne lukkede portene.' },
+          { wrong: 'Vidnende forklarede det samme.', right: 'Vidnerne forklarede det samme.' },
+        ],
+      },
+      {
+        heading: 'Lang tillægsform',
+        text: 'Beskriver en igangværende handling: en ventende person, de tilstedeværende, en truende adfærd.',
+        examples: [
+          { wrong: 'Vi talte med de tilstedeværene.', right: 'Vi talte med de tilstedeværende.' },
+        ],
+      },
+      {
+        heading: 'Kort tillægsform',
+        text: 'Er handlingen sket, bruges den korte form på -et/-ede: de anholdte, de implicerede, de sigtede.',
+        examples: [
+          { wrong: 'Alle de implicerende blev afhørt.', right: 'Alle de implicerede blev afhørt.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Endelserne lyder ens i tale — det er udelukkende et skriftsprogsproblem.',
+      'Rapporter er fulde af netop de her ord: de anholdte, de tilstedeværende, vidnerne.',
+    ],
+  },
+  {
+    id: 'sammensatte',
+    lang: 'da',
+    title: 'Sammensatte ord',
+    short: 'Dansk skriver sammensatte ord i ét ord. Særskrivning ændrer betydningen.',
+    rule: 'Hører to ord sammen om ét begreb, skrives de i ét ord: politibil, færdselsulykke, anmeldelsesrapport. Nogle faste forbindelser skrives dog i to: af sted, i gang, i stedet for, i dag.',
+    trick: 'Sig ordet højt. Ligger trykket på første led ("POLItibil"), er det ét ord.',
+    sections: [
+      {
+        heading: 'Ét begreb, ét ord',
+        text: 'Også når ordet bliver langt, og også når der er et fugebogstav (-s- eller -e-) imellem.',
+        examples: [
+          { wrong: 'Der holdt en politi bil foran huset.', right: 'Der holdt en politibil foran huset.' },
+          { wrong: 'Hun skrev en anmeldelses rapport.', right: 'Hun skrev en anmeldelsesrapport.' },
+        ],
+      },
+      {
+        heading: 'Betydningen skrider',
+        text: 'Særskrivning laver to selvstændige ord — og ofte noget helt andet, end du mente.',
+        examples: [
+          { wrong: 'Vi anholdt en fart synder.', right: 'Vi anholdt en fartsynder.', note: '"En fart synder" er to ord uden mening.' },
+        ],
+      },
+      {
+        heading: 'Undtagelserne du skal kunne',
+        text: 'Disse skrives i to (eller tre) ord: af sted, i gang, i stedet for, i forhold til, i dag, i aften, i morgen.',
+        examples: [
+          { wrong: 'Han gik afsted mod stationen.', right: 'Han gik af sted mod stationen.' },
+          { wrong: 'Vi satte igang klokken otte.', right: 'Vi satte i gang klokken otte.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Engelsk smitter: på engelsk skrives "police car" i to ord, på dansk aldrig.',
+      'Fejlen er hyppig i fagord — netop dem du skal bruge i en rapport.',
+    ],
+  },
+  {
+    id: 'store-små',
+    lang: 'da',
+    title: 'Store og små bogstaver',
+    short: 'Kun navne og sætningsstart får stort. Ikke nationaliteter, ugedage, måneder eller titler.',
+    rule: 'Stort begyndelsesbogstav ved sætningsstart og i egennavne (personer, steder, myndigheder). Alt andet med lille — også dansk, tirsdag, marts og politiassistent.',
+    trick: 'Er ordet noget, der findes mange af (en politistation, en betjent, en tirsdag)? Så lille. Er det navnet på netop dette ene (Rigspolitiet, Nørrebro, Hansen)? Så stort.',
+    sections: [
+      {
+        heading: 'Med lille',
+        text: 'Nationaliteter og sprog (dansk, engelsk), ugedage og måneder (tirsdag, marts), titler (politiassistent, kommissær) og almindelige navneord (politistationen, patruljen).',
+        examples: [
+          { wrong: 'Han er Dansk statsborger og taler flydende Engelsk.', right: 'Han er dansk statsborger og taler flydende engelsk.' },
+          { wrong: 'Hun blev anholdt Tirsdag den 3. Marts.', right: 'Hun blev anholdt tirsdag den 3. marts.' },
+        ],
+      },
+      {
+        heading: 'Med stort',
+        text: 'Personnavne, stednavne og navne på bestemte myndigheder og institutioner.',
+        examples: [
+          { wrong: 'sagen blev overdraget til rigspolitiet.', right: 'Sagen blev overdraget til Rigspolitiet.' },
+          { wrong: 'jeg skrev rapporten sammen med Politiassistent Hansen.', right: 'Jeg skrev rapporten sammen med politiassistent Hansen.' },
+        ],
+      },
+      {
+        heading: 'Det store I',
+        text: 'Stedordet I (flertal af du) skrives med stort, så det ikke forveksles med forholdsordet i.',
+        examples: [
+          { wrong: 'Kan i komme herhen?', right: 'Kan I komme herhen?' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Engelsk smitter igen: på engelsk skrives Danish, Tuesday og March med stort.',
+      'Titler skrives ofte med stort af høflighed — det er stadig en fejl.',
+    ],
+  },
+  {
+    id: 'rapportsprog',
+    lang: 'da',
+    title: 'Rapportsprog',
+    short: 'Skriv hvad du så og hørte — ikke hvad du sluttede dig til.',
+    rule: 'En rapport skal kunne efterprøves: præcis tid, sted og personer, aktiv form, og iagttagelser frem for vurderinger. Læseren skal selv kunne nå frem til din konklusion ud fra det, du beskriver.',
+    trick: 'Spørg til hver sætning: "kunne et kamera have optaget det her?" Kan det ikke, er det en vurdering.',
+    sections: [
+      {
+        heading: 'Iagttagelse frem for vurdering',
+        text: '"Beruset", "aggressiv" og "nervøs" er dine konklusioner. Skriv de tegn, du byggede dem på — så holder de også i retten.',
+        examples: [
+          { wrong: 'Han var meget beruset.', right: 'Han lugtede kraftigt af alkohol, havde slørret tale og svært ved at holde balancen.' },
+          { wrong: 'Manden virkede aggressiv.', right: 'Manden knyttede næverne og råbte: "Kom bare an."' },
+        ],
+      },
+      {
+        heading: 'Aktiv frem for passiv',
+        text: 'Passiv skjuler, hvem der gjorde hvad. Skriv hvem der handlede — også når det er dig selv.',
+        examples: [
+          { wrong: 'Der blev af undertegnede foretaget en visitation af personen.', right: 'Jeg visiterede personen.' },
+          { wrong: 'Knivene blev fundet i bagagerummet.', right: 'Patruljen fandt knivene i bagagerummet.' },
+        ],
+      },
+      {
+        heading: 'Præcision',
+        text: 'Klokkeslæt, adresse og navne skal kunne holdes op mod logs, opkald og kameraer. "Kort efter" og "om aftenen" kan ikke bruges som bevis.',
+        examples: [
+          { wrong: 'Vi ankom kort efter og traf en mand.', right: 'Kl. 01.22 ankom vi til Søndergade 14, hvor vi traf en mand i opgangen.' },
+        ],
+      },
+      {
+        heading: 'Udsagn skal mærkes som udsagn',
+        text: 'Det, en person siger, er ikke det samme som et faktum. Skriv tydeligt, hvem der har sagt hvad.',
+        examples: [
+          { wrong: 'Han var ligeglad med konsekvenserne.', right: 'Han sagde, at han var ligeglad med konsekvenserne.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Kancellisprog ("der blev foretaget") virker officielt, men gør teksten langsom og uklar.',
+      'Fyldeord som "vist nok", "sådan lidt" og "ret" svækker enhver rapport.',
+      'Vurderinger uden belæg er det, en forsvarer går efter først.',
+    ],
+  },
+
+  {
+    id: 'tense',
+    lang: 'en',
+    title: 'Tid og aspekt',
+    short: 'Present perfect om noget, der stadig gælder. Past simple om det afsluttede.',
+    rule: 'Med et afsluttet tidspunkt (yesterday, last night, at 10 pm) bruges past simple. Med since/for eller uden tidspunkt bruges present perfect.',
+    trick: 'Står der et tidspunkt, der er forbi? Så past simple — altid.',
+    sections: [
+      {
+        heading: 'Past simple mod present perfect',
+        text: 'Past simple: afsluttet handling på et bestemt tidspunkt. Present perfect: forbindelse til nu.',
+        examples: [
+          { wrong: 'Yesterday I have spoken to the witness.', right: 'Yesterday I spoke to the witness.' },
+          { wrong: 'I work for the police since 2019.', right: 'I have worked for the police since 2019.' },
+        ],
+      },
+      {
+        heading: 'Tilstandsverber',
+        text: 'Know, understand, believe, want og need bruges ikke i continuous.',
+        examples: [
+          { wrong: 'I am knowing the address.', right: 'I know the address.' },
+        ],
+      },
+    ],
+    mistakes: ['Dansk har ikke samme skarpe skel — derfor rammer danskere ofte present perfect forkert.'],
+  },
+  {
+    id: 'articles',
+    lang: 'en',
+    title: 'Artikler',
+    short: 'a/an ved noget ubestemt, the ved noget bestemt — og ingen artikel ved det generelle.',
+    rule: 'A foran konsonantLYD, an foran vokalLYD. The når læseren ved, hvilken der menes. Ingen artikel ved generelle flertalsudsagn og ved institutioner brugt om deres funktion.',
+    trick: 'Det er lyden, ikke bogstavet: an hour, a university.',
+    sections: [
+      {
+        heading: 'Institutioner',
+        text: 'Go to prison, go to school, go to court, be taken to hospital — uden artikel, når det er funktionen, der menes.',
+        examples: [
+          { wrong: 'He was taken to the hospital by an ambulance.', right: 'He was taken to hospital by ambulance.' },
+        ],
+      },
+      {
+        heading: 'Bestemt af sammenhængen',
+        text: 'Gør en relativsætning navneordet bestemt, skal der the foran.',
+        examples: [
+          { wrong: 'I have information about a case you asked for.', right: 'I have information about the case you asked for.' },
+        ],
+      },
+    ],
+    mistakes: ['Dansk har endelsen i stedet (bilen), så artiklen glemmes eller sættes forkert.'],
+  },
+  {
+    id: 'prepositions',
+    lang: 'en',
+    title: 'Præpositioner',
+    short: 'De følger ikke logik — de skal læres i faste forbindelser.',
+    rule: 'Arrive AT a place, arrive IN a city. Wait FOR somebody. Listen TO somebody. Responsible FOR something. Arrested ON suspicion OF something.',
+    trick: 'Lær dem sammen med udsagnsordet, ikke hver for sig: "wait for", ikke "wait" + "for".',
+    sections: [
+      {
+        heading: 'Tid',
+        text: 'At + klokkeslæt, on + dag/dato, in + måned/år. For + tidsrum, since + starttidspunkt.',
+        examples: [
+          { wrong: 'He has been missing since three days.', right: 'He has been missing for three days.' },
+        ],
+      },
+      {
+        heading: 'Faste forbindelser i politisprog',
+        text: 'Arrested on suspicion of, charged with, accused of, released on bail, taken into custody.',
+        examples: [
+          { wrong: 'He was accused for theft.', right: 'He was accused of theft.' },
+        ],
+      },
+    ],
+    mistakes: ['Dansk oversættes direkte: "vente på" bliver til "wait on" i stedet for "wait for".'],
+  },
+  {
+    id: 'agreement',
+    lang: 'en',
+    title: 'Kongruens',
+    short: 'Udsagnsordet retter sig efter kernen i grundleddet — ikke efter det nærmeste ord.',
+    rule: 'Tredje person ental får -s i present simple. Find kernen i grundleddet, før du vælger form: "The list of witnesses IS on my desk."',
+    trick: 'Stryg alt mellem grundled og udsagnsord, og læs sætningen igen.',
+    sections: [
+      {
+        heading: 'Ord der driller',
+        text: 'Police er flertal på engelsk. Evidence, information og advice er utællelige og altid ental. Everyone og nobody er ental.',
+        examples: [
+          { wrong: 'The police is investigating the case.', right: 'The police are investigating the case.' },
+          { wrong: 'The evidences are clear.', right: 'The evidence is clear.' },
+        ],
+      },
+    ],
+    mistakes: ['Danskere glemmer -s, fordi dansk har samme form i alle personer.'],
+  },
+  {
+    id: 'wordorder',
+    lang: 'en',
+    title: 'Ordstilling',
+    short: 'Engelsk har ingen inversion efter et indledende led — og ingen spørgsmålsordstilling i indirekte spørgsmål.',
+    rule: 'Grundled før udsagnsled, også efter "yesterday" og "then". I indirekte spørgsmål bruges almindelig ordstilling.',
+    trick: 'Hører du dig selv bytte om på grundled og udsagnsled, er det dansk, der slår igennem.',
+    sections: [
+      {
+        heading: 'Ingen inversion',
+        text: 'Dansk vender om efter et indledende led. Engelsk gør ikke.',
+        examples: [
+          { wrong: 'Yesterday saw I the car.', right: 'Yesterday I saw the car.' },
+          { wrong: 'Then went we to the address.', right: 'Then we went to the address.' },
+        ],
+      },
+      {
+        heading: 'Indirekte spørgsmål',
+        text: 'Når spørgsmålet er pakket ind i en anden sætning, forsvinder spørgsmålsordstillingen.',
+        examples: [
+          { wrong: 'Can you tell me where is the station?', right: 'Can you tell me where the station is?' },
+          { wrong: 'He asked me what did I see.', right: 'He asked me what I saw.' },
+        ],
+      },
+    ],
+    mistakes: ['Fejlen er næsten altid en direkte oversættelse fra dansk.'],
+  },
+  {
+    id: 'confusables',
+    lang: 'en',
+    title: 'Forvekslinger',
+    short: 'Ord der lyder ens, men betyder noget forskelligt.',
+    rule: 'their (ejestedord) / there (stedet) / they’re (they are). its (ejestedord) / it’s (it is). than (sammenligning) / then (tid). affect (udsagnsord) / effect (navneord).',
+    trick: 'Kan du sige "it is" i stedet? Så skal der apostrof i it’s. Ellers ikke.',
+    sections: [
+      {
+        heading: 'Danske fælder',
+        text: 'Dansk "kontrollere" hedder check eller verify. Dansk "låne" deles i borrow (låne af) og lend (låne ud). Advice er navneordet, advise udsagnsordet.',
+        examples: [
+          { wrong: 'We need to control his story.', right: 'We need to verify his story.' },
+          { wrong: 'The officer gave him some advices.', right: 'The officer gave him some advice.' },
+        ],
+      },
+    ],
+    mistakes: ['Stavekontrollen fanger dem ikke — begge stavemåder findes.'],
+  },
+]
+
+export function ruleFor(topicId, lang) {
+  return rules.find((rule) => rule.id === topicId && (!lang || rule.lang === lang)) || null
+}
