@@ -1,0 +1,20 @@
+{
+  "name": "politi-traening",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Traeningssite til politiets optagelsesproeve: dansk retskrivning, engelsk grammatik, diktat og situationstraening.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "vite": "^7.1.0"
+  }
+}
