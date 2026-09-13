@@ -3,6 +3,7 @@ import Icon from '../components/Icon.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import Ring from '../components/Ring.jsx'
 import StatCard from '../components/StatCard.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { dictations } from '../data/dictation.js'
 import { daItems, daTopics } from '../data/grammar.da.js'
 import { enItems, enTopics } from '../data/grammar.en.js'
@@ -148,8 +149,8 @@ export default function Progress() {
       </div>
 
       <section className="card">
-        <h2>Næste skridt</h2>
-        <p className="small muted">Prioriteret efter, hvad der rykker mest på din prøve.</p>
+        <SectionHead title="Næste skridt" tail={<span className="eyebrow">prioriteret</span>} />
+        <p className="small muted">Listen er sorteret efter, hvad der rykker mest på din prøve.</p>
         <div className="steps mt-sm">
           {nextSteps.slice(0, 3).map((step) => (
             <div className="step" key={step.title}>
@@ -190,18 +191,15 @@ export default function Progress() {
             />
           </div>
           <div className="grid grid-3" style={{ flex: '1 1 340px' }}>
-            <StatCard icon="check" label="Besvarede" value={totals.seen} hint="opgaver i alt" />
+            <StatCard icon="check" label="Besvarede" value={totals.seen} hint="opgaver i alt" count />
             <StatCard icon="target" label="Træfprocent" value={totals.rate + ' %'} hint={totals.correct + ' korrekte'} />
-            <StatCard icon="flame" label="Streak" value={state.streak.current} hint={'længste: ' + state.streak.longest} />
+            <StatCard icon="flame" label="Streak" value={state.streak.current} hint={'længste: ' + state.streak.longest} count />
           </div>
         </div>
       </section>
 
       <section className="card">
-        <div className="spread">
-          <h2>Aktivitet</h2>
-          <span className="chip">{activeDays} af 14 dage trænet</span>
-        </div>
+        <SectionHead title="Aktivitet" tail={<span className="chip">{activeDays} af 14 dage</span>} />
         <p className="small muted">Antal opgaver pr. dag. Regelmæssighed slår lange enkeltdage.</p>
         <div className="activity">
           {activity.map((day) => (
@@ -219,40 +217,49 @@ export default function Progress() {
       </section>
 
       <section className="card">
-        <h2>Moduler</h2>
+        <SectionHead title="Moduler" />
         <div className="grid grid-4 mt-sm">
           <StatCard
             icon="grammar"
             label="Grammatik"
-            value={(modules.grammatik?.asked || 0) + ' opg.'}
-            hint={modules.grammatik ? Math.round((modules.grammatik.correct / Math.max(1, modules.grammatik.asked)) * 100) + ' % korrekte' : 'ikke trænet'}
+            value={modules.grammatik?.asked || 0}
+            count
+            hint={
+              modules.grammatik
+                ? 'opgaver · ' + Math.round((modules.grammatik.correct / Math.max(1, modules.grammatik.asked)) * 100) + ' % korrekte'
+                : 'opgaver · ikke trænet'
+            }
           />
           <StatCard
             icon="dictation"
             label="Diktat"
             value={dictationsSeen + '/' + dictations.length}
-            hint={modules.diktat ? modules.diktat.sessions + ' sessioner' : 'ikke trænet'}
+            hint={modules.diktat ? 'tekster · ' + modules.diktat.sessions + ' sessioner' : 'tekster · ikke trænet'}
           />
           <StatCard
             icon="book"
             label="Rapport"
             value={reportsDone + '/' + assignments.length}
-            hint={reportsDone ? 'bedste: ' + Math.max(...Object.values(state.reports).map((r) => r.bestScore)) + ' point' : 'ikke skrevet'}
+            hint={
+              reportsDone
+                ? 'opgaver · bedste ' + Math.max(...Object.values(state.reports).map((r) => r.bestScore)) + ' point'
+                : 'opgaver · ingen skrevet'
+            }
           />
           <StatCard
             icon="scenarios"
             label="Situationer"
             value={scenariosDone + '/' + scenarios.length}
-            hint={scenariosDone ? 'gennemført' : 'ikke prøvet'}
+            hint={scenariosDone ? 'scenarier gennemført' : 'scenarier · ikke prøvet'}
           />
         </div>
       </section>
 
       <section className="card">
-        <div className="spread">
-          <h2>Emner — svageste først</h2>
-          {trained.length > 0 ? <span className="chip">{trained.length} af {stats.length} emner trænet</span> : null}
-        </div>
+        <SectionHead
+          title="Emner — svageste først"
+          tail={trained.length > 0 ? <span className="chip">{trained.length}/{stats.length} trænet</span> : null}
+        />
 
         {trained.length === 0 ? (
           <div className="note mt-sm">
@@ -289,7 +296,7 @@ export default function Progress() {
       </section>
 
       <section className="card">
-        <h2>Gentagelsessystemet</h2>
+        <SectionHead title="Gentagelsessystemet" tail={<span className="eyebrow">5 bokse</span>} />
         <p className="small muted">
           Hver opgave rykker et trin op, når du svarer rigtigt, og helt ned i boks 1, når du svarer forkert.
           Boks 5 kommer først igen efter godt to uger.
@@ -318,7 +325,7 @@ export default function Progress() {
       </section>
 
       <section className="card">
-        <h2>Seneste sessioner</h2>
+        <SectionHead title="Seneste sessioner" tail={<span className="eyebrow">{state.sessions.length} i alt</span>} />
         {sessions.length === 0 ? (
           <p className="muted small">Ingen sessioner endnu.</p>
         ) : (
@@ -361,7 +368,7 @@ export default function Progress() {
       </section>
 
       <section className="card">
-        <h2>Nulstil</h2>
+        <SectionHead title="Nulstil" />
         <p className="small muted">
           Sletter alle svar, sessioner, scenarie- og rapportresultater samt din træningsplan i denne browser.
           Kan ikke fortrydes.

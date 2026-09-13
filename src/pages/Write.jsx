@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import Ring from '../components/Ring.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { assignments } from '../data/reports.js'
 import { scrollTop } from '../lib/media.js'
 import { analyzeReport, reportVerdict } from '../lib/report.js'
@@ -112,10 +113,7 @@ function Editor({ assignment, onDone, onExit }) {
 
       <div className="write-layout">
         <section className="card case-file">
-          <h2 style={{ fontSize: 'var(--t-1)' }}>
-            <Icon name="layers" size={17} style={{ verticalAlign: '-3px', marginRight: '0.4rem', color: 'var(--accent)' }} />
-            Sagens oplysninger
-          </h2>
+          <SectionHead title="Sagens oplysninger" as="h3" tail={<span className="eyebrow">{assignment.facts.length} punkter</span>} />
           <ul className="list-reset fact-list">
             {assignment.facts.map((fact) => (
               <li key={fact}>{fact}</li>
@@ -134,12 +132,15 @@ function Editor({ assignment, onDone, onExit }) {
         </section>
 
         <section className="card">
-          <div className="spread">
-            <h2 style={{ fontSize: 'var(--t-1)' }}>Din tekst</h2>
-            <span className={'chip ' + (words >= assignment.minWords ? 'good' : '')}>
-              {words} ord · mål: {assignment.minWords}
-            </span>
-          </div>
+          <SectionHead
+            title="Din tekst"
+            as="h3"
+            tail={
+              <span className={'chip ' + (words >= assignment.minWords ? 'good' : '')}>
+                {words} ord · mål: {assignment.minWords}
+              </span>
+            }
+          />
 
           <textarea
             className="write-area"
@@ -208,7 +209,14 @@ function Review({ review, assignment, showModel }) {
       </section>
 
       <section className="card">
-        <h2>Oplysninger, der skal med</h2>
+        <SectionHead
+          title="Oplysninger, der skal med"
+          tail={
+            <span className={'chip ' + (review.metCount === review.requirements.length ? 'good' : 'warn')}>
+              {review.metCount}/{review.requirements.length}
+            </span>
+          }
+        />
         <ul className="list-reset stacklist">
           {review.requirements.map((requirement) => (
             <li key={requirement.id} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>
@@ -229,7 +237,7 @@ function Review({ review, assignment, showModel }) {
 
       {review.findings.length > 0 ? (
         <section className="card">
-          <h2>Sproget</h2>
+          <SectionHead title="Sproget" tail={<span className="chip warn">{review.findings.length}</span>} />
           {review.findings.map((finding, index) => (
             <div className="finding" key={index}>
               <span className={'chip ' + (finding.level === 'error' ? 'error' : 'warn')}>
@@ -243,7 +251,7 @@ function Review({ review, assignment, showModel }) {
 
       {review.good.length > 0 ? (
         <section className="card">
-          <h2>Det virker</h2>
+          <SectionHead title="Det virker" tail={<span className="chip good">{review.good.length}</span>} />
           {review.good.map((line) => (
             <div className="finding" key={line}>
               <span className="chip good">ok</span>
@@ -255,10 +263,7 @@ function Review({ review, assignment, showModel }) {
 
       {review.tone ? (
         <section className="card">
-          <div className="spread">
-            <h2>Tone over for borgeren</h2>
-            <span className="chip accent num">{review.tone.score} / 100</span>
-          </div>
+          <SectionHead title="Tone over for borgeren" tail={<span className="chip accent num">{review.tone.score} / 100</span>} />
           {review.tone.findings.map((finding, index) => (
             <div className="finding" key={index}>
               <span className={'chip ' + (finding.level === 'good' ? 'good' : finding.level === 'warn' ? 'warn' : 'error')}>
@@ -272,7 +277,7 @@ function Review({ review, assignment, showModel }) {
 
       {showModel ? (
         <section className="card">
-          <h2>Modeltekst</h2>
+          <SectionHead title="Modeltekst" tail={<span className="eyebrow">til sammenligning</span>} />
           <p className="small muted">
             Ikke et facit — én måde at gøre det på. Sammenlign strukturen: rækkefølge, tidsangivelser og hvordan
             udsagn er mærket som udsagn.

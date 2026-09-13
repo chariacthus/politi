@@ -1,5 +1,6 @@
 import Icon from '../components/Icon.jsx'
 import Ring from '../components/Ring.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { examNotes, weeks } from '../data/plan.js'
 import { daysUntil, useProgress } from '../lib/state.jsx'
 
@@ -91,7 +92,7 @@ export default function Plan() {
       })}
 
       <section className="card">
-        <h2>Om prøven</h2>
+        <SectionHead title="Om prøven" />
         <ul className="list-reset stacklist">
           {examNotes.map((note) => (
             <li key={note} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>

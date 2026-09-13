@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import Ring from '../components/Ring.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { maxScore, scenarios } from '../data/scenarios.js'
 import { analyzeReply, toneLabel } from '../lib/tone.js'
 import { play as playSound } from '../lib/sound.js'
@@ -158,7 +159,7 @@ function Play({ scenario, onDone, onExit }) {
         </section>
 
         <section className="card">
-          <h2>Principperne i denne situation</h2>
+          <SectionHead title="Principperne i denne situation" />
           <ul className="list-reset stacklist">
             {scenario.principles.map((principle) => (
               <li key={principle} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>
@@ -245,7 +246,9 @@ function Play({ scenario, onDone, onExit }) {
         </div>
       ) : null}
 
-      <h3 className="mt">Vælg det svar, der kommer tættest på dit eget</h3>
+      <div className="mt">
+        <SectionHead as="h3" title="Vælg det svar, der kommer tættest på dit eget" />
+      </div>
       <div className="choices">
         {turn.options.map((option, i) => {
           let className = 'choice'

@@ -31,6 +31,21 @@ fremskridt gemmes i browserens `localStorage`.
 - **Lyd og bevægelse** kvitterer for svar og oplæsning. Begge dele kan slås fra, og hele siden respekterer
   `prefers-reduced-motion`.
 
+## Design
+
+Udtrykket er hentet fra den trykte lærebog frem for fra dashboardet: varmt papir, blæksort tekst,
+marineblå som myndighedsfarve og messing til fremhævning. Hårfine streger og skarpe hjørner i stedet
+for bløde skygger og store radier.
+
+- **Skrifter:** IBM Plex Serif til overskrifter, IBM Plex Sans til brødtekst og IBM Plex Mono til tal,
+  etiketter, tastaturgenveje og diff. Alle filer ligger i `src/fonts/` og indlæses lokalt — siden
+  virker også uden netadgang. (IBM Plex, SIL Open Font License 1.1.)
+- **Lys og mørk tilstand** følger systemet og kan overstyres. Farverne er valgt, så brødtekst ligger
+  over 8:1 i kontrast og sekundær tekst over 4,2:1.
+- **Bevægelse** bruges til at forklare, ikke til at pynte: ringe tegnes ind, tal tælles op,
+  svarmuligheder folder sig ud efter hinanden, og sektionslinjer trækkes fra venstre. Alt slukkes ved
+  `prefers-reduced-motion`, og lydkvitteringerne har en afbryder i sidepanelet.
+
 ## Kom i gang
 
 ```bash

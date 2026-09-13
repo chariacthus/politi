@@ -7,6 +7,7 @@ import SessionSummary from '../components/SessionSummary.jsx'
 import { daItems, daTopics } from '../data/grammar.da.js'
 import { enItems, enTopics } from '../data/grammar.en.js'
 import SentenceEditor from '../components/SentenceEditor.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { grade } from '../lib/grader.js'
 import { editorMode, parsePrompt } from '../lib/items.js'
 import { scrollTop } from '../lib/media.js'
@@ -115,6 +116,14 @@ export default function Grammar({ params }) {
       </div>
 
       <section className="card">
+        <SectionHead
+          title="Vælg emne"
+          tail={
+            <span className="chip">
+              <Icon name="layers" size={13} /> {filtered.length} opgaver
+            </span>
+          }
+        />
         <div className="spread">
           <div className="segmented">
             <button
@@ -136,8 +145,8 @@ export default function Grammar({ params }) {
               Engelsk
             </button>
           </div>
-          <span className="chip">
-            <Icon name="layers" size={13} /> {filtered.length} opgaver valgt
+          <span className="small muted">
+            Sessionen sammensættes af forfaldne gentagelser og nyt stof.
           </span>
         </div>
 
@@ -204,7 +213,7 @@ function Drill({ session, onAnswer, onNext, onQuit }) {
   const correctCount = session.results.filter((entry) => entry.correct).length
 
   return (
-    <section className="card">
+    <section className="card focus-card">
       <div className="drill-head">
         <div className="drill-meta">
           <Ring value={session.index} max={session.items.length} size={46} thickness={5} tone="" label={session.index + 1} />

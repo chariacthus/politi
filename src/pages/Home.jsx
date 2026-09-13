@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import Icon from '../components/Icon.jsx'
 import Ring from '../components/Ring.jsx'
 import StatCard from '../components/StatCard.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { daItems, daTopics } from '../data/grammar.da.js'
 import { enItems, enTopics } from '../data/grammar.en.js'
 import { dictations } from '../data/dictation.js'
@@ -91,7 +92,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="hero">
+      <section className="hero card-marked">
         <div className="hero-row">
           <div style={{ flex: '1 1 380px' }}>
             <span className="eyebrow">Politiets optagelsesprøve</span>
@@ -133,13 +134,16 @@ export default function Home() {
       </section>
 
       <section className="grid grid-4">
-        <StatCard icon="flame" label="Streak" value={state.streak.current} hint={'længste: ' + state.streak.longest} accent={state.streak.current > 0} />
-        <StatCard icon="check" label="Besvarede" value={totals.seen} hint={totals.rate + ' % korrekte'} />
+        <StatCard icon="flame" label="Streak" value={state.streak.current} hint={'længste: ' + state.streak.longest} accent={state.streak.current > 0} count />
+        <StatCard icon="check" label="Besvarede" value={totals.seen} hint={totals.rate + ' % korrekte'} count />
         <StatCard icon="target" label="Svageste emne" value={weakestTitle || '—'} hint={weakest ? Math.round(weakest.rate * 100) + ' % korrekte' : 'træn for at få data'} />
         <StatCard icon="clock" label="Dage til prøven" value={days === null ? '—' : days} hint={days === null ? 'sæt dato under planen' : 'hold tempoet'} />
       </section>
 
-      <div className="grid grid-half mt">
+      <div className="head-spaced">
+        <SectionHead title="Moduler" tail={<span className="eyebrow">{MODULES.length} spor</span>} />
+      </div>
+      <div className="grid grid-half">
         {MODULES.map((module) => (
           <Link key={module.to} to={module.to} className="card card-link card-flush">
             <div className="row" style={{ gap: '0.75rem', flexWrap: 'nowrap' }}>
@@ -157,7 +161,7 @@ export default function Home() {
       </div>
 
       <section className="card mt">
-        <h2>Sådan bruger du det</h2>
+        <SectionHead title="Sådan bruger du det" tail={<span className="eyebrow">5 vaner</span>} />
         <ul className="list-reset stacklist">
           {STEPS.map((step) => (
             <li key={step.text} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.75rem' }}>

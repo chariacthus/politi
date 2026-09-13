@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { rules } from '../data/rules.js'
 import { navigate } from '../lib/router.jsx'
 import { scrollTop } from '../lib/media.js'
@@ -31,6 +32,14 @@ export default function Rules({ params }) {
       </div>
 
       <section className="card">
+        <SectionHead
+          title="Emner"
+          tail={
+            <span className="chip">
+              <Icon name="book" size={13} /> {list.length} regler
+            </span>
+          }
+        />
         <div className="spread">
           <div className="segmented">
             <button
@@ -52,9 +61,7 @@ export default function Rules({ params }) {
               Engelsk
             </button>
           </div>
-          <span className="chip">
-            <Icon name="book" size={13} /> {list.length} regler
-          </span>
+          <span className="small muted">Vælg et emne for at folde reglen ud.</span>
         </div>
 
         <div className="rule-index mt">
@@ -154,7 +161,7 @@ function RuleDetail({ rule, onClose }) {
       ))}
 
       <div className="rule-section">
-        <h3>Typiske fejl</h3>
+        <SectionHead as="h3" title="Typiske fejl" />
         <ul className="list-reset">
           {rule.mistakes.map((mistake) => (
             <li key={mistake} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.4rem' }}>

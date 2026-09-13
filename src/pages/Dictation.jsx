@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Diff from '../components/Diff.jsx'
 import Icon from '../components/Icon.jsx'
 import Ring from '../components/Ring.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import { dictationLevels, dictations } from '../data/dictation.js'
 import { countErrors, diffWords, normalize } from '../lib/grader.js'
 import { loadVoices, pickVoice, segmentText, speak, speechAvailable, stop } from '../lib/speech.js'
@@ -89,7 +90,7 @@ export default function Dictation() {
         </section>
 
         <section className="card">
-          <h2>Teksterne</h2>
+          <SectionHead title="Teksterne" />
           <ul className="list-reset stacklist">
             {session.results.map((entry) => (
               <li key={entry.item.id}>
@@ -120,18 +121,21 @@ export default function Dictation() {
       </div>
 
       <section className="card">
-        <div className="spread">
-          <div className="segmented">
-            <button className={lang === 'da' ? 'on' : ''} onClick={() => setLang('da')}>
-              Dansk
-            </button>
-            <button className={lang === 'en' ? 'on' : ''} onClick={() => setLang('en')}>
-              Engelsk
-            </button>
-          </div>
-          <span className="chip">
-            <Icon name="layers" size={13} /> {pool.length} tekster
-          </span>
+        <SectionHead
+          title="Vælg sprog og niveau"
+          tail={
+            <span className="chip">
+              <Icon name="layers" size={13} /> {pool.length} tekster
+            </span>
+          }
+        />
+        <div className="segmented">
+          <button className={lang === 'da' ? 'on' : ''} onClick={() => setLang('da')}>
+            Dansk
+          </button>
+          <button className={lang === 'en' ? 'on' : ''} onClick={() => setLang('en')}>
+            Engelsk
+          </button>
         </div>
 
         <div className="grid grid-3 mt">
@@ -282,7 +286,7 @@ function Round({ session, onAnswer, onNext, onQuit }) {
   const heard = plays.filter((count) => count > 0).length
 
   return (
-    <section className="card">
+    <section className="card focus-card">
       <div className="drill-head">
         <div className="drill-meta">
           <Ring value={session.index} max={session.items.length} size={46} thickness={5} tone="" label={session.index + 1} />
