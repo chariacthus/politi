@@ -3,6 +3,7 @@ import { grade } from '../lib/grader.js'
 import { editorMode, parsePrompt } from '../lib/items.js'
 import { plural } from '../lib/media.js'
 import { shuffle } from '../lib/srs.js'
+import { play as playSound } from '../lib/sound.js'
 import { loadVoices, pickVoice, speak, speechAvailable, stop } from '../lib/speech.js'
 import { gradeSpeech, listen, recognitionSupported } from '../lib/voice.js'
 import Icon from './Icon.jsx'
@@ -112,6 +113,10 @@ function WrittenTask({ item, locked, result, onAnswer }) {
 }
 
 function Choices({ options, answer, given, locked, result, onPick, keys = true }) {
+  const pick = (option) => {
+    playSound('pick')
+    onPick(option)
+  }
   return (
     <div className="choices">
       {options.map((option, index) => {
@@ -132,7 +137,7 @@ function Choices({ options, answer, given, locked, result, onPick, keys = true }
             className={className}
             style={{ '--i': index }}
             disabled={locked}
-            onClick={() => onPick(option)}
+            onClick={() => pick(option)}
           >
             {keys ? <span className="key">{index + 1}</span> : null}
             <span className="choice-text">{option}</span>

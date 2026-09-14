@@ -5,7 +5,7 @@
 import { dictations } from '../data/dictation.js'
 import { daItems } from '../data/grammar.da.js'
 import { enItems } from '../data/grammar.en.js'
-import { allLessons, ranks, stages, units, unitsInStage } from '../data/path.js'
+import { allLessons, exams, ranks, stages, units, unitsInStage } from '../data/path.js'
 import { policeItems, policeTopics } from '../data/police.js'
 import { rules } from '../data/rules.js'
 import { shuffle } from './srs.js'
@@ -159,21 +159,28 @@ export function rankFor(xp) {
  * En lektion er åben, når den forrige er klaret mindst én gang — eller når
  * enheden er låst op med en springtest.
  */
+/** En lektion er klaret ved én stjerne — en eksamen først ved to. */
+export function cleared(lesson, record) {
+  if (!record) return false
+  return lesson?.exam ? record.stars >= 2 : record.stars > 0
+}
+
 export function lessonState(lessonId, lessons = {}, unlocked = {}) {
   const index = allLessons.findIndex((lesson) => lesson.id === lessonId)
   if (index < 0) return 'locked'
   const lesson = allLessons[index]
   const record = lessons[lessonId]
-  if (record?.stars > 0) return 'done'
-  if (index === 0 || unlocked[lesson.unitId]) return 'open'
-  const previous = lessons[allLessons[index - 1].id]
-  return previous?.stars > 0 ? 'open' : 'locked'
+  if (cleared(lesson, record)) return 'done'
+  if (record?.stars > 0 && lesson.exam) return 'open'
+  if (index === 0 || (lesson.unitId && unlocked[lesson.unitId])) return 'open'
+  const before = allLessons[index - 1]
+  return cleared(before, lessons[before.id]) ? 'open' : 'locked'
 }
 
 /** Et trin er klaret, når alle dets enheder er det. */
 export function stageProgress(stageId, lessons = {}) {
-  const list = unitsInStage(stageId).flatMap((unit) => unit.lessons)
-  const done = list.filter((lesson) => lessons[lesson.id]?.stars > 0).length
+  const list = allLessons.filter((lesson) => lesson.stageId === stageId)
+  const done = list.filter((lesson) => cleared(lesson, lessons[lesson.id])).length
   return { done, total: list.length, complete: done === list.length }
 }
 
@@ -341,13 +348,13 @@ export function unitOf(lessonId) {
 }
 
 export function pathProgress(lessons = {}) {
-  const done = allLessons.filter((lesson) => lessons[lesson.id]?.stars > 0).length
+  const done = allLessons.filter((lesson) => cleared(lesson, lessons[lesson.id])).length
   const stars = allLessons.reduce((sum, lesson) => sum + (lessons[lesson.id]?.stars || 0), 0)
   return { done, total: allLessons.length, stars, maxStars: allLessons.length * 3 }
 }
 
 export function unitProgress(unit, lessons = {}) {
-  const done = unit.lessons.filter((lesson) => lessons[lesson.id]?.stars > 0).length
+  const done = unit.lessons.filter((lesson) => cleared(lesson, lessons[lesson.id])).length
   return { done, total: unit.lessons.length }
 }
 
@@ -403,4 +410,11 @@ export function teachFor(lesson) {
   return lesson.checkpoint ? entries.slice(0, 1) : entries.slice(0, 2)
 }
 
-export { units, stages, unitsInStage, allLessons, ranks, dictations }
+/** Trinnets eksamen — og om den er åben endnu. */
+export function examFor(stageId, lessons = {}, unlocked = {}) {
+  const exam = exams.find((entry) => entry.stageId === stageId)
+  if (!exam) return null
+  return { ...exam, status: lessonState(exam.id, lessons, unlocked), record: lessons[exam.id] || null }
+}
+
+export { units, stages, unitsInStage, allLessons, exams, ranks, dictations }

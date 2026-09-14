@@ -37,7 +37,8 @@ stribe i toppen. Lektionen har ingen af delene: den fylder hele skærmen.
 ## Uddannelsen: seks trin
 
 **Grundlag → Øvelse → Scenarier → Prøver → Avanceret træning → Professionelt niveau.** Seks trin, 15
-enheder, 60 lektioner. Trin 1-2 er sproget fra bunden, 3-4 er politifaget og jura, 5-6 er skriften,
+enheder, 60 lektioner og en **afsluttende eksamen på hvert trin**, som skal bestås med mindst to
+stjerner, før næste trin åbner. 66 lektioner i alt. Trin 1-2 er sproget fra bunden, 3-4 er politifaget og jura, 5-6 er skriften,
 engelsk i tjenesten og prøvens form. Hver enhed har sin egen farve, klarede lektioner får en
 krone og op til tre stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til
 Specialist. Et tryk på en sten åbner et kort med, hvad lektionen indeholder.
@@ -57,6 +58,8 @@ Specialist. Et tryk på en sten åbner et kort med, hvad lektionen indeholder.
   linker direkte til reglen. Går noget galt igen, kommer det igen — det er hele pointen.
 - **Spring videre.** Kan du en hel enhed i forvejen, åbner en springtest på 12 opgaver den, hvis du
   rammer 80 %.
+- **Korte lektioner.** Fem opgaver i en almindelig lektion, otte i et tjek, fjorten i en eksamen. Det
+  skal kunne klares i en pause.
 
 **Sådan spilles det:**
 
@@ -122,6 +125,16 @@ prøvedato, du selv sætter, og indstillingerne for tema, lyd, stemmeøvelser og
   ingen kancellisprog — plus de typiske stavefælder. Modelteksten står altid til sammenligning.
 - **Lyd og bevægelse** kvitterer for svar og oplæsning. Begge dele kan slås fra, og hele siden respekterer
   `prefers-reduced-motion`.
+
+## Lyd, stemme og vibration
+
+Lydene er små toner, der genereres på stedet — ingen filer, ingen spilagtige fanfarer. Rigtigt svar er
+en kvint opad, forkert er én lav tone, der falder, og en bestået eksamen har sit eget efterslag. På en
+telefon følger et kort ryk med, og både lyd og vibration kan slås fra.
+
+Oplæseren vælger den dybeste og mest myndige stemme, browseren har på sproget, og sænker tonehøjden,
+så den lyder som en instruktør frem for en talemaskine. Vil du hellere have en anden, kan du vælge frit
+mellem systemets stemmer under Profil → Indstillinger.
 
 ## Oplæseren
 

@@ -3,12 +3,15 @@
  * Derfor er der kun det nødvendige — trinnet, enheden og stenene. Alt andet
  * (forklaringer, tal, planer) hører hjemme et andet sted.
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
+import Trail from '../components/Trail.jsx'
 import { stages, units } from '../data/path.js'
 import {
   JUMP_SIZE,
+  cleared,
+  examFor,
   lessonState,
   nextLesson,
   pathProgress,
@@ -94,95 +97,21 @@ export default function Path() {
               </span>
             </header>
 
-            {stageUnits.map((unit) => {
-              const unitDone = unitProgress(unit, state.lessons)
-              const unitIsLocked = unitLocked(unit, state.lessons, state.unlocked)
-              const active = unit.lessons.some((lesson) => lesson.id === next?.id)
-              return (
-                <div className="unit" key={unit.id} style={{ '--u': unit.color }}>
-                  <div className={'unit-bar' + (unitIsLocked ? ' locked' : '') + (active ? ' active' : '')}>
-                    <span className="unit-name">{unit.title}</span>
-                    {active ? <span className="unit-note">{unit.blurb}</span> : null}
-                    <span className="unit-dots" aria-label={unitDone.done + ' af ' + unitDone.total}>
-                      {unit.lessons.map((lesson) => (
-                        <i key={lesson.id} className={state.lessons[lesson.id]?.stars > 0 ? 'on' : ''} />
-                      ))}
-                    </span>
-                    {unitIsLocked ? (
-                      <button
-                        className="unit-jump"
-                        title={'Springtest: ' + JUMP_SIZE + ' opgaver'}
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          navigate('/lesson?jump=' + unit.id)
-                        }}
-                      >
-                        <Icon name="skip" size={15} />
-                      </button>
-                    ) : null}
-                  </div>
+            {stageUnits.map((unit) => (
+              <UnitBoard
+                key={unit.id}
+                unit={unit}
+                lessons={state.lessons}
+                unlocked={state.unlocked}
+                next={next}
+                started={started}
+                open={open}
+                setOpen={setOpen}
+              />
+            ))}
 
-                  <div className="board">
-                    {unit.lessons.map((lesson, lessonIndex) => {
-                      const status = lessonState(lesson.id, state.lessons, state.unlocked)
-                      const record = state.lessons[lesson.id]
-                      const isNext = next?.id === lesson.id
-                      return (
-                        <div
-                          className={'board-row' + (open === lesson.id ? ' popped' : '')}
-                          data-shift={SHIFTS[lessonIndex % SHIFTS.length]}
-                          key={lesson.id}
-                          style={{ '--d': (stageIndex * 0.04 + lessonIndex * 0.05).toFixed(2) + 's' }}
-                        >
-                          <div
-                            className={
-                              'stone ' +
-                              status +
-                              (lesson.checkpoint ? ' checkpoint' : '') +
-                              (isNext ? ' next' : '') +
-                              (open === lesson.id ? ' popped' : '')
-                            }
-                          >
-                            {isNext && open !== lesson.id ? <span className="start-bubble">{started ? 'FORTSÆT' : 'START'}</span> : null}
-                            <button
-                              className="stone-btn"
-                              onClick={(event) => {
-                                event.stopPropagation()
-                                setOpen(open === lesson.id ? null : lesson.id)
-                              }}
-                              aria-expanded={open === lesson.id}
-                              aria-label={lesson.title + (status === 'locked' ? ' (låst)' : '')}
-                            >
-                              {status === 'locked' ? (
-                                <Icon name="lock" size={19} />
-                              ) : status === 'done' ? (
-                                <Icon name="crown" size={23} strokeWidth={2} />
-                              ) : lesson.checkpoint ? (
-                                <Icon name="target" size={23} />
-                              ) : (
-                                <Icon name="play" size={21} />
-                              )}
-                            </button>
-                            {isNext ? <span className="stone-label">{lesson.title}</span> : null}
-                            {record ? (
-                              <span className="stone-stars" aria-label={record.stars + ' af 3 stjerner'}>
-                                {[1, 2, 3].map((star) => (
-                                  <i key={star} className={star <= record.stars ? 'on' : ''} />
-                                ))}
-                              </span>
-                            ) : null}
+            <ExamNode stage={stage} exam={examFor(stage.id, state.lessons, state.unlocked)} />
 
-                            {open === lesson.id ? (
-                              <NodeCard lesson={lesson} unit={unit} status={status} onClose={() => setOpen(null)} />
-                            ) : null}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
           </section>
         )
       })}
@@ -190,6 +119,123 @@ export default function Path() {
       <p className="board-end">
         {progress.done}/{progress.total}
       </p>
+    </div>
+  )
+}
+
+
+/** Én enhed: overskrift, spor og sten. */
+function UnitBoard({ unit, lessons, unlocked, next, started, open, setOpen }) {
+  const boardRef = useRef(null)
+  const done = unitProgress(unit, lessons)
+  const isLocked = unitLocked(unit, lessons, unlocked)
+  const active = unit.lessons.some((lesson) => lesson.id === next?.id)
+
+  return (
+    <div className="unit" style={{ '--u': unit.color }}>
+      <div className={'unit-bar' + (isLocked ? ' locked' : '') + (active ? ' active' : '')}>
+        <span className="unit-name">{unit.title}</span>
+        {active ? <span className="unit-note">{unit.blurb}</span> : null}
+        <span className="unit-dots" aria-label={done.done + ' af ' + done.total}>
+          {unit.lessons.map((lesson) => (
+            <i key={lesson.id} className={cleared(lesson, lessons[lesson.id]) ? 'on' : ''} />
+          ))}
+        </span>
+        {isLocked ? (
+          <button
+            className="unit-jump"
+            title={'Springtest: ' + JUMP_SIZE + ' opgaver'}
+            onClick={(event) => {
+              event.stopPropagation()
+              navigate('/lesson?jump=' + unit.id)
+            }}
+          >
+            <Icon name="skip" size={15} />
+          </button>
+        ) : null}
+      </div>
+
+      <div className="board" ref={boardRef}>
+        <Trail containerRef={boardRef} count={unit.lessons.length} doneCount={done.done} dep={open} />
+        {unit.lessons.map((lesson, lessonIndex) => {
+          const status = lessonState(lesson.id, lessons, unlocked)
+          const record = lessons[lesson.id]
+          const isNext = next?.id === lesson.id
+          return (
+            <div
+              className={'board-row' + (open === lesson.id ? ' popped' : '')}
+              data-shift={SHIFTS[lessonIndex % SHIFTS.length]}
+              key={lesson.id}
+              style={{ '--d': (lessonIndex * 0.06).toFixed(2) + 's' }}
+            >
+              <div
+                className={
+                  'stone ' +
+                  status +
+                  (lesson.checkpoint ? ' checkpoint' : '') +
+                  (isNext ? ' next' : '') +
+                  (open === lesson.id ? ' popped' : '')
+                }
+              >
+                {isNext && open !== lesson.id ? <span className="start-bubble">{started ? 'FORTSÆT' : 'START'}</span> : null}
+                <button
+                  className="stone-btn"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setOpen(open === lesson.id ? null : lesson.id)
+                  }}
+                  aria-expanded={open === lesson.id}
+                  aria-label={lesson.title + (status === 'locked' ? ' (låst)' : '')}
+                >
+                  {status === 'locked' ? (
+                    <Icon name="lock" size={19} />
+                  ) : status === 'done' ? (
+                    <Icon name="crown" size={23} strokeWidth={2} />
+                  ) : lesson.checkpoint ? (
+                    <Icon name="target" size={23} />
+                  ) : (
+                    <Icon name="play" size={21} />
+                  )}
+                </button>
+                {isNext ? <span className="stone-label">{lesson.title}</span> : null}
+                {record ? (
+                  <span className="stone-stars" aria-label={record.stars + ' af 3 stjerner'}>
+                    {[1, 2, 3].map((star) => (
+                      <i key={star} className={star <= record.stars ? 'on' : ''} />
+                    ))}
+                  </span>
+                ) : null}
+
+                {open === lesson.id ? (
+                  <NodeCard lesson={lesson} unit={unit} status={status} onClose={() => setOpen(null)} />
+                ) : null}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+/** Trinnets eksamen. Den skal bestås, før næste trin åbner. */
+function ExamNode({ stage, exam }) {
+  if (!exam) return null
+  const locked = exam.status === 'locked'
+  const passed = exam.status === 'done'
+  return (
+    <div className={'exam' + (locked ? ' locked' : '') + (passed ? ' passed' : '')}>
+      <span className="exam-mark">
+        <Icon name={passed ? 'crown' : locked ? 'lock' : 'shield'} size={20} />
+      </span>
+      <div className="exam-text">
+        <b>Eksamen</b>
+        <span>{passed ? 'Bestået · ' + exam.record.stars + ' af 3 stjerner' : locked ? 'Klar enhederne først' : exam.size + ' opgaver · 2 stjerner for at bestå'}</span>
+      </div>
+      <button className="exam-go" disabled={locked} onClick={() => navigate('/lesson?id=' + exam.id)}>
+        {passed ? 'Tag igen' : 'Start'}
+      </button>
+      <span className="sr-only">{stage.title}</span>
     </div>
   )
 }

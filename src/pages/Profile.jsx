@@ -12,7 +12,8 @@ import { readCourse } from '../lib/course.js'
 import { DAILY_GOAL } from '../lib/goal.js'
 import { longDate } from '../lib/media.js'
 import { navigate } from '../lib/router.jsx'
-import { setSoundEnabled, soundEnabled } from '../lib/sound.js'
+import { hapticsEnabled, hapticsSupported, setHapticsEnabled, setSoundEnabled, soundEnabled } from '../lib/sound.js'
+import { loadVoices, readVoiceName, setVoiceName, voicesFor } from '../lib/speech.js'
 import { useProgress } from '../lib/state.jsx'
 import { applyTheme, readTheme } from '../lib/theme.js'
 import { recognitionSupported, setVoicePreference, voicePreference } from '../lib/voice.js'
@@ -44,7 +45,7 @@ export default function Profile({ params, path }) {
           <span className="eyebrow">Din profil</span>
           <h1>{rank.current.title}</h1>
           <p className="small muted">
-            {state.xp || 0} XP · {progress.done} af {progress.total} lektioner · begyndte {since || 'i dag'}
+            {state.xp || 0} XP · {progress.done} af {progress.total} lektioner
           </p>
         </div>
         <div className="profile-badges">
@@ -87,8 +88,21 @@ function Settings() {
   const { resetAll } = useProgress()
   const [theme, setThemeState] = useState(readTheme)
   const [sound, setSound] = useState(soundEnabled)
+  const [haptics, setHaptics] = useState(hapticsEnabled)
   const [voice, setVoice] = useState(voicePreference)
+  const [voiceList, setVoiceList] = useState([])
+  const [voiceName, setVoiceChoice] = useState(readVoiceName)
   const [confirming, setConfirming] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    loadVoices().then((all) => {
+      if (alive) setVoiceList([...voicesFor(all, 'da'), ...voicesFor(all, 'en')])
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
 
   useEffect(() => {
     applyTheme(theme)
@@ -141,6 +155,52 @@ function Settings() {
               setSoundEnabled(next)
             }}
             label="lydeffekter"
+          />
+        </div>
+        <div className="setting-row">
+          <div>
+            <b>Oplæserens stemme</b>
+            <p className="small muted">
+              {voiceList.length > 0
+                ? 'Vælg den stemme, der læser reglerne op.'
+                : 'Denne browser har ingen stemmer installeret. Oplæseren fremhæver stadig teksten i læsetempo.'}
+            </p>
+          </div>
+          {voiceList.length > 0 ? (
+            <select
+              className="voice-pick"
+              value={voiceName}
+              aria-label="Vælg oplæserens stemme"
+              onChange={(event) => {
+                setVoiceChoice(event.target.value)
+                setVoiceName(event.target.value)
+              }}
+            >
+              <option value="">Vælg automatisk</option>
+              {voiceList.map((entry) => (
+                <option key={entry.name} value={entry.name}>
+                  {entry.name} ({entry.lang})
+                </option>
+              ))}
+            </select>
+          ) : null}
+        </div>
+        <div className="setting-row">
+          <div>
+            <b>Vibration</b>
+            <p className="small muted">
+              {hapticsSupported()
+                ? 'Et kort ryk i telefonen ved svar og fejring.'
+                : 'Denne enhed kan ikke vibrere.'}
+            </p>
+          </div>
+          <Toggle
+            on={haptics && hapticsSupported()}
+            onChange={(next) => {
+              setHaptics(next)
+              setHapticsEnabled(next)
+            }}
+            label="vibration"
           />
         </div>
         <div className="setting-row">

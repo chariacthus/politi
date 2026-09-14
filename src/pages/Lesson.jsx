@@ -67,6 +67,17 @@ export default function Lesson({ params }) {
   const startedAt = useRef(Date.now())
   const reported = useRef(false)
 
+  const modeLabel =
+    mode === 'placement'
+      ? 'niveautest'
+      : mode === 'refresh'
+        ? 'genopfriskning'
+        : mode === 'jump'
+          ? 'springtest'
+          : lesson?.exam
+            ? 'eksamen'
+            : null
+
   const item = queue[index]
   const total = queue.length
   const outOfHearts = hearts <= 0 && !done && mode !== 'placement'
@@ -92,7 +103,7 @@ export default function Lesson({ params }) {
       asked: results.length,
       seconds: Math.round((Date.now() - startedAt.current) / 1000),
     })
-    playSound('done')
+    playSound(lesson.exam && score.stars >= 2 ? 'exam' : 'done')
   }, [done, results, score, lesson, recordLesson, jumpUnit, passedJump, unlockUnit, placement, recordPlacement])
 
   // Enter fører videre, når svaret er afgivet — hele vejen gennem lektionen.
@@ -140,12 +151,14 @@ export default function Lesson({ params }) {
 
   function answer(outcome) {
     if (current) return
+    if (outcome.skipped) playSound('skip')
     if (!outcome.skipped) {
       playSound(outcome.correct ? 'correct' : 'wrong')
       // Niveautesten må ikke flytte på gentagelsessystemet — den måler kun.
       if (mode !== 'placement') recordAnswer(item.id, outcome.correct)
       if (!outcome.correct && mode !== 'placement') {
         setHearts((left) => Math.max(0, left - 1))
+        playSound('heart')
         setLostHeart(true)
         setTimeout(() => setLostHeart(false), 500)
       } else if (item.repeated && hearts < HEARTS) {
@@ -454,7 +467,10 @@ export default function Lesson({ params }) {
         <button className="quit" onClick={() => navigate('/')} aria-label="Forlad lektionen">
           <Icon name="x" size={22} />
         </button>
-        <div className="track">
+        {/* En almindelig lektion siger ikke sit navn — men en prøve skal man
+            vide, at man er i gang med. */}
+        {modeLabel ? <span className="play-mode">{modeLabel}</span> : null}
+        <div className="track" title={lesson.title}>
           <div style={{ width: Math.round((index / Math.max(1, total)) * 100) + '%' }} />
         </div>
         {mode === 'placement' ? (
@@ -480,33 +496,24 @@ export default function Lesson({ params }) {
         )}
       </div>
 
-      <div className={'play-body' + (current && !current.correct && !current.skipped ? ' shake' : '')}>
-        <div className="spread" style={{ marginBottom: '0.4rem' }}>
-          <span className="eyebrow">{unit?.title || lesson.title}</span>
-          <span className="chip">
-            {mode === 'placement'
-              ? 'niveautest'
-              : mode === 'refresh'
-                ? 'genopfriskning'
-                : jumpUnit
-                  ? 'springtest'
-                  : lesson.checkpoint
-                    ? 'tjek'
-                    : lesson.title}
-          </span>
-        </div>
-
+      <div
+        className={
+          'play-body' +
+          (current && !current.correct && !current.skipped ? ' shake' : '') +
+          (current && current.correct && !current.skipped ? ' right' : '')
+        }
+      >
         <Exercise key={item.id + index} item={item} locked={Boolean(current)} result={current} onAnswer={answer} />
 
         {!current ? (
           <div className="play-skip">
             <button
               className="skip-btn"
+              title="Koster ikke et liv — opgaven kommer igen"
               onClick={() => answer({ correct: false, skipped: true, given: 'sprunget over', expected: formatExpected({ item }) })}
             >
-              <Icon name="skip" size={16} /> Spring over
+              Spring over
             </button>
-            <span className="small muted">Koster ikke et liv — opgaven kommer igen en anden dag.</span>
           </div>
         ) : null}
       </div>

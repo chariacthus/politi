@@ -4,9 +4,12 @@
  * statistikken i højre skinne, så siderne selv kan koncentrere sig om stoffet.
  */
 import { useEffect } from 'react'
+import { rankFor } from '../lib/lessons.js'
 import { scrollTop } from '../lib/media.js'
 import { Link } from '../lib/router.jsx'
+import { useProgress } from '../lib/state.jsx'
 import Icon from './Icon.jsx'
+import Ring from './Ring.jsx'
 import Stats, { StatStrip } from './Stats.jsx'
 
 const NAV = [
@@ -17,6 +20,10 @@ const NAV = [
 ]
 
 export default function Shell({ path, children }) {
+  const { state } = useProgress()
+  const rank = rankFor(state.xp || 0)
+  const into = rank.span ? Math.min(100, Math.round((rank.into / rank.span) * 100)) : 100
+
   useEffect(() => {
     scrollTop()
   }, [path])
@@ -31,34 +38,28 @@ export default function Shell({ path, children }) {
   return (
     <div className="duo">
       <aside className="rail">
-        <Link to="/" className="brand">
-          <span className="brand-mark">
-            <Icon name="shield" size={20} />
-          </span>
-          <span className="brand-text">
-            <b>Politiskolen</b>
-          </span>
-        </Link>
-
         <nav className="rail-nav">
           {NAV.map((item) => (
             <Link key={item.to} to={item.to} className={'rail-item' + (active(item) ? ' active' : '')}>
-              <Icon name={item.icon} size={22} />
+              <Icon name={item.icon} size={21} />
               <span>{item.label}</span>
             </Link>
           ))}
         </nav>
+
+        {/* Nederst står den eneste status, der hører til navigationen: hvor
+            langt man er som betjent. */}
+        <Link to="/profile" className="rail-rank">
+          <Ring value={rank.span ? rank.into : 1} max={rank.span || 1} size={30} thickness={3} tone="ok" />
+          <span>
+            <b>{rank.current.title}</b>
+            <i>{rank.next ? into + '%' : 'højeste rang'}</i>
+          </span>
+        </Link>
       </aside>
 
       <header className="topbar">
-        <Link to="/" className="brand">
-          <span className="brand-mark">
-            <Icon name="shield" size={18} />
-          </span>
-          <span className="brand-text">
-            <b>Politiskolen</b>
-          </span>
-        </Link>
+        <span className="topbar-rank">{rank.current.title}</span>
         <StatStrip />
       </header>
 

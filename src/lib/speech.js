@@ -34,22 +34,69 @@ export function loadVoices() {
   })
 }
 
-export function pickVoice(voices, lang) {
-  const tag = lang === 'en' ? 'en' : 'da'
-  return (
-    voices.find((voice) => voice.lang?.toLowerCase().startsWith(tag + '-')) ||
-    voices.find((voice) => voice.lang?.toLowerCase() === tag) ||
-    null
-  )
+// Stemmer, der lyder som en instruktør frem for en oplæser. Navnene er dem,
+// styresystemerne bruger; findes ingen af dem, tages den første på sproget.
+const AUTHORITY = [
+  // dansk
+  'magnus', 'jesper', 'mads', 'rasmus', 'dansk (mand)', 'danish (male)',
+  // engelsk
+  'daniel', 'george', 'ryan', 'arthur', 'oliver', 'uk english male', 'male',
+]
+const SOFT = ['helle', 'sara', 'anne', 'female', 'kvinde']
+
+const VOICE_KEY = 'politi.stemme'
+
+export function readVoiceName() {
+  try {
+    return window.localStorage.getItem(VOICE_KEY) || ''
+  } catch {
+    return ''
+  }
 }
 
-export function speak(text, { lang = 'da', rate = 0.9, voice = null, onStart, onEnd } = {}) {
+export function setVoiceName(name) {
+  try {
+    if (name) window.localStorage.setItem(VOICE_KEY, name)
+    else window.localStorage.removeItem(VOICE_KEY)
+  } catch {
+    /* ignoreres med vilje */
+  }
+}
+
+/** Alle stemmer på et sprog — til listen i indstillingerne. */
+export function voicesFor(voices, lang) {
+  const tag = lang === 'en' ? 'en' : 'da'
+  return voices.filter((voice) => voice.lang?.toLowerCase().startsWith(tag))
+}
+
+/**
+ * Vælg stemme: brugerens eget valg vinder, ellers den dybeste, mest
+ * myndige stemme på sproget.
+ */
+export function pickVoice(voices, lang, { name = readVoiceName() } = {}) {
+  const onLang = voicesFor(voices, lang)
+  if (onLang.length === 0) return null
+  if (name) {
+    const chosen = onLang.find((voice) => voice.name === name)
+    if (chosen) return chosen
+  }
+  const score = (voice) => {
+    const label = (voice.name || '').toLowerCase()
+    if (AUTHORITY.some((hint) => label.includes(hint))) return 0
+    if (SOFT.some((hint) => label.includes(hint))) return 2
+    return 1
+  }
+  return [...onLang].sort((a, b) => score(a) - score(b))[0]
+}
+
+export function speak(text, { lang = 'da', rate = 0.9, pitch = 0.88, voice = null, onStart, onEnd } = {}) {
   if (!speechAvailable()) return false
   try {
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = lang === 'en' ? 'en-GB' : 'da-DK'
     utterance.rate = rate
+    utterance.pitch = pitch
     if (voice) utterance.voice = voice
     if (onStart) utterance.onstart = onStart
     if (onEnd) {
@@ -127,7 +174,7 @@ export function splitSentences(text) {
  * det ord, der læses lige nu, så teksten kan følge med. Returnerer en
  * stop-funktion.
  */
-export function readSentence(text, { lang = 'da', rate = 1, voice = null, onWord, onEnd, onError } = {}) {
+export function readSentence(text, { lang = 'da', rate = 1, pitch = 0.88, voice = null, onWord, onEnd, onError } = {}) {
   if (!speechAvailable()) {
     onError?.()
     return () => {}
@@ -137,6 +184,8 @@ export function readSentence(text, { lang = 'da', rate = 1, voice = null, onWord
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = lang === 'en' ? 'en-GB' : 'da-DK'
     utterance.rate = rate
+    // Lav tonehøjde giver den rolige, myndige klang, en instruktør har.
+    utterance.pitch = pitch
     if (voice) utterance.voice = voice
     utterance.onboundary = (event) => {
       if (event.name === 'word' || event.charIndex !== undefined) onWord?.(event.charIndex, event.charLength)
