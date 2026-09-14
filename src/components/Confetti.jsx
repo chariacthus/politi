@@ -8,7 +8,7 @@ export default function Confetti({ pieces = 28 }) {
         left: Math.round(Math.random() * 100),
         delay: Math.round(Math.random() * 500),
         duration: 1400 + Math.round(Math.random() * 1200),
-        tone: ['var(--navy)', 'var(--brass)', 'var(--forest)', 'var(--brick)', 'var(--navy-2)'][index % 5],
+        tone: ['var(--brand)', 'var(--brass)', 'var(--forest)', 'var(--brick)', 'var(--brand-2)'][index % 5],
         tilt: Math.round(Math.random() * 360),
         wide: Math.random() > 0.5,
       })),

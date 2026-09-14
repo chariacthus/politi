@@ -184,9 +184,14 @@ function NodeCard({ lesson, unit, status, record, index, onClose }) {
           <Icon name="skip" size={16} /> Springtest ({JUMP_SIZE} opgaver)
         </button>
       ) : (
-        <button className="btn-3d sm" onClick={() => navigate('/lesson?id=' + lesson.id)}>
-          {status === 'done' ? 'Øv igen' : 'Start'} <Icon name="arrow" size={16} />
-        </button>
+        <>
+          <button className="btn-3d sm" onClick={() => navigate('/lesson?id=' + lesson.id)}>
+            {status === 'done' ? 'Øv igen' : 'Start'} <Icon name="arrow" size={16} />
+          </button>
+          <button className="node-learn" onClick={() => navigate('/lesson?id=' + lesson.id + '&teach=1')}>
+            <Icon name="bulb" size={15} /> Læs reglen først
+          </button>
+        </>
       )}
       <button className="node-close" onClick={onClose} aria-label="Luk">
         <Icon name="x" size={15} />

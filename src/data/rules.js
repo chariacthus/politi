@@ -525,6 +525,181 @@ export const rules = [
     ],
     mistakes: ['Stavekontrollen fanger dem ikke — begge stavemåder findes.'],
   },
+  {
+    id: 'tegnsaetning',
+    lang: 'da',
+    title: 'Tegnsætning ud over kommaet',
+    short: 'Punktum lukker, kolon peger fremad, og anførselstegn viser, at ordene ikke er dine egne.',
+    rule: 'Brug punktum til at skille selvstændige iagttagelser. Brug kolon foran en opremsning eller et citat. Sæt ordrette udsagn i anførselstegn — alt andet er referat.',
+    trick: 'Spørg: gengiver jeg ordene, eller gengiver jeg indholdet? Ordene får anførselstegn og kolon. Indholdet får "at" og komma.',
+    sections: [
+      {
+        heading: 'Citat eller referat',
+        text: 'Et ordret citat indledes med kolon og sættes i anførselstegn. Et referat har hverken det ene eller det andet — men det har komma foran "at".',
+        examples: [
+          { wrong: 'Han sagde, "jeg har ikke rørt hende".', right: 'Han sagde: "Jeg har ikke rørt hende."', note: 'Punktummet står inden for anførselstegnet, fordi hele sætningen er citeret.' },
+          { wrong: 'Vidnet forklarede "at han hørte et skrig".', right: 'Vidnet forklarede, at han hørte et skrig.' },
+        ],
+      },
+      {
+        heading: 'Kolon',
+        text: 'Kolon peger fremad mod det, der følger: en opremsning, en forklaring eller et citat. Efter kolon skrives lille bogstav, medmindre der følger en hel citeret sætning.',
+        examples: [
+          { wrong: 'Der blev beslaglagt følgende; en kniv og en telefon.', right: 'Der blev beslaglagt følgende: en kniv og en telefon.' },
+        ],
+      },
+      {
+        heading: 'Punktum frem for komma',
+        text: 'To helsætninger uden bindeord skal skilles med punktum. Komma alene er en kommasplejsning — og i en rapport gør den to iagttagelser til én påstand.',
+        examples: [
+          { wrong: 'Patruljen ankom kl. 22.15, døren var brudt op.', right: 'Patruljen ankom kl. 22.15. Døren var brudt op.' },
+        ],
+      },
+      {
+        heading: 'Parentes, tankestreg og semikolon',
+        text: 'Parentesen erstatter kommaerne om en indskudt oplysning — sæt ikke komma op ad den. Semikolon binder to helsætninger tættere end punktum; brug det sparsomt. Tankestregen er sjælden i rapportsprog.',
+        examples: [
+          { wrong: 'Køretøjet, (en hvid varebil), holdt ulovligt.', right: 'Køretøjet (en hvid varebil) holdt ulovligt parkeret.' },
+          { right: 'Døren var ulåst; der var ingen tegn på opbrud.', note: 'Korrekt — men punktum er tydeligere i en rapport.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Spørgsmålstegn i et refereret spørgsmål ("Hun spurgte, hvornår hun kunne køre videre?").',
+      'Komma efter et citat, der slutter med udråbstegn eller spørgsmålstegn.',
+      'Semikolon brugt til at indlede en opremsning, hvor der skal kolon.',
+      'Kommasplejsning mellem to selvstændige iagttagelser.',
+    ],
+  },
+  {
+    id: 'ejefald',
+    lang: 'da',
+    title: 'Ejefald og apostrof',
+    short: 'Dansk ejefald er et rent -s. Apostroffen bruges kun, når ordet i forvejen ender på s, x eller z.',
+    rule: 'Sæt -s direkte på ordet: politiets, bilens, Hansens. Ender ordet på s, x eller z, sættes kun en apostrof: Lars’, Alex’, AKS’.',
+    trick: 'Apostrof i ejefald er engelsk. Læser du "politi’s", læser du engelsk — og så er det galt.',
+    sections: [
+      {
+        heading: 'Hovedreglen',
+        text: 'Ejefald af navneord og navne dannes med -s uden noget tegn. Det gælder også flerleddede navne, hvor -s’et sættes på det sidste led.',
+        examples: [
+          { wrong: "politi's køretøj", right: 'politiets køretøj' },
+          { wrong: "bilen's bagagerum", right: 'bilens bagagerum' },
+          { right: 'Nordsjællands Politis efterforskningsafdeling' },
+        ],
+      },
+      {
+        heading: 'Når ordet ender på s, x eller z',
+        text: 'Så sættes kun en apostrof — aldrig et ekstra s. Det gælder navne som Lars, Mads og Alex, og forkortelser, der læses bogstav for bogstav.',
+        examples: [
+          { wrong: "Lars's telefon", right: 'Lars’ telefon' },
+          { wrong: "AKS's indsatsleder", right: 'AKS’ indsatsleder' },
+        ],
+      },
+      {
+        heading: 'Apostrof, der ikke er ejefald',
+        text: 'Ved tal og enkeltbogstaver bruges apostrof foran en endelse. Det er ikke ejefald, men en endelse sat på noget, der ikke er et ord.',
+        examples: [
+          { right: 'i 1990’erne' },
+          { right: 'to a’er og et b' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Apostrof efter engelsk mønster: "betjent’s", "politi’s".',
+      'Både apostrof og ekstra s ved navne på -s ("Lars’s").',
+      'Accent (´) i stedet for apostrof (’).',
+      'Ejefald sat på det første led i et flerleddet navn.',
+    ],
+  },
+  {
+    id: 'tal-og-tid',
+    lang: 'da',
+    title: 'Tal, tid og forkortelser',
+    short: 'Et tal kan efterprøves. Et skøn kan ikke — og derfor er tallet rapportens stærkeste sætning.',
+    rule: 'Skriv klokkeslæt med tal og punktum (kl. 22.15), decimaler med komma (0,5 promille) og tusindtal med mellemrum (12 500 kr.). Forkortelser skrives med punktum: jf., iflg., ca., bl.a., m.fl.',
+    trick: 'Kan tallet sammenholdes med vagtjournalen, en måling eller et kamera? Så skal det i rapporten. Kan det ikke, skal skønnet begrundes med det, du så.',
+    sections: [
+      {
+        heading: 'Tid og dato',
+        text: 'Klokkeslæt skrives med punktum mellem timer og minutter. Datoer skrives med måneden i bogstaver, når der er plads — så kan de ikke misforstås.',
+        examples: [
+          { wrong: 'kl 22:15', right: 'kl. 22.15' },
+          { wrong: '14/9-26', right: 'den 14. september 2026' },
+          { wrong: 'Vi ankom klokken cirka ti minutter over ti.', right: 'Vi ankom kl. 22.10.' },
+        ],
+      },
+      {
+        heading: 'Tal i løbende tekst',
+        text: 'Tommelfingerreglen: et til ti med bogstaver, 11 og opefter med cifre. Mål, beløb, aldre, promiller og klokkeslæt skrives altid med cifre.',
+        examples: [
+          { right: 'Der var tre vidner, og køretøjet holdt 12 meter fra krydset.' },
+          { wrong: '12,500 kr.', right: '12 500 kr.', note: 'Kommaet er reserveret til decimaler.' },
+        ],
+      },
+      {
+        heading: 'Forkortelser',
+        text: 'Forkortelser skal have deres punktum. Er der plads, er det næsten altid bedre at skrive ordet helt ud — en rapport må ikke kunne misforstås.',
+        examples: [
+          { wrong: 'Bilen kørte ca 80 km/t.', right: 'Bilen kørte ca. 80 km/t.' },
+          { right: 'Køretøjet var iflg. ejerens oplysning solgt to uger forinden.' },
+        ],
+      },
+    ],
+    mistakes: [
+      'Kolon i klokkeslæt (22:15) — det er engelsk og norsk, ikke dansk.',
+      'Punktum som tusindtalsskilletegn, så 12.500 forveksles med 12,5.',
+      'Forkortelser uden punktum: "ca", "jf", "bla".',
+      'Skøn ("temmelig sent", "kraftigt beruset") uden de iagttagelser, der bærer dem.',
+    ],
+  },
+  {
+    id: 'henvisning',
+    lang: 'da',
+    title: 'De, dem, som og der',
+    short: 'Stedordet skal pege på én person og stå i den form, sætningen kræver.',
+    rule: 'Brug "de, han, hun, vi" som grundled og "dem, ham, hende, os" som genstandsled. Brug "der" kun, når henvisningsordet selv er grundled i ledsætningen; ellers "som".',
+    trick: 'Byt til "jeg/mig". Lyder "mig" rigtigt, skal du bruge "dem" eller "ham". Og har ledsætningen allerede sit eget grundled, kan "der" ikke bruges.',
+    sections: [
+      {
+        heading: 'Grundled eller genstandsled',
+        text: 'Grundleddet handler; genstandsleddet bliver handlet med. Efter et forholdsord (til, med, af, på) står altid genstandsformen.',
+        examples: [
+          { wrong: 'Dem to mænd blev anholdt.', right: 'De to mænd blev anholdt.' },
+          { right: 'Vi kørte dem til detentionen.' },
+        ],
+      },
+      {
+        heading: '"Der" eller "som"',
+        text: '"Der" kan kun være grundled i ledsætningen. Har ledsætningen sit eget grundled, skal det være "som" — og "som" kan i øvrigt bruges begge steder.',
+        examples: [
+          { wrong: 'Vidnet, der vi afhørte, var rolig.', right: 'Vidnet, som vi afhørte, var rolig.' },
+          { right: 'Kvinden, der ringede 112, ventede ved porten.' },
+        ],
+      },
+      {
+        heading: 'Stedord, der peger to steder hen',
+        text: 'Den værste henvisningsfejl i en rapport er ikke formen, men tvetydigheden. Kan "han" være to personer, skal rollen gentages — også selvom sætningen bliver tungere.',
+        examples: [
+          { wrong: 'Føreren talte med passageren, og han virkede påvirket.', right: 'Føreren talte med passageren. Føreren virkede påvirket.' },
+        ],
+      },
+      {
+        heading: 'De to slags "hvis"',
+        text: 'Der er et spørgende ejestedord ("Hvis bil holder her?") og en betingelse ("Hvis du kører nu ..."). Formen er den samme, betydningen er ikke — og kun betingelsen udløser komma.',
+        examples: [
+          { right: 'Hvis bil holder på pladsen?' },
+          { right: 'Hvis den er din, skal den flyttes.' },
+        ],
+      },
+    ],
+    mistakes: [
+      '"Dem" som grundled ("Dem der stod ved døren").',
+      '"Der" brugt, hvor ledsætningen har sit eget grundled.',
+      'Stedord, der kan pege på to personer i samme sætning.',
+      'Manglende slutkomma efter ledsætningen med "der"/"som".',
+    ],
+  },
 ]
 
 export function ruleFor(topicId, lang) {

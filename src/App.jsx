@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import Shell from './components/Shell.jsx'
+import { applyCourse, readCourse } from './lib/course.js'
 import { useRoute } from './lib/router.jsx'
 import Dictation from './pages/Dictation.jsx'
 import Grammar from './pages/Grammar.jsx'
@@ -8,6 +10,7 @@ import Practice from './pages/Practice.jsx'
 import Profile from './pages/Profile.jsx'
 import Rules from './pages/Rules.jsx'
 import Scenarios from './pages/Scenarios.jsx'
+import Welcome from './pages/Welcome.jsx'
 import Write from './pages/Write.jsx'
 
 const ROUTES = {
@@ -27,6 +30,17 @@ const ROUTES = {
 
 export default function App() {
   const route = useRoute()
+  const [course, setCourse] = useState(readCourse)
+
+  useEffect(() => {
+    applyCourse(course)
+  }, [course])
+
+  // Uden et valgt spor er der kun ét sted at være: valgskærmen.
+  if (!course || route.path === '/start') {
+    return <Welcome onPick={setCourse} />
+  }
+
   const Page = ROUTES[route.path] || NotFound
 
   return (

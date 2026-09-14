@@ -130,6 +130,12 @@ const PATHS = {
       <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
     </>
   ),
+  calc: (
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="2.5" />
+      <path d="M7.5 7.5h9M8 12h2M14 12h2M8 16.5h2M14 16.5h2" />
+    </>
+  ),
   bolt: <path d="M13.5 3 5.5 13.5H11l-.5 7.5 8-10.5H13z" />,
   gear: (
     <>

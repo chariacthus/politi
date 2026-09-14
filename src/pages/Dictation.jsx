@@ -185,7 +185,7 @@ export default function Dictation() {
             ['bulb', 'Har browseren ingen dansk stemme, vises afsnittet kort i stedet — så virker øvelsen alligevel.'],
           ].map(([icon, text]) => (
             <li key={text} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>
-              <Icon name={icon} size={17} style={{ marginTop: '0.15rem', color: 'var(--navy)', flex: 'none' }} />
+              <Icon name={icon} size={17} style={{ marginTop: '0.15rem', color: 'var(--brand)', flex: 'none' }} />
               <span className="small" style={{ color: 'var(--ink-2)' }}>{text}</span>
             </li>
           ))}

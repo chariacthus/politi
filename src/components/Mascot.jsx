@@ -16,17 +16,17 @@ export default function Mascot({ mood = 'neutral', size = 96 }) {
       aria-hidden="true"
     >
       {/* Krop */}
-      <path d="M28 112c0-20 14-32 32-32s32 12 32 32z" fill="var(--navy)" />
-      <path d="M52 84h16v8a8 8 0 0 1-16 0z" fill="var(--navy-2)" />
+      <path d="M28 112c0-20 14-32 32-32s32 12 32 32z" fill="var(--brand)" />
+      <path d="M52 84h16v8a8 8 0 0 1-16 0z" fill="var(--brand-2)" />
 
       {/* Hoved */}
       <circle cx="60" cy="56" r="30" fill="var(--surface)" stroke="var(--ink)" strokeWidth="3" />
 
       {/* Kasket */}
-      <path d="M30 44a30 30 0 0 1 60 0z" fill="var(--navy)" />
+      <path d="M30 44a30 30 0 0 1 60 0z" fill="var(--brand)" />
       <rect x="26" y="42" width="68" height="8" rx="4" fill="var(--ink)" />
       <path d="M52 28h16v10H52z" fill="var(--brass)" />
-      <circle cx="60" cy="33" r="3" fill="var(--navy)" />
+      <circle cx="60" cy="33" r="3" fill="var(--brand)" />
 
       {/* Øjne */}
       {sad ? (

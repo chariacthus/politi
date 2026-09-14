@@ -1,3 +1,14 @@
+Skrifterne i denne mappe er begge licenseret under SIL Open Font License 1.1:
+
+  IBM Plex Sans og IBM Plex Mono
+  Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
+
+  Fraunces (fraunces-*.woff2)
+  Copyright © 2019 The Fraunces Project Authors
+  (https://github.com/undercasetype/Fraunces), with Reserved Font Name "Fraunces"
+
+Licensteksten gælder begge og står herunder.
+
 Copyright © 2017 IBM Corp. with Reserved Font Name "Plex"
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.

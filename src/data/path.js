@@ -6,7 +6,7 @@
 export const units = [
   {
     id: 'u1',
-    color: 'var(--navy)',
+    color: 'var(--brand)',
     number: 1,
     title: 'Grundlaget',
     blurb: 'Hvad politiet er sat i verden for, og hvilke grænser der gælder for ethvert indgreb.',
@@ -58,7 +58,7 @@ export const units = [
   },
   {
     id: 'u5',
-    color: 'var(--navy-2)',
+    color: 'var(--brand-2)',
     number: 5,
     title: 'Tjenesten',
     blurb: 'Tavshedspligt, adfærd og den melding, der skal sidde, når det brænder på.',
@@ -80,6 +80,19 @@ export const units = [
       { id: 'u6-2', title: 'Sammensatte ord og store bogstaver', sources: ['grammar:da:sammensatte', 'grammar:da:store-små'], size: 7 },
       { id: 'u6-3', title: 'Endelser og ejestedord', sources: ['grammar:da:endelser', 'grammar:da:hans-sin'], size: 7 },
       { id: 'u6-4', title: 'Tjek: sproget', checkpoint: true, sources: ['grammar:da:kommatering', 'grammar:da:nutids-r', 'grammar:da:sammensatte', 'grammar:da:rapportsprog'], size: 12 },
+    ],
+  },
+  {
+    id: 'u7',
+    color: 'var(--brick)',
+    number: 7,
+    title: 'Præcision i skriften',
+    blurb: 'Tegnene ud over kommaet, ejefald, tal og henvisninger — det, der afgør, om rapporten kan bruges som bevis.',
+    lessons: [
+      { id: 'u7-1', title: 'Tegn ud over kommaet', sources: ['grammar:da:tegnsaetning'], size: 7 },
+      { id: 'u7-2', title: 'Ejefald og henvisning', sources: ['grammar:da:ejefald', 'grammar:da:henvisning'], size: 7 },
+      { id: 'u7-3', title: 'Tal, tid og forkortelser', sources: ['grammar:da:tal-og-tid'], size: 7 },
+      { id: 'u7-4', title: 'Tjek: præcision', checkpoint: true, sources: ['grammar:da:tegnsaetning', 'grammar:da:ejefald', 'grammar:da:tal-og-tid', 'grammar:da:henvisning'], size: 12 },
     ],
   },
 ]

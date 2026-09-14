@@ -7,6 +7,8 @@ import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
 import SectionHead from '../components/SectionHead.jsx'
 import { useStats } from '../components/Stats.jsx'
+import { courseById } from '../data/courses.js'
+import { readCourse } from '../lib/course.js'
 import { DAILY_GOAL } from '../lib/goal.js'
 import { longDate } from '../lib/media.js'
 import { navigate } from '../lib/router.jsx'
@@ -92,8 +94,27 @@ function Settings() {
     applyTheme(theme)
   }, [theme])
 
+  const course = courseById(readCourse())
+
   return (
     <>
+      <section className="card">
+        <SectionHead title="Spor" tail={<span className="chip accent">{course.name}</span>} />
+        <div className="setting-row">
+          <div>
+            <b>{course.name}</b>
+            <p className="small muted">{course.blurb}</p>
+          </div>
+          <button className="btn-ghost" onClick={() => navigate('/start')}>
+            <Icon name="layers" size={16} /> Skift spor
+          </button>
+        </div>
+        <p className="small muted" style={{ marginBottom: 0 }}>
+          Matematik er ikke bygget endnu — sporet kan vælges, men siger selv fra, indtil der er opgaver i
+          det. Fremskridt i politisporet rører det ikke.
+        </p>
+      </section>
+
       <section className="card">
         <SectionHead title="Udseende" />
         <p className="small muted">Vælg et tema. "System" følger indstillingen på din computer eller telefon.</p>

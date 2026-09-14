@@ -3,8 +3,9 @@ import Confetti from '../components/Confetti.jsx'
 import Exercise from '../components/Exercise.jsx'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
+import Teach from '../components/Teach.jsx'
 import { allLessons, units } from '../data/path.js'
-import { JUMP_PASS, buildLesson, jumpTest, scoreLesson, unitsUpTo } from '../lib/lessons.js'
+import { JUMP_PASS, buildLesson, jumpTest, scoreLesson, teachFor, unitsUpTo } from '../lib/lessons.js'
 import { plural, scrollTop } from '../lib/media.js'
 import { Link, navigate } from '../lib/router.jsx'
 import { play as playSound } from '../lib/sound.js'
@@ -23,6 +24,11 @@ export default function Lesson({ params }) {
   const lesson = jumpUnit ? jumpTest(jumpUnit) : allLessons.find((entry) => entry.id === params.id)
   const unit = jumpUnit || units.find((entry) => entry.id === lesson?.unitId)
 
+  // Forklaringen kommer først, når lektionen er ny — eller når man beder om den.
+  const teach = useMemo(() => (lesson ? teachFor(lesson) : []), [lesson])
+  const [teaching, setTeaching] = useState(
+    () => teach.length > 0 && (params.teach === '1' || (!jumpUnit && !state.lessons[params.id])),
+  )
   const [queue, setQueue] = useState(() => (lesson ? buildLesson(lesson, state.items, { voice: voicePreference() }) : []))
   const [index, setIndex] = useState(0)
   const [results, setResults] = useState([])
@@ -59,7 +65,7 @@ export default function Lesson({ params }) {
   // Enter fører videre, når svaret er afgivet — hele vejen gennem lektionen.
   useEffect(() => {
     function onKey(event) {
-      if (event.key !== 'Enter' || !current) return
+      if (event.key !== 'Enter' || !current || teaching) return
       event.preventDefault()
       next()
     }
@@ -82,6 +88,7 @@ export default function Lesson({ params }) {
 
   function restart() {
     reported.current = false
+    setTeaching(false)
     setQueue(buildLesson(lesson, state.items, { voice: voicePreference() }))
     setIndex(0)
     setResults([])
@@ -122,6 +129,34 @@ export default function Lesson({ params }) {
     if (index + 1 >= queue.length) setDone(true)
     else setIndex(index + 1)
     scrollTop()
+  }
+
+  if (teaching) {
+    return (
+      <div className="play">
+        <div className="play-bar">
+          <button className="quit" onClick={() => navigate('/')} aria-label="Forlad lektionen">
+            <Icon name="x" size={22} />
+          </button>
+          <div className="track">
+            <div style={{ width: '0%' }} />
+          </div>
+          <span className="chip">{unit?.title}</span>
+        </div>
+        <Teach
+          title={lesson.title}
+          entries={teach}
+          onStart={() => {
+            setTeaching(false)
+            scrollTop()
+          }}
+          onSkip={() => {
+            setTeaching(false)
+            scrollTop()
+          }}
+        />
+      </div>
+    )
   }
 
   if (outOfHearts) {

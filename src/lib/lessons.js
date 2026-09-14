@@ -6,7 +6,8 @@ import { dictations } from '../data/dictation.js'
 import { daItems } from '../data/grammar.da.js'
 import { enItems } from '../data/grammar.en.js'
 import { allLessons, ranks, units } from '../data/path.js'
-import { policeItems } from '../data/police.js'
+import { policeItems, policeTopics } from '../data/police.js'
+import { rules } from '../data/rules.js'
 import { shuffle } from './srs.js'
 
 const BANKS = {
@@ -184,6 +185,56 @@ export function pathProgress(lessons = {}) {
 export function unitProgress(unit, lessons = {}) {
   const done = unit.lessons.filter((lesson) => lessons[lesson.id]?.stars > 0).length
   return { done, total: unit.lessons.length }
+}
+
+/**
+ * Stoffet bag en lektion, skrevet ud som noget, man kan læse: hovedregel,
+ * huskeregel og eksempler. Kilderne slås op i regelbogen og i den
+ * politifaglige bank, så forklaringen og øvelsen aldrig kan komme i utakt.
+ */
+export function teachFor(lesson) {
+  const seen = new Set()
+  const entries = []
+  for (const source of lesson.sources || []) {
+    const parts = source.split(':')
+    if (parts[0] === 'police') {
+      const topic = policeTopics.find((entry) => entry.id === parts[1])
+      if (!topic || seen.has(topic.id)) continue
+      seen.add(topic.id)
+      entries.push({
+        id: 'police:' + topic.id,
+        kind: 'Politifag',
+        title: topic.title,
+        rule: topic.rule,
+        trick: topic.trick,
+        examples: [],
+        points: (topic.points || []).slice(0, 4),
+      })
+      continue
+    }
+    if (parts[0] === 'grammar') {
+      const rule = rules.find((entry) => entry.id === parts[2] && entry.lang === parts[1])
+      if (!rule || seen.has(rule.id)) continue
+      seen.add(rule.id)
+      const examples = []
+      for (const section of rule.sections || []) {
+        for (const example of section.examples || []) {
+          if (examples.length < 3) examples.push(example)
+        }
+      }
+      entries.push({
+        id: 'grammar:' + rule.id,
+        kind: rule.lang === 'en' ? 'Engelsk' : 'Dansk',
+        title: rule.title,
+        rule: rule.rule,
+        trick: rule.trick,
+        examples,
+        points: [],
+      })
+    }
+  }
+  // Et tjek på tværs af en hel enhed skal ikke starte med fire regelkort.
+  return lesson.checkpoint ? entries.slice(0, 1) : entries.slice(0, 2)
 }
 
 export { units, allLessons, ranks, dictations }
