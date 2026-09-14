@@ -887,4 +887,22 @@ export const policeItems = [
     sentence: 'Et indgreb kræver hjemmel, skal være nødvendigt og må gerne fortsætte efter at formålet er nået.',
     wrong: 'fortsætte',
     rule: 'Indgrebet skal ophøre, når formålet er nået. Fortsættelse gør et lovligt indgreb ulovligt.' },
+
+  { id: 'p-anhold-07', topic: 'anholdelse', level: 2, type: 'sort',
+    prompt: 'Hvad skal noteres om en anholdelse?',
+    buckets: ['Skal noteres', 'Hører ikke til'],
+    tokens: [
+      { text: 'Klokkeslæt for anholdelsen', bucket: 'Skal noteres' },
+      { text: 'Grundlaget for mistanken', bucket: 'Skal noteres' },
+      { text: 'Hvornår sigtelsen blev oplyst', bucket: 'Skal noteres' },
+      { text: 'Om personen blev tilbudt at kontakte pårørende', bucket: 'Skal noteres' },
+      { text: 'Din vurdering af personens type', bucket: 'Hører ikke til' },
+      { text: 'Hvad kollegaen syntes om hans tone', bucket: 'Hører ikke til' },
+    ],
+    rule: 'Notatet skal kunne bære en efterprøvelse: tid, grundlag, oplysning om sigtelse og de tilbud, personen fik. Vurderinger af personen hører ikke hjemme nogen steder.' },
+  { id: 'p-anhold-08', topic: 'anholdelse', level: 3, type: 'spot',
+    prompt: 'Find det, der er forkert:',
+    sentence: 'En anholdt skal have oplyst sigtelsen, skal fremstilles for en dommer inden 48 timer og skal løslades, når grundlaget bortfalder.',
+    wrong: '48',
+    rule: 'Fristen er 24 timer og står i grundlovens § 71, stk. 3. Den regnes fra anholdelsen — ikke fra ankomsten til stationen.' },
 ]
