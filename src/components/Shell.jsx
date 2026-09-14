@@ -78,6 +78,11 @@ export default function Shell({ path, children }) {
 
   const moreActive = MORE.some((item) => item.to === path)
 
+  // Lektionen tager hele skærmen: ingen sidepanel, ingen faner — kun opgaven.
+  if (path === '/lesson') {
+    return <div className="play-shell">{children}</div>
+  }
+
   return (
     <div className="app">
       <aside className="sidebar">

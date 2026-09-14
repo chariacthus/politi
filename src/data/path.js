@@ -6,6 +6,7 @@
 export const units = [
   {
     id: 'u1',
+    color: 'var(--navy)',
     number: 1,
     title: 'Grundlaget',
     blurb: 'Hvad politiet er sat i verden for, og hvilke grænser der gælder for ethvert indgreb.',
@@ -18,6 +19,7 @@ export const units = [
   },
   {
     id: 'u2',
+    color: 'var(--brick)',
     number: 2,
     title: 'Magt og indgreb',
     blurb: 'Hvornår magt må bruges, hvordan den trappes op — og hvilken hjemmel en visitation hviler på.',
@@ -30,6 +32,7 @@ export const units = [
   },
   {
     id: 'u3',
+    color: 'var(--forest)',
     number: 3,
     title: 'Anholdelse og rettigheder',
     blurb: 'Mistankekrav, 24-timersreglen, den sigtedes rettigheder og de korte frister uden for strafferetten.',
@@ -42,6 +45,7 @@ export const units = [
   },
   {
     id: 'u4',
+    color: 'var(--brass)',
     number: 4,
     title: 'Loven i praksis',
     blurb: 'Straffelovens kerneparagraffer og de færdselsregler, der bruges hver eneste vagt.',
@@ -54,6 +58,7 @@ export const units = [
   },
   {
     id: 'u5',
+    color: 'var(--navy-2)',
     number: 5,
     title: 'Tjenesten',
     blurb: 'Tavshedspligt, adfærd og den melding, der skal sidde, når det brænder på.',
@@ -66,6 +71,7 @@ export const units = [
   },
   {
     id: 'u6',
+    color: 'var(--forest)',
     number: 6,
     title: 'Sproget hele vejen',
     blurb: 'De retskrivningsfælder, der afgør, om rapporten kan bruges — og om prøven bliver bestået.',

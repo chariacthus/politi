@@ -8,9 +8,21 @@ fremskridt gemmes i browserens `localStorage`.
 
 ## Forløbet
 
-Forsiden er en sti, ikke et dashboard: **6 enheder med 24 korte lektioner**, der bygger oven på hinanden.
-Hver lektion er 6-12 opgaver, giver XP og op til tre stjerner, og åbner den næste. Rangen går fra Ansøger
-til Specialist.
+Forsiden er et spilbræt, ikke et dashboard: **6 enheder med 24 korte lektioner** på en snoet sti, der
+bygger oven på hinanden. Hver enhed har sin egen farve, klarede lektioner får en guldkrone og op til tre
+stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til Specialist.
+
+**Sådan spilles det:**
+
+- **Lektionen fylder hele skærmen** — ingen menuer, kun opgaven: fremdriftsbjælke, fem liv og ét spørgsmål
+  ad gangen i store, trykbare knapper.
+- **Liv:** et forkert svar koster et liv. Retter du den opgave, du fejlede, når den kommer igen, får du
+  livet tilbage. Løber livene ud, tager du lektionen om.
+- **Feedback glider op nedefra** i grønt eller rødt med makkeren, det rigtige svar, reglen bag og et link
+  til hele forklaringen. Enter fører videre.
+- **Fejring til sidst:** konfetti ved en fejlfri lektion, stjerner, XP og liv tilbage — og direkte videre
+  til næste lektion.
+- **Dagens mål** er 60 XP og vises som en ring i toppen sammen med streak og samlet XP.
 
 | Enhed | Indhold |
 | --- | --- |

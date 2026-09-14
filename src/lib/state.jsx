@@ -78,7 +78,7 @@ export function ProgressProvider({ children }) {
               },
             },
             xp: (prev.xp || 0) + xp,
-            sessions: [...prev.sessions, { date: new Date().toISOString(), module: 'lektion', lang: 'da', topic: lessonId, asked, correct, seconds }].slice(-100),
+            sessions: [...prev.sessions, { date: new Date().toISOString(), module: 'lektion', lang: 'da', topic: lessonId, asked, correct, seconds, xp }].slice(-100),
             streak: bumpStreak(prev.streak),
           }
         })
