@@ -7,9 +7,9 @@ export const courses = [
     name: 'Politi',
     icon: 'shield',
     tagline: 'Optagelsesprøven',
-    blurb: 'Dansk retskrivning, rapportsprog, politiets regelgrundlag og tonen i borgerkontakt.',
+    blurb: 'Fra almindeligt sprog til professionel betjent: dansk, engelsk, politifag og tonen i borgerkontakt.',
     ready: true,
-    points: ['28 lektioner i 7 enheder', '306 opgaver i ni former', 'Regelbog med 32 opslag'],
+    points: ['Fire trin: begynder til professionel', '60 lektioner · 397 opgaver', 'Regelbog med 44 opslag'],
   },
   {
     id: 'matematik',
@@ -18,7 +18,7 @@ export const courses = [
     tagline: 'På vej',
     blurb: 'Tal, procent, brøker, geometri og de tekstopgaver, der går igen i optagelsesprøver.',
     ready: false,
-    points: ['Regning uden lommeregner', 'Procent, brøk og forhold', 'Figurer, rumfang og aflæsning'],
+    points: ['Samme fire trin som politisporet', 'Regning uden lommeregner', 'Procent, brøk, figurer og aflæsning'],
   },
 ]
 

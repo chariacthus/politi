@@ -94,6 +94,11 @@ export function ProgressProvider({ children }) {
         })
       },
 
+      /** Niveautesten gemmes, så vi ikke spørger igen — og kan vises i profilen. */
+      recordPlacement(result) {
+        update((prev) => ({ ...prev, placement: { ...result, at: new Date().toISOString() } }))
+      },
+
       setExamDate(date) {
         update((prev) => ({ ...prev, examDate: date || null }))
       },

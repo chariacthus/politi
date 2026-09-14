@@ -13,6 +13,7 @@ export function emptyState() {
     reports: {},
     lessons: {},
     unlocked: {},
+    placement: null,
     xp: 0,
     planDone: {},
   }
@@ -63,6 +64,7 @@ function migrate(state) {
     reports: state.reports && typeof state.reports === 'object' ? state.reports : base.reports,
     lessons: state.lessons && typeof state.lessons === 'object' ? state.lessons : base.lessons,
     unlocked: state.unlocked && typeof state.unlocked === 'object' ? state.unlocked : base.unlocked,
+    placement: state.placement && typeof state.placement === 'object' ? state.placement : base.placement,
     xp: Number.isFinite(state.xp) ? state.xp : base.xp,
     planDone: state.planDone && typeof state.planDone === 'object' ? state.planDone : base.planDone,
   }

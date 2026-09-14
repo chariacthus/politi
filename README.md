@@ -1,15 +1,20 @@
-# Optagelsestræning
+# Politiskolen
 
-Et privat træningsværktøj til politiets optagelsesprøve. Fokus ligger på det, der vejer tungest og er
-sværest at træne alene: **skriftlig dansk**, **rapportsprog** og **tonen i borgerkontakt**.
+En uddannelse, ikke en quiz. Værktøjet tager en, der starter fra nul, hele vejen til det sproglige og
+faglige niveau, der forventes af en dansk politibetjent: **almindeligt sprog → klar kommunikation →
+politifag → professionelt niveau**. Dansk og engelsk vægtes begge, fordi kommunikation er halvdelen af
+arbejdet.
+
+Du behøver ikke kunne fagsprog, formel kommunikation eller procedurer på forhånd. Det er præcis det,
+forløbet lærer dig — i den rækkefølge, det bygger på hinanden.
 
 Siden kører helt i browseren. Der er ingen server, ingen konto og ingen data, der forlader maskinen —
 fremskridt gemmes i browserens `localStorage`.
 
 ## Spor
 
-Appen åbner med et valg, som i Duolingo: **Politi** eller **Matematik**. Politisporet er bygget og
-farvet myndighedsblåt. Matematiksporet har farve (orange), plan og plads i appen, men **det er ikke
+Appen åbner med et valg: **Politi** eller **Matematik**. Politisporet er bygget og
+farvet myndighedsblåt. Matematiksporet har farve (orange), varmt papir, plan og plads i appen, men **det er ikke
 bygget endnu** — det siger kortet selv, og det kan ikke startes. Sporet skiftes under Profil →
 Indstillinger, og kursusfarven slår igennem i hele fladen: navigation, knapper, ringe, mærkater og
 enhedernes bannere.
@@ -29,12 +34,34 @@ På brede skærme står navigationen i venstre skinne og statistikken — streak
 til prøven — i højre. På telefonen bliver navigationen til fire faner i bunden og statistikken til en
 stribe i toppen. Lektionen har ingen af delene: den fylder hele skærmen.
 
-## Stien
+## Uddannelsen: fire trin
 
-Forsiden er et spilbræt, ikke et dashboard: **7 enheder med 28 korte lektioner** på en snoet sti, der
-bygger oven på hinanden. Hver enhed har sin egen farve, klarede lektioner får en guldkrone og op til tre
-stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til Specialist. Et tryk på en
-sten åbner et kort med, hvad lektionen indeholder, og hvad knappen gør.
+| Trin | Niveau | Hvad du lærer | Mål |
+| --- | --- | --- | --- |
+| 1 · Grundsprog | Begynder | Enkle sætninger på dansk, de første ord på engelsk, tal, tid, sted og beskrivelse | Du kan sige og forstå det almindelige sprog, alt andet bygger på |
+| 2 · Klar kommunikation | Øvet | Høflig og tydelig tale, formelt engelsk, retskrivning og ordformer | Du kan forklare dig klart i tale og på skrift, på begge sprog |
+| 3 · Politifaget | Fagligt | Opgaven, principperne, magt, anholdelse, loven, tjenesten — og fagordene | Du kender reglerne bag indgrebene og kan forklare hjemlen |
+| 4 · Professionel | Professionel | Rapportsprog, præcision i skriften, engelsk i tjenesten, prøvens form | Du skriver, taler og handler som en betjent forventes at gøre |
+
+**15 enheder med 60 lektioner** på en snoet sti. Hver enhed har sin egen farve, klarede lektioner får en
+krone og op til tre stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til
+Specialist. Et tryk på en sten åbner et kort med, hvad lektionen indeholder.
+
+## Systemet følger med dig
+
+- **Niveautest ved start.** Tolv opgaver på tværs af de fire trin afgør, hvor du begynder. Klarer du
+  trin 1 og 2, er de låst op fra dag ét. Kan du ingenting endnu, starter du forfra — og det er det
+  rigtige sted at starte. Testen kan springes over og koster ingen liv.
+- **Sværhedsgraden følger dine svar.** Hver lektion regner et niveau ud af, hvordan det er gået i netop
+  de emner, den trækker fra. Går det godt, kommer de sværere opgaver frem; driller det, bliver vi på
+  det lette niveau. Nyt stof ligger aldrig mere end ét trin over dit eget.
+- **Genopfriskning.** De opgaver, der er gået galt, og dem der er faldet ned i de nederste
+  gentagelsesbokse, samles automatisk i en genopfriskningslektion, der dukker op på stien, så snart der
+  er nok at tage fat i.
+- **Forklaring frem for straf.** Efter en lektion peger systemet på det emne, der gik mest galt, og
+  linker direkte til reglen. Går noget galt igen, kommer det igen — det er hele pointen.
+- **Spring videre.** Kan du en hel enhed i forvejen, åbner en springtest på 12 opgaver den, hvis du
+  rammer 80 %.
 
 **Sådan spilles det:**
 
@@ -56,17 +83,8 @@ sten åbner et kort med, hvad lektionen indeholder, og hvad knappen gør.
   enhed har en **springtest** på 12 opgaver fra hele enhedens stof. Rammer du 80 %, åbnes enheden og
   alle enheder før den; du kan stadig tage lektionerne bagefter for stjernerne.
 
-| Enhed | Indhold |
-| --- | --- |
-| 1 · Grundlaget | Politiets opgave, de bærende principper, rapportsprog |
-| 2 · Magt og indgreb | Magtanvendelse, visitation og ransagning, kommatering |
-| 3 · Anholdelse og rettigheder | Mistankekrav og 24-timersreglen, sigtedes rettigheder, frihedsberøvelse |
-| 4 · Loven i praksis | Straffelovens kerneparagraffer, færdsel, sprogfælder |
-| 5 · Tjenesten | Tavshedspligt og notatpligt, adfærd og legitimitet, melding og radio |
-| 6 · Sproget hele vejen | Nutids-r, ligge/lægge, sammensatte ord, endelser, ejestedord |
-| 7 · Præcision i skriften | Tegnsætning ud over kommaet, ejefald og apostrof, tal og tid, de/dem og som/der |
-
-**94 politifaglige opgaver** over 12 emner ligger bag lektionerne — politiloven i praksis, straffelovens
+**397 opgaver** ligger bag lektionerne: 187 danske over 18 emner, 116 engelske over 14 emner og 94
+politifaglige over 12 emner. De politifaglige opgaver dækker politiloven i praksis, straffelovens
 kerneparagraffer, færdselsreglerne, tavshedspligt, etik og radioprocedure — hver med en forklaring på
 hvorfor, og med henvisning til grundlaget.
 
@@ -86,11 +104,11 @@ stemmeøvelse kan springes over.
 
 | Modul | Hvad du træner |
 | --- | --- |
-| **Grammatik** | 152 danske opgaver over 14 emner — kommatering, nutids-r, ligge/lægge, nogen/nogle, ad/af, hans/sin, endelser, sammensatte ord, store og små bogstaver, rapportsprog, tegnsætning ud over kommaet, ejefald og apostrof, tal og tid, samt de/dem og som/der — og 60 engelske over 6 emner. |
+| **Sprog** | 187 danske opgaver over 18 emner — fra hverdagsdansk, høflig tale, præcis beskrivelse og fagordene i klar tale til kommatering, nutids-r, sammensatte ord, rapportsprog, tegnsætning, ejefald, tal og tid samt de/dem og som/der. Og 116 engelske over 14 emner — fra hilsener, tal, personbeskrivelse og vejvisning til standsning, borgerkontakt, formelt engelsk og skreven rapport. |
 | **Diktat** | 24 tekster i fire niveauer. Teksten læses op **afsnit for afsnit**, og hvert afsnit kan høres så mange gange, du vil. Dit svar sammenlignes ord for ord med facit. |
 | **Rapport og skrivning** | 6 skriveopgaver — hændelsesrapport, anmeldelsesnotat, afhøringsreferat, notat om magtanvendelse, brev til borger og døgnrapportnotat. Du får sagens oplysninger og skriver teksten; den gennemgås automatisk. |
 | **Situationer og tone** | 6 scenarier fra virkeligt politiarbejde. Du formulerer replikken selv, får feedback på tone og sprog, vælger mellem tre svar og ser modelsvaret. |
-| **Regelbogen** | 32 opslag: 12 politifaglige emner med hovedregel, huskeregel og de punkter, der skal sidde fast, samt 20 sprogregler med gennemgåede eksempler på rigtigt og forkert. |
+| **Regelbogen** | 44 opslag: 12 politifaglige emner med hovedregel, huskeregel og de punkter, der skal sidde fast, samt 32 sprogregler med gennemgåede eksempler på rigtigt og forkert. |
 
 Under **Profil** ligger overblikket: prioriteret "næste skridt", aktivitet over 14 dage, træfprocent pr.
 emne, Leitner-bokse, modulstatus og sessionshistorik — plus den otte uger lange træningsplan frem mod en
@@ -112,9 +130,10 @@ prøvedato, du selv sætter, og indstillingerne for tema, lyd, stemmeøvelser og
 
 ## Design
 
-Udtrykket er hentet fra den trykte lærebog frem for fra dashboardet: varmt papir, blæksort tekst,
-marineblå som myndighedsfarve og messing til fremhævning. Hårfine streger og skarpe hjørner i stedet
-for bløde skygger og store radier.
+Ét spor, én farvefamilie. Politisporet er myndighedsblåt med en lysere azurblå accent og et køligt
+gråblåt papir; matematiksporet er orange med varmt papir. Grøn betyder rigtigt og rød betyder forkert —
+og der er ikke andre farver i spil. Alt, hvad der ikke hører til en enhed, henter sin farve fra sporet,
+så et skift af kursus skifter hele fladen.
 
 - **Skrifter:** Fraunces som displayskrift på overskrifter, navnet og fejringen — en variabel serif,
   der får et skarpere snit, jo større den sættes. IBM Plex Sans bærer alt andet, og IBM Plex Mono
@@ -122,14 +141,17 @@ for bløde skygger og store radier.
   Sans: dér skal skriften være rolig at læse, ikke markant. Alle filer ligger i `src/fonts/` og
   indlæses lokalt — siden virker også uden netadgang. (Fraunces og IBM Plex, begge SIL Open Font
   License 1.1.)
-- **Kanter og flader:** hvert kort har hjørnebeslag i kursusfarven, der tegner sig ind, når kortet
-  kommer. Papiret har en svag skravering, enhedernes bannere en skrå tryk-raster, og knapperne en
-  synlig kant, der synker, når de trykkes. Ingen bløde skygger, ingen store radier.
+- **Kanter:** trin og enheder er klistermærker — tyk blækkant og en hård forskudt skygge i sporets
+  farve i stedet for en blød sky. Kortene har hjørnebeslag, der tegner sig ind. Tilbud på stien har
+  stiplet kant. Knapper og svarmuligheder har en synlig underkant, der synker, når de trykkes.
+- **Bevægelse:** stenene vipper, når man rører dem, stien er tegnet med stiplede spor mellem stenene,
+  trinnet fejres med en roterende stråleglorie, og et lysstrøg løber hen over primærknappen. Alt
+  slukkes ved `prefers-reduced-motion`.
 - **Lys og mørk tilstand** følger systemet og kan overstyres. Farverne er valgt, så brødtekst ligger
   over 8:1 i kontrast og sekundær tekst over 4,2:1.
-- **Bevægelse** bruges til at forklare, ikke til at pynte: ringe tegnes ind, tal tælles op,
-  svarmuligheder folder sig ud efter hinanden, og sektionslinjer trækkes fra venstre. Alt slukkes ved
-  `prefers-reduced-motion`, og lydkvitteringerne har en afbryder under Profil → Indstillinger.
+- **Resten af bevægelsen forklarer:** ringe tegnes ind, tal tælles op, svarmuligheder folder sig ud
+  efter hinanden, og sektionslinjer trækkes fra venstre. Lydkvitteringerne har en afbryder under
+  Profil → Indstillinger.
 
 ## Kom i gang
 

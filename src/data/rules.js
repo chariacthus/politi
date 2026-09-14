@@ -700,6 +700,301 @@ export const rules = [
       'Manglende slutkomma efter ledsætningen med "der"/"som".',
     ],
   },
+  {
+    id: 'hverdag', lang: 'da', title: 'Hverdagsdansk',
+    short: 'Den korte, klare sætning er grundformen. Alt professionelt sprog bygger oven på den.',
+    rule: 'Sig hvem der gør hvad: grundled, udsagnsled, resten. Skil det, du har set, fra det, du tror.',
+    trick: 'Kan sætningen læses højt i ét åndedrag og forstås af en, der ikke var der? Så er den klar nok.',
+    sections: [
+      {
+        heading: 'Grundformen',
+        text: 'Først den, der gør noget. Så handlingen. Så resten. Står tiden eller stedet først, bytter grundled og udsagnsled plads.',
+        examples: [
+          { wrong: 'Der var en person som løb.', right: 'En mand løb mod banegården.' },
+          { right: 'Kl. 22.10 standsede vi bilen på Nørregade.', note: 'Tiden først → "standsede vi", ikke "vi standsede".' },
+        ],
+      },
+      {
+        heading: 'Set eller troet',
+        text: 'Det, du har set og hørt, er en iagttagelse. Alt andet er en vurdering. Vanen med at holde dem adskilt starter i helt almindelige sætninger — og bærer hele vejen op til rapporten.',
+        examples: [
+          { wrong: 'Han var nok fuld.', right: 'Han lugtede af alkohol og faldt to gange.' },
+        ],
+      },
+    ],
+    mistakes: ['Fyldeord: "sådan lidt", "vist nok", "lissom".', 'Lange kancellivendinger i stedet for almindelige ord.', 'Vurdering skrevet som om det var en iagttagelse.'],
+  },
+  {
+    id: 'hoeflig', lang: 'da', title: 'Høflig og tydelig',
+    short: 'Myndighed og høflighed er ikke modsætninger. Det er den samme sætning, sagt ordentligt.',
+    rule: 'Præsentér dig, sig årsagen, og fortæl hvad der sker nu. Bed om noget, når der er tid; giv en ordre, når der ikke er.',
+    trick: 'Sig hvad du har brug for — ikke hvad den anden er. "Jeg har brug for, at du lytter" i stedet for "hold nu op".',
+    sections: [
+      {
+        heading: 'Anmodning eller ordre',
+        text: 'En anmodning er et spørgsmål: "Vil du ...?". En ordre er en bydeform: "Bliv stående." Begge dele hører til — ordren gemmes til det øjeblik, hvor der ikke er tid, eller hvor anmodningen ikke blev fulgt.',
+        examples: [
+          { right: 'Vil du række mig dit kørekort?' },
+          { right: 'Bliv stående.', note: 'Kort og tydelig, når det haster.' },
+        ],
+      },
+      {
+        heading: 'Sig altid hvorfor',
+        text: 'En borger, der forstår årsagen, samarbejder næsten altid. Det koster én sætning.',
+        examples: [
+          { wrong: 'Du skal bare gøre, som jeg siger.', right: 'Jeg standser dig, fordi lygten bagpå ikke virker.' },
+        ],
+      },
+    ],
+    mistakes: ['Nedladende tiltale og kælenavne.', 'Uklarhed forklædt som venlighed ("måske skulle du på et tidspunkt ...").', 'Skift mellem du og De i samme samtale.'],
+  },
+  {
+    id: 'praecis', lang: 'da', title: 'Præcis beskrivelse',
+    short: 'En beskrivelse er brugbar, når en anden kan genkende personen, bilen eller stedet ud fra den.',
+    rule: 'Person: køn, højde, bygning, hår, tøj. Køretøj: farve, type, mærke, nummerplade. Sted: vej, nummer, kendemærke. Tid: klokkeslæt.',
+    trick: 'Læs din beskrivelse op for dig selv og spørg: kunne en kollega finde personen med det her?',
+    sections: [
+      {
+        heading: 'Rækkefølgen',
+        text: 'Den faste rækkefølge gør, at modtageren kan følge med — også over radioen, hvor der ikke er tid til at spørge om igen.',
+        examples: [
+          { wrong: 'En almindelig mand i mørkt tøj.', right: 'Mand, ca. 180 cm, kraftig, sort jakke, blå kasket.' },
+          { right: 'Hvid varebil, Ford Transit, reg.nr. AB 12 345.' },
+        ],
+      },
+      {
+        heading: 'Retning og tid',
+        text: '"Den vej" og "for lidt siden" kan ingen bruge. Retning, vej og minutter kan.',
+        examples: [
+          { wrong: 'Han gik den vej for lidt siden.', right: 'Han gik mod nord ad Nørregade for ca. to minutter siden.' },
+        ],
+      },
+    ],
+    mistakes: ['Vurderinger af personlighed i stedet for udseende.', 'Stedangivelser uden vejnavn og nummer.', 'Omtrentlige tider, hvor et klokkeslæt var muligt.'],
+  },
+  {
+    id: 'fagord', lang: 'da', title: 'Fagordene i klar tale',
+    short: 'Fagordet er til rapporten. Til borgeren bruger du almindelige ord om præcis det samme.',
+    rule: 'Lær rollerne — anmelder, forurettet, vidne, sigtet — og de ord, der går igen: hjemmel, gerningssted, signalement, beslaglæggelse.',
+    trick: 'Kan du forklare ordet til en, der aldrig har været i nærheden af politiet? Så har du forstået det.',
+    sections: [
+      {
+        heading: 'Rollerne i en sag',
+        text: 'Anmelderen ringer. Forurettede er den, det gik ud over. Vidnet så eller hørte noget. Den sigtede er mistænkt og har fået det at vide. Samme person kan have to roller — men rollerne skal holdes adskilt i rapporten.',
+        examples: [
+          { right: 'Anmelderen var nabo til forurettede og så selv tyveriet.' },
+        ],
+      },
+      {
+        heading: 'Hjemmel',
+        text: 'Hjemmel er den regel i loven, der giver lov til det, du gør. Kan du ikke pege på reglen, må du ikke gøre det. Det er det bærende princip i hele politiarbejdet.',
+        examples: [
+          { right: 'Visitationen havde hjemmel i politilovens regler om våben.' },
+        ],
+      },
+      {
+        heading: 'Oversæt til borgeren',
+        text: 'Fagsproget er præcist, men det forklarer ingenting for den, der ikke kender det.',
+        examples: [
+          { wrong: 'Effekten er sikret til videre foranstaltning.', right: 'Vi tager kniven med som bevis i sagen.' },
+        ],
+      },
+    ],
+    mistakes: ['At kalde en sigtet for dømt.', 'Fagord brugt over for borgere, der ikke kender dem.', 'Passiv kancellistil i stedet for aktiv sætning.'],
+  },
+  {
+    id: 'basis', lang: 'en', title: 'First words',
+    short: 'Hils, sig hvem du er, og spørg pænt. Tre ting, og en samtale er i gang.',
+    rule: 'Good morning / afternoon / evening + "I am a police officer" + "Could you ... please?". Sig "I don’t understand", hvis du ikke forstår.',
+    trick: 'Please er engelsk høflighed. Det bruges langt oftere end det danske "venligst" — og det mangler aldrig i en anmodning.',
+    sections: [
+      {
+        heading: 'De første sætninger',
+        text: 'Hilsen, præsentation, anmodning. Den samme rækkefølge som på dansk.',
+        examples: [
+          { right: 'Good evening. My name is Jonas. I am a police officer.' },
+          { wrong: 'Name!', right: 'What is your name, please?' },
+        ],
+      },
+      {
+        heading: 'Når du ikke forstår',
+        text: 'Sig det. Det er bedre end at gætte på, hvad en borger mener.',
+        examples: [
+          { right: "I don’t understand. Could you say that again, please?" },
+        ],
+      },
+    ],
+    mistakes: ['Bydeform uden please, hvor der var tid til at spørge.', 'At gætte i stedet for at bede om en gentagelse.'],
+  },
+  {
+    id: 'tal-tid', lang: 'en', title: 'Numbers and time',
+    short: 'Tal, klokkeslæt og bogstavering er fundamentet under enhver melding.',
+    rule: 'At + klokkeslæt, on + dag og dato, in + måned og år. I tale bruges 12-timers ur med a.m. og p.m. Nummerplader bogstaveres med Alpha, Bravo, Charlie.',
+    trick: 'AT et punkt på uret, ON en dag i kalenderen, IN en større periode.',
+    sections: [
+      {
+        heading: 'Tid',
+        text: 'Engelsk taler i 12 timer og skriver ofte i 24. Begge dele skal kunne læses.',
+        examples: [
+          { wrong: 'It is twenty-two fifteen o’clock.', right: 'It is ten fifteen p.m.' },
+          { right: 'The accident happened at 9 a.m. on Monday.' },
+        ],
+      },
+      {
+        heading: 'Bogstavering',
+        text: 'Kodeordene fjerner tvivlen mellem B og P, M og N. Derfor bruges de over radio og telefon i hele verden.',
+        examples: [
+          { right: 'Registration Alpha Bravo one two three.' },
+        ],
+      },
+    ],
+    mistakes: ['"In Monday" i stedet for "on Monday".', 'Spørgsmål i datid uden did: "When happened this?"'],
+  },
+  {
+    id: 'person', lang: 'en', title: 'Describing people',
+    short: 'Køn, højde, hår, tøj — på engelsk i samme rækkefølge som på dansk.',
+    rule: 'Tillægsordet står foran navneordet: a black jacket. Beskrivelser af noget, der er sket, står i datid: he was wearing.',
+    trick: 'Tænk "tall man in a black jacket" — aldrig "man tall in a jacket black".',
+    sections: [
+      {
+        heading: 'Ordstilling',
+        text: 'Engelsk sætter altid tillægsordet foran. Farven kommer tættest på tøjet.',
+        examples: [
+          { wrong: 'a jacket black', right: 'a black jacket' },
+          { right: 'A tall man in a black jacket.' },
+        ],
+      },
+      {
+        heading: 'Datid og tredje person',
+        text: 'He has, she has — men i datid: he was wearing, she had long hair.',
+        examples: [
+          { wrong: 'She have long brown hair.', right: 'She has long brown hair.' },
+          { right: 'He was wearing a blue cap.' },
+        ],
+      },
+    ],
+    mistakes: ['"She have" i stedet for "she has".', 'Alder uden "old": "about 30 years".'],
+  },
+  {
+    id: 'retning', lang: 'en', title: 'Places and directions',
+    short: 'En instruks ad gangen, i rækkefølge — det gælder både vejvisning og indsats.',
+    rule: 'Go straight ahead, turn left, turn right. In om noget lukket, on om en flade eller linje. "I need you to ..." er den klare professionelle instruks.',
+    trick: 'IN a car, ON a street. Du sidder inde i bilen, men står på gaden.',
+    sections: [
+      {
+        heading: 'Vejvisning',
+        text: 'Del det op. Ét skridt, så det næste.',
+        examples: [
+          { right: 'Go straight ahead, then turn left at the traffic lights.' },
+        ],
+      },
+      {
+        heading: 'Instrukser',
+        text: '"Please stay where you are" er høflig og tydelig. "I need everyone to leave this area now" er den klare instruks, når det haster.',
+        examples: [
+          { wrong: 'Maybe you could go away.', right: 'I need everyone to leave this area now.' },
+        ],
+      },
+    ],
+    mistakes: ['"In the street" hvor der skulle stå "on the street".', 'Flere instrukser i én sætning.'],
+  },
+  {
+    id: 'kontrol', lang: 'en', title: 'Traffic stop',
+    short: 'Hils, præsentér dig, sig årsagen, bed om papirerne. Samme rækkefølge som på dansk.',
+    rule: 'Could I see your driving licence, please? — I stopped you because ... — Could you step out of the vehicle, please? Efter must, can og will står udsagnsordet uden "to".',
+    trick: 'Could you ... please = anmodning. Uden could og please = ordre. Vælg bevidst.',
+    sections: [
+      {
+        heading: 'De faste vendinger',
+        text: 'Driving licence, vehicle registration, insurance, passport. De fire ord dækker næsten alle kontroller.',
+        examples: [
+          { right: 'Could I see your driving licence and vehicle registration, please?' },
+          { right: 'Please turn off the engine and stay in the car.' },
+        ],
+      },
+      {
+        heading: 'Sig hvad der sker nu',
+        text: 'Uvished er det, der gør folk vrede. Fortæl hvad du gør, og hvor lang tid det tager.',
+        examples: [
+          { right: 'I am going to check your licence. It takes a few minutes.' },
+        ],
+      },
+    ],
+    mistakes: ['"You must to stay" — must tager ingen "to".', 'Ordrer uden forklaring, hvor der var tid til begge dele.'],
+  },
+  {
+    id: 'borger', lang: 'en', title: 'Helping a citizen',
+    short: 'Mennesket først, sagen bagefter — og fire spørgsmål, der åbner enhver anmeldelse.',
+    rule: 'Are you all right? What happened? When did it happen? Where did it happen? Can you describe the man? Efter "did" står grundformen.',
+    trick: 'Take your time, I am listening — virker, hvor "calm down" ikke gør.',
+    sections: [
+      {
+        heading: 'De fire spørgsmål',
+        text: 'Hændelse, tid, sted og skader. Det er rapportens fire hjørner, uanset sprog.',
+        examples: [
+          { right: 'What happened, and when did it happen?' },
+          { wrong: 'Did you saw anything?', right: 'Did you see anything unusual?' },
+        ],
+      },
+      {
+        heading: 'Afslut med næste skridt',
+        text: 'Et sagsnummer er ofte det eneste, borgeren går hjem med. Sig det, før de går.',
+        examples: [
+          { right: 'I will give you a case number before you leave.' },
+        ],
+      },
+    ],
+    mistakes: ['"Calm down" i stedet for at lytte.', 'Formularer og procedure før spørgsmålet om skader.'],
+  },
+  {
+    id: 'formel', lang: 'en', title: 'Formal English',
+    short: 'Samme besked, anden form. To ord til, og sætningen er professionel.',
+    rule: 'Could / may + please til anmodninger. Bydeform, når sikkerheden kræver det. Sig altid årsagen efter "because".',
+    trick: 'Har du tid til at spørge? Så spørg. Har du ikke? Så er den korte ordre den rigtige — og den er ikke uhøflig.',
+    sections: [
+      {
+        heading: 'Fra gade til uniform',
+        text: 'De uformelle vendinger er ikke forkerte engelsk — de er bare ikke professionelle.',
+        examples: [
+          { wrong: 'Get out of the car.', right: 'Please step out of the vehicle.' },
+          { wrong: 'What do you want?', right: 'How can I help you?' },
+        ],
+      },
+      {
+        heading: 'Indgreb forklaret præcist',
+        text: 'Noget så indgribende som en tilbageholdelse skal siges klart og neutralt.',
+        examples: [
+          { right: 'You are not free to leave at the moment. I will explain why.' },
+          { right: 'I am detaining you because you match the description.' },
+        ],
+      },
+    ],
+    mistakes: ['Bydeform brugt som standard i rolige situationer.', 'Vage formuleringer om en tilbageholdelse.'],
+  },
+  {
+    id: 'skrift', lang: 'en', title: 'Written English',
+    short: 'Datid, aktiv form og fakta. En engelsk rapport stiller de samme krav som en dansk.',
+    rule: 'Skriv i datid: arrived, saw, stated, arrested. Brug aktiv form med et tydeligt grundled. Referat med "stated that", ordret citat i anførselstegn.',
+    trick: 'Kan sætningen efterprøves af en anden? Så hører den til i rapporten.',
+    sections: [
+      {
+        heading: 'Datid og aktiv form',
+        text: 'Alt det, der allerede er sket, står i datid — og det er dig, der handler i sætningen.',
+        examples: [
+          { wrong: 'The suspect was arrested by me.', right: 'I arrested the suspect.' },
+          { right: 'We arrived at the scene at 9.40 p.m.' },
+        ],
+      },
+      {
+        heading: 'Fakta frem for vurdering',
+        text: 'Ord som "obviously" og "clearly" er vurderinger. Skriv det, du så.',
+        examples: [
+          { wrong: 'The man was obviously drunk.', right: 'The man smelled of alcohol and fell twice.' },
+        ],
+      },
+    ],
+    mistakes: ['Nutid i en rapport om noget, der allerede er sket.', 'Passiv form, der skjuler hvem der handlede.'],
+  },
 ]
 
 export function ruleFor(topicId, lang) {

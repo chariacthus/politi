@@ -11,7 +11,9 @@ import { assignments } from '../data/reports.js'
 import { scenarios } from '../data/scenarios.js'
 import { plural } from '../lib/media.js'
 import { Link, navigate } from '../lib/router.jsx'
-import { pathProgress, rankFor } from '../lib/lessons.js'
+import { currentStage, levelFor, pathProgress, rankFor, stageProgress } from '../lib/lessons.js'
+import { stages } from '../data/path.js'
+import { policeItems } from '../data/police.js'
 import { boxCounts, topicStats } from '../lib/srs.js'
 import { useProgress } from '../lib/state.jsx'
 
@@ -20,8 +22,8 @@ const ALL_ITEMS = [...daItems, ...enItems]
 const BOXES = [
   { key: 0, label: 'Ikke set', hint: 'endnu ikke mødt', color: 'var(--border-strong)' },
   { key: 1, label: 'Boks 1', hint: 'igen samme dag', color: 'var(--brick)' },
-  { key: 2, label: 'Boks 2', hint: 'igen efter 1 dag', color: 'var(--brass)' },
-  { key: 3, label: 'Boks 3', hint: 'igen efter 3 dage', color: 'color-mix(in srgb, var(--brass) 45%, var(--forest))' },
+  { key: 2, label: 'Boks 2', hint: 'igen efter 1 dag', color: 'var(--accent)' },
+  { key: 3, label: 'Boks 3', hint: 'igen efter 3 dage', color: 'color-mix(in srgb, var(--accent) 45%, var(--forest))' },
   { key: 4, label: 'Boks 4', hint: 'igen efter 1 uge', color: 'color-mix(in srgb, var(--forest) 75%, var(--accent))' },
   { key: 5, label: 'Boks 5', hint: 'igen efter 16 dage', color: 'var(--forest)' },
 ]
@@ -93,6 +95,17 @@ export default function ProgressView() {
   }, [state.sessions])
 
   const path = useMemo(() => pathProgress(state.lessons), [state.lessons])
+
+  // Hvor er du henne i uddannelsen, og hvor stærkt står hvert spor?
+  const stage = useMemo(() => currentStage(state.lessons, state.unlocked), [state.lessons, state.unlocked])
+  const tracks = useMemo(
+    () => [
+      { id: 'da', label: 'Dansk', icon: 'grammar', level: levelFor(daItems, state.items) },
+      { id: 'en', label: 'Engelsk', icon: 'quote', level: levelFor(enItems, state.items) },
+      { id: 'politi', label: 'Politifag', icon: 'shield', level: levelFor(policeItems, state.items) },
+    ],
+    [state.items],
+  )
   const rank = useMemo(() => rankFor(state.xp || 0), [state.xp])
   const scenariosDone = Object.keys(state.scenarios).length
   const reportsDone = Object.keys(state.reports).length
@@ -154,6 +167,48 @@ export default function ProgressView() {
   return (
     <>
       <p className="lead">Hvor du står lige nu, hvad der er forfaldent, og hvad der giver mest at træne som det næste.</p>
+
+      <section className="card">
+        <SectionHead title="Hvor du er i uddannelsen" tail={<span className="chip accent">Trin {stage.number}</span>} />
+        <p className="small muted">
+          {stage.title} · {stage.level}. {stage.goal}
+        </p>
+        <div className="ladder-row">
+          {stages.map((entry) => {
+            const done = stageProgress(entry.id, state.lessons)
+            const state2 = done.complete ? 'done' : entry.id === stage.id ? 'here' : ''
+            return (
+              <div className={'ladder-step ' + state2} key={entry.id}>
+                <span className="ladder-num">{done.complete ? <Icon name="check" size={15} strokeWidth={2.6} /> : entry.number}</span>
+                <div>
+                  <b>{entry.title}</b>
+                  <span className="small muted">
+                    {done.done}/{done.total} lektioner
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="grid grid-3fix mt">
+          {tracks.map((track) => (
+            <div className="tile" key={track.id}>
+              <span className="tile-label">
+                <Icon name={track.icon} size={14} /> {track.label}
+              </span>
+              <span className="tile-value">{['Begynder', 'Øvet', 'Stærk'][track.level - 1]}</span>
+              <span className="tile-hint">
+                {track.level === 1
+                  ? 'opgaverne holdes enkle'
+                  : track.level === 2
+                    ? 'sværhedsgraden er sat op'
+                    : 'du får det sværeste stof'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="card">
         <SectionHead

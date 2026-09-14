@@ -185,7 +185,7 @@ function RuleDetail({ rule, onClose }) {
         <ul className="list-reset">
           {rule.mistakes.map((mistake) => (
             <li key={mistake} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.6rem', marginBottom: '0.4rem' }}>
-              <Icon name="target" size={16} style={{ marginTop: '0.25rem', color: 'var(--brass)', flex: 'none' }} />
+              <Icon name="target" size={16} style={{ marginTop: '0.25rem', color: 'var(--accent)', flex: 'none' }} />
               <span className="small" style={{ color: 'var(--ink-2)' }}>{mistake}</span>
             </li>
           ))}

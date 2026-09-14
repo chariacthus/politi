@@ -4,8 +4,22 @@ import Exercise from '../components/Exercise.jsx'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
 import Teach from '../components/Teach.jsx'
-import { allLessons, units } from '../data/path.js'
-import { JUMP_PASS, buildLesson, jumpTest, scoreLesson, teachFor, unitsUpTo } from '../lib/lessons.js'
+import { daTopics } from '../data/grammar.da.js'
+import { enTopics } from '../data/grammar.en.js'
+import { allLessons, stages, units } from '../data/path.js'
+import { policeTopics } from '../data/police.js'
+import {
+  JUMP_PASS,
+  stageProgress,
+  buildLesson,
+  jumpTest,
+  placementResult,
+  placementTest,
+  refreshLesson,
+  scoreLesson,
+  teachFor,
+  unitsUpTo,
+} from '../lib/lessons.js'
 import { plural, scrollTop } from '../lib/media.js'
 import { Link, navigate } from '../lib/router.jsx'
 import { play as playSound } from '../lib/sound.js'
@@ -18,16 +32,28 @@ const CHEERS = ['Flot!', 'Præcis.', 'Den sad.', 'Godt set.', 'Lige i skabet.', 
 const MISSES = ['Ikke helt.', 'Tæt på.', 'Nej — se her.', 'Den var svær.']
 
 export default function Lesson({ params }) {
-  const { state, recordAnswer, recordLesson, unlockUnit } = useProgress()
-  // To slags sessioner: en almindelig lektion, eller en springtest på en hel enhed.
-  const jumpUnit = params.jump ? units.find((entry) => entry.id === params.jump) : null
-  const lesson = jumpUnit ? jumpTest(jumpUnit) : allLessons.find((entry) => entry.id === params.id)
+  const { state, recordAnswer, recordLesson, unlockUnit, recordPlacement } = useProgress()
+  // Fire slags sessioner: lektionen, springtesten på en enhed, niveautesten
+  // ved start og genopfriskningen af det, der driller.
+  const mode = params.placement === '1' ? 'placement' : params.refresh === '1' ? 'refresh' : params.jump ? 'jump' : 'lesson'
+  const jumpUnit = mode === 'jump' ? units.find((entry) => entry.id === params.jump) : null
+
+  // Opgavesættet lægges fast, når siden åbnes — ikke hver gang svarene ændrer sig.
+  const lesson = useMemo(() => {
+    if (mode === 'placement') return placementTest()
+    if (mode === 'refresh') return refreshLesson(state.items, { voice: voicePreference() })
+    if (mode === 'jump') return jumpUnit ? jumpTest(jumpUnit) : null
+    return allLessons.find((entry) => entry.id === params.id) || null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const unit = jumpUnit || units.find((entry) => entry.id === lesson?.unitId)
+  const plain = mode === 'lesson'
 
   // Forklaringen kommer først, når lektionen er ny — eller når man beder om den.
-  const teach = useMemo(() => (lesson ? teachFor(lesson) : []), [lesson])
+  const teach = useMemo(() => (lesson && plain ? teachFor(lesson) : []), [lesson, plain])
   const [teaching, setTeaching] = useState(
-    () => teach.length > 0 && (params.teach === '1' || (!jumpUnit && !state.lessons[params.id])),
+    () => plain && teachFor(allLessons.find((entry) => entry.id === params.id) || { sources: [] }).length > 0 &&
+      (params.teach === '1' || !state.lessons[params.id]),
   )
   const [queue, setQueue] = useState(() => (lesson ? buildLesson(lesson, state.items, { voice: voicePreference() }) : []))
   const [index, setIndex] = useState(0)
@@ -42,16 +68,22 @@ export default function Lesson({ params }) {
 
   const item = queue[index]
   const total = queue.length
-  const outOfHearts = hearts <= 0 && !done
+  const outOfHearts = hearts <= 0 && !done && mode !== 'placement'
 
   const score = useMemo(() => scoreLesson(results, total || 1), [results, total])
 
   const passedJump = Boolean(jumpUnit) && score.asked > 0 && score.correct / score.asked >= JUMP_PASS
 
+  const placement = useMemo(() => (mode === 'placement' && done ? placementResult(results) : null), [mode, done, results])
+
   useEffect(() => {
     if (!done || reported.current || results.length === 0) return
     reported.current = true
     if (jumpUnit && passedJump) unlockUnit(unitsUpTo(jumpUnit.id))
+    if (placement) {
+      if (placement.unitIds.length > 0) unlockUnit(placement.unitIds)
+      recordPlacement({ correct: placement.correct, asked: placement.asked, reached: placement.reached })
+    }
     recordLesson(lesson.id, {
       stars: score.stars,
       xp: score.xp,
@@ -60,7 +92,7 @@ export default function Lesson({ params }) {
       seconds: Math.round((Date.now() - startedAt.current) / 1000),
     })
     playSound('done')
-  }, [done, results, score, lesson, recordLesson, jumpUnit, passedJump, unlockUnit])
+  }, [done, results, score, lesson, recordLesson, jumpUnit, passedJump, unlockUnit, placement, recordPlacement])
 
   // Enter fører videre, når svaret er afgivet — hele vejen gennem lektionen.
   useEffect(() => {
@@ -77,7 +109,13 @@ export default function Lesson({ params }) {
     return (
       <div className="play">
         <div className="celebrate">
-          <h1>Lektionen findes ikke</h1>
+          <Mascot mood="neutral" size={104} />
+          <h1>{mode === 'refresh' ? 'Ikke nok at genopfriske endnu' : 'Lektionen findes ikke'}</h1>
+          <p className="lead">
+            {mode === 'refresh'
+              ? 'Genopfriskningen samler de opgaver, der driller. Tag et par lektioner først, så har den noget at arbejde med.'
+              : 'Linket peger på noget, der ikke findes. Gå tilbage til stien og vælg en lektion.'}
+          </p>
           <Link className="btn-3d" to="/">
             Til stien
           </Link>
@@ -103,8 +141,9 @@ export default function Lesson({ params }) {
     if (current) return
     if (!outcome.skipped) {
       playSound(outcome.correct ? 'correct' : 'wrong')
-      recordAnswer(item.id, outcome.correct)
-      if (!outcome.correct) {
+      // Niveautesten må ikke flytte på gentagelsessystemet — den måler kun.
+      if (mode !== 'placement') recordAnswer(item.id, outcome.correct)
+      if (!outcome.correct && mode !== 'placement') {
         setHearts((left) => Math.max(0, left - 1))
         setLostHeart(true)
         setTimeout(() => setLostHeart(false), 500)
@@ -184,6 +223,22 @@ export default function Lesson({ params }) {
     )
   }
 
+  // Hvilket emne gik mest galt? Det er dét, forklaringen skal pege på.
+  const weakest = (() => {
+    const misses = results.filter((entry) => !entry.correct && !entry.skipped)
+    if (misses.length === 0) return null
+    const byTopic = {}
+    for (const entry of misses) {
+      const key = (entry.item.lang || 'police') + ':' + entry.item.topic
+      byTopic[key] = byTopic[key] || { count: 0, item: entry.item }
+      byTopic[key].count += 1
+    }
+    const top = Object.values(byTopic).sort((a, b) => b.count - a.count)[0]
+    const item = top.item
+    const title = topicTitle(item)
+    return { count: top.count, title, link: ruleLink(item) }
+  })()
+
   const wrongList = results.some((entry) => !entry.correct) ? (
     <div className="card mt" style={{ textAlign: 'left' }}>
       <h2 style={{ fontSize: 'var(--t-1)' }}>Det, der drillede</h2>
@@ -202,6 +257,43 @@ export default function Lesson({ params }) {
       </ul>
     </div>
   ) : null
+
+  if (done && placement) {
+    const stage = placement.startStage
+    return (
+      <div className="play">
+        <div className="celebrate">
+          <Confetti />
+          <Mascot mood="happy" size={116} />
+          <span className="eyebrow">Niveautest</span>
+          <h1>Du starter på trin {stage.number}</h1>
+          <p className="lead">
+            {placement.correct} af {placement.asked} rigtige. {stage.title} — {stage.blurb}
+          </p>
+
+          <div className="stage-ladder" aria-hidden="true">
+            {[1, 2, 3, 4].map((step) => (
+              <span key={step} className={'rung' + (step < stage.number ? ' passed' : step === stage.number ? ' here' : '')}>
+                {step}
+              </span>
+            ))}
+          </div>
+
+          <p className="small muted" style={{ maxWidth: '46ch', margin: '0 auto' }}>
+            {placement.reached === 0
+              ? 'Vi starter helt fra begyndelsen. Det er det rigtige sted at starte — resten bygger oven på det.'
+              : `De første ${placement.reached === 1 ? 'trin' : placement.reached + ' trin'} er låst op. Du kan altid gå tilbage og tage dem for stjernerne.`}
+          </p>
+
+          <div className="row" style={{ justifyContent: 'center', marginTop: '1.2rem' }}>
+            <button className="btn-3d" onClick={() => navigate('/')}>
+              Kom i gang <Icon name="arrow" size={18} />
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (done && jumpUnit) {
     const share = score.asked > 0 ? Math.round((score.correct / score.asked) * 100) : 0
@@ -253,6 +345,10 @@ export default function Lesson({ params }) {
   }
 
   if (done) {
+    // Klarede den her lektion hele trinnet? Så skal det fejres for sig.
+    const stage = unit ? stages.find((entry) => entry.id === unit.stageId) : null
+    const stageDone = stage ? stageProgress(stage.id, { ...state.lessons, [lesson.id]: { stars: score.stars } }) : null
+    const justFinishedStage = Boolean(stageDone?.complete && plain)
     const lessonIndex = allLessons.findIndex((entry) => entry.id === lesson.id)
     const upcoming = allLessons[lessonIndex + 1]
     const cheer = score.perfect
@@ -269,6 +365,16 @@ export default function Lesson({ params }) {
           <div className="speech" style={{ marginTop: '0.6rem' }}>
             {cheer}
           </div>
+
+          {justFinishedStage ? (
+            <div className="stage-win">
+              <span className="badge-num">{stage.number}</span>
+              <b>Trin {stage.number} klaret</b>
+              <p>
+                {stage.title} er gennemført: {stage.goal} Næste trin er åbent.
+              </p>
+            </div>
+          ) : null}
 
           <h1>{lesson.checkpoint ? 'Tjek bestået' : 'Lektion klaret'}</h1>
           <span className="eyebrow">
@@ -313,6 +419,24 @@ export default function Lesson({ params }) {
             </button>
           </div>
 
+          {weakest ? (
+            <div className="card mt plain" style={{ textAlign: 'left' }}>
+              <div className="spread">
+                <div>
+                  <span className="eyebrow">Det her skal du læse igen</span>
+                  <b style={{ display: 'block', fontSize: 'var(--t-1)' }}>{weakest.title}</b>
+                  <p className="small muted" style={{ margin: '0.2rem 0 0' }}>
+                    {weakest.count === 1 ? 'Én opgave gik galt her.' : weakest.count + ' opgaver gik galt her.'} Reglen
+                    tager et minut — og så sidder den næste gang.
+                  </p>
+                </div>
+                <Link className="btn-3d ghost sm" to={weakest.link}>
+                  <Icon name="bulb" size={16} /> Læs reglen
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
           {wrongList}
         </div>
       </div>
@@ -328,6 +452,11 @@ export default function Lesson({ params }) {
         <div className="track">
           <div style={{ width: Math.round((index / Math.max(1, total)) * 100) + '%' }} />
         </div>
+        {mode === 'placement' ? (
+          <span className="chip">
+            {index + 1}/{total}
+          </span>
+        ) : (
         <div className="hearts" aria-label={hearts + ' liv tilbage'}>
           {Array.from({ length: HEARTS }).map((_, i) => (
             <Icon
@@ -343,12 +472,23 @@ export default function Lesson({ params }) {
             />
           ))}
         </div>
+        )}
       </div>
 
       <div className={'play-body' + (current && !current.correct && !current.skipped ? ' shake' : '')}>
         <div className="spread" style={{ marginBottom: '0.4rem' }}>
-          <span className="eyebrow">{unit?.title}</span>
-          <span className="chip">{jumpUnit ? 'springtest' : lesson.checkpoint ? 'tjek' : lesson.title}</span>
+          <span className="eyebrow">{unit?.title || lesson.title}</span>
+          <span className="chip">
+            {mode === 'placement'
+              ? 'niveautest'
+              : mode === 'refresh'
+                ? 'genopfriskning'
+                : jumpUnit
+                  ? 'springtest'
+                  : lesson.checkpoint
+                    ? 'tjek'
+                    : lesson.title}
+          </span>
         </div>
 
         <Exercise key={item.id + index} item={item} locked={Boolean(current)} result={current} onAnswer={answer} />
@@ -405,6 +545,12 @@ export default function Lesson({ params }) {
 
 function pick(list, seed) {
   return list[seed % list.length]
+}
+
+function topicTitle(item) {
+  if (item.lang === 'en') return enTopics.find((entry) => entry.id === item.topic)?.title || item.topic
+  if (item.lang === 'da') return daTopics.find((entry) => entry.id === item.topic)?.title || item.topic
+  return policeTopics.find((entry) => entry.id === item.topic)?.title || item.topic
 }
 
 function ruleLink(item) {

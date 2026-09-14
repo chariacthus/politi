@@ -63,8 +63,8 @@ export default function Shell({ path, children }) {
         <StatStrip />
       </header>
 
-      <main className="stage">
-        <div className="stage-inner" key={path}>
+      <main className="view">
+        <div className="view-inner" key={path}>
           {children}
         </div>
       </main>

@@ -5,7 +5,7 @@
 import { dictations } from '../data/dictation.js'
 import { daItems } from '../data/grammar.da.js'
 import { enItems } from '../data/grammar.en.js'
-import { allLessons, ranks, units } from '../data/path.js'
+import { allLessons, ranks, stages, units, unitsInStage } from '../data/path.js'
 import { policeItems, policeTopics } from '../data/police.js'
 import { rules } from '../data/rules.js'
 import { shuffle } from './srs.js'
@@ -30,9 +30,36 @@ export function resolveSource(key) {
 }
 
 export function lessonPool(lesson) {
+  // En lektion kan have sine opgaver med direkte — det bruger genopfriskningen
+  // og niveautesten, hvor udvalget ikke kommer fra ét emne.
+  if (lesson.items) return lesson.items
   const pool = []
-  for (const source of lesson.sources) pool.push(...resolveSource(source))
+  for (const source of lesson.sources || []) pool.push(...resolveSource(source))
   return pool
+}
+
+/**
+ * Hvor svært skal stoffet være lige nu? Niveauet regnes ud af, hvordan det
+ * er gået i netop de emner, lektionen trækker fra: går det godt, kommer de
+ * sværere opgaver frem; driller det, bliver vi på det lette niveau.
+ */
+export function levelFor(pool, items = {}) {
+  let seen = 0
+  let correct = 0
+  let mastered = 0
+  for (const item of pool) {
+    const record = items[item.id]
+    if (!record) continue
+    seen += record.seen || 0
+    correct += record.correct || 0
+    if ((record.box || 1) >= 4) mastered += 1
+  }
+  if (seen < 4) return 1
+  const rate = correct / seen
+  const share = pool.length ? mastered / pool.length : 0
+  if (rate >= 0.85 && share >= 0.45) return 3
+  if (rate >= 0.7) return 2
+  return 1
 }
 
 function isDue(record) {
@@ -50,6 +77,8 @@ export function buildLesson(lesson, items = {}, { voice = false } = {}) {
   if (!voice) pool = pool.filter((item) => !item.voice)
   if (pool.length === 0) return []
 
+  const target = lesson.level || levelFor(pool, items)
+
   const due = []
   const fresh = []
   const rest = []
@@ -63,6 +92,11 @@ export function buildLesson(lesson, items = {}, { voice = false } = {}) {
   due.sort((a, b) => (items[a.id]?.box ?? 1) - (items[b.id]?.box ?? 1))
   shuffle(fresh)
   shuffle(rest)
+  // Nyt stof tages tættest på det niveau, brugeren er på lige nu — aldrig
+  // mere end ét trin over, så det bliver udfordrende og ikke uoverskueligt.
+  const near = (item) => Math.abs((item.level || 1) - target) + ((item.level || 1) > target + 1 ? 4 : 0)
+  fresh.sort((a, b) => near(a) - near(b))
+  rest.sort((a, b) => near(a) - near(b))
 
   const size = Math.min(lesson.size, pool.length)
   const picked = []
@@ -136,6 +170,25 @@ export function lessonState(lessonId, lessons = {}, unlocked = {}) {
   return previous?.stars > 0 ? 'open' : 'locked'
 }
 
+/** Et trin er klaret, når alle dets enheder er det. */
+export function stageProgress(stageId, lessons = {}) {
+  const list = unitsInStage(stageId).flatMap((unit) => unit.lessons)
+  const done = list.filter((lesson) => lessons[lesson.id]?.stars > 0).length
+  return { done, total: list.length, complete: done === list.length }
+}
+
+/** Trinnet er åbent, så snart én af dets lektioner kan spilles. */
+export function stageLocked(stageId, lessons = {}, unlocked = {}) {
+  return unitsInStage(stageId).every((unit) => unitLocked(unit, lessons, unlocked))
+}
+
+export function currentStage(lessons = {}, unlocked = {}) {
+  const next = nextLesson(lessons, unlocked)
+  if (!next) return stages[stages.length - 1]
+  const unit = units.find((entry) => entry.id === next.unitId)
+  return stages.find((stage) => stage.id === unit?.stageId) || stages[0]
+}
+
 export function nextLesson(lessons = {}, unlocked = {}) {
   return allLessons.find((lesson) => lessonState(lesson.id, lessons, unlocked) === 'open') || null
 }
@@ -168,6 +221,117 @@ export function jumpTest(unit) {
     sources,
     size: JUMP_SIZE,
     jump: true,
+  }
+}
+
+/**
+ * De opgaver, der driller lige nu: dem der er svaret forkert på sidst, og
+ * dem der er faldet ned i de nederste bokse. Bruges til genopfriskningen.
+ */
+export function weakItems(items = {}, { voice = false, limit = 10 } = {}) {
+  const all = [...policeItems, ...daItems, ...enItems].filter((item) => voice || !item.voice)
+  const scored = []
+  for (const item of all) {
+    const record = items[item.id]
+    if (!record || !record.seen) continue
+    const rate = record.correct / record.seen
+    const box = record.box || 1
+    if (box >= 4 && rate >= 0.85) continue
+    // Jo lavere boks og træfprocent, jo før skal opgaven op igen.
+    scored.push({ item, weight: box + rate * 2 + (record.lastWrong ? -1.5 : 0) })
+  }
+  scored.sort((a, b) => a.weight - b.weight)
+  return scored.slice(0, limit).map((entry) => entry.item)
+}
+
+/** Genopfriskningen er en almindelig lektion bygget af dine svage punkter. */
+export function refreshLesson(items = {}, options = {}) {
+  const picked = weakItems(items, { ...options, limit: options.limit || 8 })
+  if (picked.length < 4) return null
+  return {
+    id: 'refresh',
+    title: 'Genopfriskning',
+    refresh: true,
+    size: picked.length,
+    sources: [],
+    items: spreadTypes(shuffle(picked)),
+  }
+}
+
+/* ---------------- Niveautest ----------------
+   En kort test, der finder ud af, hvor du skal begynde. Den spænder fra det
+   helt enkle til det professionelle, og den kan springes over — så starter
+   du bare fra begyndelsen, hvilket aldrig er et dårligt sted at starte. */
+
+const PLACEMENT_SOURCES = [
+  // trin 1
+  ['grammar:da:hverdag', 1],
+  ['grammar:en:basis', 1],
+  ['grammar:en:tal-tid', 1],
+  ['grammar:da:praecis', 1],
+  // trin 2
+  ['grammar:da:hoeflig', 2],
+  ['grammar:da:kommatering', 2],
+  ['grammar:en:person', 2],
+  ['grammar:da:sammensatte', 2],
+  // trin 3
+  ['police:principper', 3],
+  ['police:magt', 3],
+  // trin 4
+  ['grammar:da:rapportsprog', 4],
+  ['grammar:en:skrift', 4],
+]
+
+export const PLACEMENT_SIZE = PLACEMENT_SOURCES.length
+
+/** Én opgave fra hvert område, i stigende sværhedsgrad. */
+export function placementTest() {
+  const picked = []
+  for (const [source, tier] of PLACEMENT_SOURCES) {
+    const pool = resolveSource(source).filter((item) => !item.voice)
+    if (pool.length === 0) continue
+    // Vælg en opgave, der svarer til trinnets sværhedsgrad.
+    const wanted = Math.min(3, Math.max(1, tier === 4 ? 3 : tier))
+    const sorted = [...pool].sort((a, b) => Math.abs((a.level || 1) - wanted) - Math.abs((b.level || 1) - wanted))
+    const choice = sorted[Math.floor(Math.random() * Math.min(3, sorted.length))]
+    if (choice && !picked.includes(choice)) picked.push({ ...choice, tier })
+  }
+  return {
+    id: 'placement',
+    title: 'Niveautest',
+    placement: true,
+    size: picked.length,
+    sources: [],
+    items: picked,
+  }
+}
+
+/**
+ * Resultatet placerer dig. Vi er bevidst forsigtige: hellere starte et trin
+ * for tidligt end at stå med stof, der ikke er dækket ind.
+ */
+export function placementResult(results) {
+  const answered = results.filter((entry) => !entry.skipped)
+  const correct = answered.filter((entry) => entry.correct)
+  const share = answered.length ? correct.length / answered.length : 0
+  // Højeste trin, hvor mindst to tredjedele sad rigtigt.
+  let reached = 0
+  for (const tier of [1, 2, 3]) {
+    const inTier = answered.filter((entry) => (entry.item.tier || 1) === tier)
+    const hit = inTier.filter((entry) => entry.correct).length
+    if (inTier.length > 0 && hit / inTier.length >= 0.67) reached = tier
+    else break
+  }
+  const stageIds = stages.slice(0, reached).map((stage) => stage.id)
+  const unitIds = stageIds.flatMap((id) => unitsInStage(id).map((unit) => unit.id))
+  const startStage = stages[Math.min(reached, stages.length - 1)]
+  return {
+    correct: correct.length,
+    asked: answered.length,
+    share,
+    reached,
+    unitIds,
+    startStage,
   }
 }
 
@@ -237,4 +401,4 @@ export function teachFor(lesson) {
   return lesson.checkpoint ? entries.slice(0, 1) : entries.slice(0, 2)
 }
 
-export { units, allLessons, ranks, dictations }
+export { units, stages, unitsInStage, allLessons, ranks, dictations }

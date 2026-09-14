@@ -1,13 +1,25 @@
 /**
- * Stien. Seks enheder, fire lektioner i hver, en sten ad gangen. Tryk på en
- * sten for at se, hvad den indeholder — og spring en hel enhed over med en
- * springtest, hvis du allerede kan stoffet.
+ * Stien. Fire trin fra begynder til professionel, hvert trin med sine
+ * enheder og lektioner. Tryk på en sten for at se, hvad den indeholder.
+ * Kan du stoffet i forvejen, kan en hel enhed åbnes med en springtest — og
+ * driller noget, samler genopfriskningen det op af sig selv.
  */
 import { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
-import { units } from '../data/path.js'
-import { JUMP_SIZE, lessonState, nextLesson, pathProgress, unitLocked, unitProgress } from '../lib/lessons.js'
+import { stages, units } from '../data/path.js'
+import {
+  JUMP_SIZE,
+  PLACEMENT_SIZE,
+  lessonState,
+  nextLesson,
+  pathProgress,
+  stageLocked,
+  stageProgress,
+  unitLocked,
+  unitProgress,
+  weakItems,
+} from '../lib/lessons.js'
 import { navigate } from '../lib/router.jsx'
 import { useProgress } from '../lib/state.jsx'
 
@@ -20,8 +32,8 @@ export default function Path() {
 
   const progress = useMemo(() => pathProgress(state.lessons), [state.lessons])
   const next = useMemo(() => nextLesson(state.lessons, state.unlocked), [state.lessons, state.unlocked])
+  const weak = useMemo(() => weakItems(state.items, { limit: 8 }), [state.items])
 
-  // Esc lukker boblen, og et klik ved siden af gør det samme.
   useEffect(() => {
     if (!open) return undefined
     function onKey(event) {
@@ -31,116 +43,179 @@ export default function Path() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
+  const started = progress.done > 0
+  const placed = Boolean(state.placement)
+
   return (
     <div className="board-page" onClick={() => setOpen(null)}>
+      {/* Brættet har ingen synlig titel — men siden skal have én overskrift. */}
+      <h1 className="sr-only">Din uddannelse: stien fra begynder til professionel</h1>
+
       <div className="mascot-strip">
-        <Mascot mood={progress.done > 0 ? 'happy' : 'neutral'} size={70} />
+        <Mascot mood={started ? 'happy' : 'neutral'} size={70} />
         <div className="speech">
-          {progress.done === 0
-            ? 'Vi starter fra toppen. Første lektion tager fem minutter.'
+          {!started
+            ? 'Vi starter fra nul. Første lektion tager fem minutter — og du skal ikke kunne noget på forhånd.'
             : next
               ? `Næste op: ${next.title}.`
-              : 'Hele forløbet er klaret — tag en runde igen for stjernerne.'}
+              : 'Hele uddannelsen er kørt igennem. Tag en runde igen for stjernerne.'}
         </div>
       </div>
 
-      {units.map((unit) => {
-        const done = unitProgress(unit, state.lessons)
-        const complete = done.done === done.total
-        const locked = unitLocked(unit, state.lessons, state.unlocked)
+      {!placed && !started ? (
+        <button className="offer" onClick={() => navigate('/lesson?placement=1')}>
+          <span className="offer-icon">
+            <Icon name="target" size={22} />
+          </span>
+          <span className="offer-body">
+            <b>Kan du noget i forvejen?</b>
+            <span>Tag niveautesten på {PLACEMENT_SIZE} opgaver, så starter du det rigtige sted.</span>
+          </span>
+          <Icon name="arrow" size={18} />
+        </button>
+      ) : null}
+
+      {weak.length >= 4 ? (
+        <button className="offer weak" onClick={() => navigate('/lesson?refresh=1')}>
+          <span className="offer-icon">
+            <Icon name="refresh" size={20} />
+          </span>
+          <span className="offer-body">
+            <b>Genopfriskning klar</b>
+            <span>
+              {weak.length} opgaver driller lige nu. Tag dem, før de falder ud igen — det er sådan, det
+              sætter sig.
+            </span>
+          </span>
+          <Icon name="arrow" size={18} />
+        </button>
+      ) : null}
+
+      {stages.map((stage) => {
+        const done = stageProgress(stage.id, state.lessons)
+        const locked = stageLocked(stage.id, state.lessons, state.unlocked)
+        const stageUnits = units.filter((unit) => unit.stageId === stage.id)
         return (
-          <section key={unit.id} style={{ '--u': unit.color }}>
-            <div className={'unit-banner' + (locked ? ' locked' : '')}>
-              <div style={{ flex: '1 1 240px', minWidth: 0 }}>
-                <span className="eyebrow">Enhed {unit.number}</span>
-                <h2>{unit.title}</h2>
-                <p>{unit.blurb}</p>
-              </div>
-              <div className="unit-tail">
-                <span className="chip">
-                  {complete ? <Icon name="crown" size={13} /> : null}
-                  {done.done}/{done.total}
+          <section className="stage" key={stage.id} data-stage={stage.number}>
+            <header className={'stage-head' + (locked ? ' locked' : '') + (done.complete ? ' complete' : '')}>
+              <span className="stage-mark">
+                {done.complete ? <Icon name="crown" size={20} /> : locked ? <Icon name="lock" size={18} /> : stage.number}
+              </span>
+              <div className="stage-text">
+                <span className="eyebrow">
+                  Trin {stage.number} · {stage.level}
                 </span>
-                {locked ? (
-                  <button
-                    className="jump-btn"
-                    onClick={(event) => {
-                      event.stopPropagation()
-                      navigate('/lesson?jump=' + unit.id)
-                    }}
-                  >
-                    <Icon name="skip" size={16} /> Spring videre
-                  </button>
-                ) : null}
+                <h2>{stage.title}</h2>
+                <p>{stage.blurb}</p>
+                <p className="stage-goal">
+                  <Icon name="target" size={14} /> {stage.goal}
+                </p>
               </div>
-            </div>
+              <span className="stage-count">
+                {done.done}/{done.total}
+              </span>
+            </header>
 
-            <div className="board">
-              {unit.lessons.map((lesson, lessonIndex) => {
-                const status = lessonState(lesson.id, state.lessons, state.unlocked)
-                const record = state.lessons[lesson.id]
-                const isNext = next?.id === lesson.id
-                return (
-                  <div
-                    className={'board-row' + (open === lesson.id ? ' popped' : '')}
-                    data-shift={SHIFTS[lessonIndex % SHIFTS.length]}
-                    key={lesson.id}
-                  >
-                    <div
-                      className={
-                        'stone ' +
-                        status +
-                        (lesson.checkpoint ? ' checkpoint' : '') +
-                        (isNext ? ' next' : '') +
-                        (open === lesson.id ? ' popped' : '')
-                      }
-                    >
-                      {isNext && open !== lesson.id ? (
-                        <span className="start-bubble">{progress.done === 0 ? 'START' : 'FORTSÆT'}</span>
-                      ) : null}
-                      <button
-                        className="stone-btn"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          setOpen(open === lesson.id ? null : lesson.id)
-                        }}
-                        aria-expanded={open === lesson.id}
-                        aria-label={lesson.title + (status === 'locked' ? ' (låst)' : '')}
-                      >
-                        {status === 'locked' ? (
-                          <Icon name="lock" size={20} />
-                        ) : status === 'done' ? (
-                          <Icon name="crown" size={24} strokeWidth={2} />
-                        ) : lesson.checkpoint ? (
-                          <Icon name="target" size={24} />
-                        ) : (
-                          <Icon name="play" size={22} />
-                        )}
-                      </button>
-                      <span className="stone-label">{lesson.title}</span>
-                      {record ? (
-                        <span className="stone-stars" aria-label={record.stars + ' af 3 stjerner'}>
-                          {[1, 2, 3].map((star) => (
-                            <Icon key={star} name="spark" size={12} className={star <= record.stars ? 'star on' : 'star'} />
-                          ))}
-                        </span>
-                      ) : null}
-
-                      {open === lesson.id ? (
-                        <NodeCard
-                          lesson={lesson}
-                          unit={unit}
-                          status={status}
-                          record={record}
-                          index={lessonIndex}
-                          onClose={() => setOpen(null)}
-                        />
+            {stageUnits.map((unit) => {
+              const unitDone = unitProgress(unit, state.lessons)
+              const complete = unitDone.done === unitDone.total
+              const unitIsLocked = unitLocked(unit, state.lessons, state.unlocked)
+              return (
+                <div key={unit.id} style={{ '--u': unit.color }}>
+                  <div className={'unit-banner' + (unitIsLocked ? ' locked' : '')}>
+                    <div style={{ flex: '1 1 240px', minWidth: 0 }}>
+                      <span className="eyebrow">Enhed {unit.number}</span>
+                      <h3>{unit.title}</h3>
+                      <p>{unit.blurb}</p>
+                    </div>
+                    <div className="unit-tail">
+                      <span className="chip">
+                        {complete ? <Icon name="crown" size={13} /> : null}
+                        {unitDone.done}/{unitDone.total}
+                      </span>
+                      {unitIsLocked ? (
+                        <button
+                          className="jump-btn"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            navigate('/lesson?jump=' + unit.id)
+                          }}
+                        >
+                          <Icon name="skip" size={16} /> Spring videre
+                        </button>
                       ) : null}
                     </div>
                   </div>
-                )
-              })}
-            </div>
+
+                  <div className="board">
+                    {unit.lessons.map((lesson, lessonIndex) => {
+                      const status = lessonState(lesson.id, state.lessons, state.unlocked)
+                      const record = state.lessons[lesson.id]
+                      const isNext = next?.id === lesson.id
+                      return (
+                        <div
+                          className={'board-row' + (open === lesson.id ? ' popped' : '')}
+                          data-shift={SHIFTS[lessonIndex % SHIFTS.length]}
+                          key={lesson.id}
+                        >
+                          <div
+                            className={
+                              'stone ' +
+                              status +
+                              (lesson.checkpoint ? ' checkpoint' : '') +
+                              (isNext ? ' next' : '') +
+                              (open === lesson.id ? ' popped' : '')
+                            }
+                          >
+                            {isNext && open !== lesson.id ? (
+                              <span className="start-bubble">{started ? 'FORTSÆT' : 'START'}</span>
+                            ) : null}
+                            <button
+                              className="stone-btn"
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                setOpen(open === lesson.id ? null : lesson.id)
+                              }}
+                              aria-expanded={open === lesson.id}
+                              aria-label={lesson.title + (status === 'locked' ? ' (låst)' : '')}
+                            >
+                              {status === 'locked' ? (
+                                <Icon name="lock" size={20} />
+                              ) : status === 'done' ? (
+                                <Icon name="crown" size={24} strokeWidth={2} />
+                              ) : lesson.checkpoint ? (
+                                <Icon name="target" size={24} />
+                              ) : (
+                                <Icon name="play" size={22} />
+                              )}
+                            </button>
+                            <span className="stone-label">{lesson.title}</span>
+                            {record ? (
+                              <span className="stone-stars" aria-label={record.stars + ' af 3 stjerner'}>
+                                {[1, 2, 3].map((star) => (
+                                  <Icon key={star} name="spark" size={12} className={star <= record.stars ? 'star on' : 'star'} />
+                                ))}
+                              </span>
+                            ) : null}
+
+                            {open === lesson.id ? (
+                              <NodeCard
+                                lesson={lesson}
+                                unit={unit}
+                                status={status}
+                                record={record}
+                                index={lessonIndex}
+                                onClose={() => setOpen(null)}
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
           </section>
         )
       })}
