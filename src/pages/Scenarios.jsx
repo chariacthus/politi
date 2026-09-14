@@ -6,6 +6,7 @@ import SectionHead from '../components/SectionHead.jsx'
 import { maxScore, scenarios } from '../data/scenarios.js'
 import { analyzeReply, toneLabel } from '../lib/tone.js'
 import { play as playSound } from '../lib/sound.js'
+import { plural } from '../lib/media.js'
 import { useProgress } from '../lib/state.jsx'
 
 const TENSION = ['', 'rolig', 'spændt', 'ophidset', 'kritisk']
@@ -70,7 +71,7 @@ export default function Scenarios() {
               <div className="spread">
                 {record ? (
                   <span className={'chip ' + (record.bestScore === max ? 'good' : 'warn')}>
-                    <Icon name="check" size={13} /> Bedste: {record.bestScore}/{max} · {record.runs} gennemløb
+                    <Icon name="check" size={13} /> Bedste: {record.bestScore}/{max} · {plural(record.runs, 'gennemløb', 'gennemløb')}
                   </span>
                 ) : (
                   <span className="chip">Ikke gennemført</span>

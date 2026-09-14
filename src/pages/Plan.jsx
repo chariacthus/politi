@@ -2,6 +2,7 @@ import Icon from '../components/Icon.jsx'
 import Ring from '../components/Ring.jsx'
 import SectionHead from '../components/SectionHead.jsx'
 import { examNotes, weeks } from '../data/plan.js'
+import { longDate } from '../lib/media.js'
 import { daysUntil, useProgress } from '../lib/state.jsx'
 
 export default function Plan() {
@@ -28,6 +29,8 @@ export default function Plan() {
           <div className="field field-inline" style={{ marginBottom: 0 }}>
             <label htmlFor="exam-date">Din prøvedato</label>
             <input id="exam-date" type="date" value={state.examDate || ''} onChange={(event) => setExamDate(event.target.value)} />
+            {/* Datofeltet viser browserens format — datoen skrives derfor ud på dansk under det. */}
+            <div className="small muted mt-sm">{longDate(state.examDate) || 'Ingen dato sat endnu'}</div>
           </div>
           {days !== null ? (
             <div className="tile accent" style={{ flex: '0 0 auto', minWidth: 150 }}>

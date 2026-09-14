@@ -5,7 +5,7 @@ import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
 import { allLessons, units } from '../data/path.js'
 import { buildLesson, scoreLesson } from '../lib/lessons.js'
-import { scrollTop } from '../lib/media.js'
+import { plural, scrollTop } from '../lib/media.js'
 import { Link, navigate } from '../lib/router.jsx'
 import { play as playSound } from '../lib/sound.js'
 import { useProgress } from '../lib/state.jsx'
@@ -125,8 +125,8 @@ export default function Lesson({ params }) {
           <Mascot mood="sad" size={116} />
           <h1>Livene er brugt op</h1>
           <p className="lead">
-            Du nåede {results.filter((entry) => entry.correct).length} rigtige. Læs reglen igennem, og tag den
-            igen — det er sådan, det sætter sig.
+            Du nåede {plural(results.filter((entry) => entry.correct).length, 'rigtig', 'rigtige')}. Læs reglen
+            igennem, og tag den igen — det er sådan, det sætter sig.
           </p>
           <div className="row" style={{ justifyContent: 'center', marginTop: '1.2rem' }}>
             <button className="btn-3d" onClick={restart}>

@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import Exercise from '../components/Exercise.jsx'
 import Feedback from '../components/Feedback.jsx'
 import Icon from '../components/Icon.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import Ring from '../components/Ring.jsx'
+import SectionHead from '../components/SectionHead.jsx'
 import SessionSummary from '../components/SessionSummary.jsx'
 import { daItems, daTopics } from '../data/grammar.da.js'
 import { enItems, enTopics } from '../data/grammar.en.js'
-import SentenceEditor from '../components/SentenceEditor.jsx'
-import SectionHead from '../components/SectionHead.jsx'
-import { grade } from '../lib/grader.js'
-import { editorMode, parsePrompt } from '../lib/items.js'
 import { scrollTop } from '../lib/media.js'
 import { play as playSound } from '../lib/sound.js'
 import { buildSession, topicStats } from '../lib/srs.js'
@@ -208,9 +206,40 @@ export default function Grammar({ params }) {
   )
 }
 
+/**
+ * Selve opgavefladen i fri træning. Opgaven tegnes af den fælles
+ * Exercise-komponent — samme kode som i lektionerne, så en opgavetype kun
+ * findes ét sted.
+ */
 function Drill({ session, onAnswer, onNext, onQuit }) {
   const item = session.items[session.index]
+  const [result, setResult] = useState(null)
   const correctCount = session.results.filter((entry) => entry.correct).length
+  const isLast = session.index + 1 === session.items.length
+
+  // Nyt spørgsmål: ryd det forrige resultat.
+  useEffect(() => {
+    setResult(null)
+  }, [session.index])
+
+  // Enter fører videre, når der er svaret.
+  useEffect(() => {
+    function onKey(event) {
+      if (event.key !== 'Enter' || !result) return
+      event.preventDefault()
+      scrollTop()
+      onNext()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
+  function handleAnswer(outcome) {
+    if (result) return
+    playSound(outcome.correct ? 'correct' : 'wrong')
+    setResult(outcome)
+    onAnswer(item, outcome.correct, outcome.given)
+  }
 
   return (
     <section className="card focus-card">
@@ -232,119 +261,9 @@ function Drill({ session, onAnswer, onNext, onQuit }) {
         </div>
       </div>
 
-      <Question
-        key={item.id}
-        item={item}
-        onAnswer={onAnswer}
-        onNext={onNext}
-        isLast={session.index + 1 === session.items.length}
-      />
-    </section>
-  )
-}
+      <Exercise key={item.id} item={item} locked={Boolean(result)} result={result} onAnswer={handleAnswer} />
 
-function Question({ item, onAnswer, onNext, isLast }) {
-  const mode = useMemo(() => editorMode(item), [item])
-  const parsed = useMemo(() => parsePrompt(item), [item])
-  const [given, setGiven] = useState(() => (mode === 'edit' ? parsed.sentence : ''))
-  const [result, setResult] = useState(null)
-
-  function submit(value) {
-    if (result) return
-    const answer = value ?? given
-    if (mode !== 'choice' && !String(answer).trim()) return
-    const graded = grade(item, answer)
-    setGiven(answer)
-    setResult(graded)
-    playSound(graded.correct ? 'correct' : 'wrong')
-    onAnswer(item, graded.correct, answer)
-  }
-
-  // Tastaturstyring: 1-4 vælger svar, Enter svarer og går videre.
-  useEffect(() => {
-    function onKey(event) {
-      if (event.key === 'Enter') {
-        if (result) {
-          event.preventDefault()
-          scrollTop()
-          onNext()
-        }
-        return
-      }
-      if (result || mode !== 'choice') return
-      const number = Number(event.key)
-      if (Number.isInteger(number) && number >= 1 && number <= item.options.length) {
-        event.preventDefault()
-        submit(item.options[number - 1])
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
-
-  const canSubmit = mode === 'choice' || Boolean(String(given).trim())
-
-  return (
-    <>
-      <p className="task-instruction">{parsed.instruction || item.prompt}</p>
-      {parsed.trailing ? <p className="small muted" style={{ marginTop: '-0.4rem' }}>{parsed.trailing}</p> : null}
-
-      {mode === 'choice' ? (
-        <>
-          {parsed.sentence ? (
-            <p className="sentence">
-              {parsed.hasBlank ? (
-                <>
-                  {parsed.sentence.split('____')[0]}
-                  <span className={'blank-slot' + (result ? ' filled' : '')}>{result ? given : '?'}</span>
-                  {parsed.sentence.split('____')[1]}
-                </>
-              ) : (
-                parsed.sentence
-              )}
-            </p>
-          ) : null}
-          <div className="choices">
-            {item.options.map((option, index) => {
-              let className = 'choice'
-              let mark = null
-              if (result) {
-                if (option === item.answer) {
-                  className += ' correct'
-                  mark = 'check'
-                } else if (option === given) {
-                  className += ' wrong'
-                  mark = 'x'
-                }
-              }
-              return (
-                <button
-                  key={option}
-                  className={className}
-                  style={{ '--i': index }}
-                  onClick={() => submit(option)}
-                  disabled={Boolean(result)}
-                >
-                  <span className="key">{index + 1}</span>
-                  <span className="choice-text">{option}</span>
-                  {mark ? <Icon name={mark} size={18} strokeWidth={2.4} className="mark" /> : null}
-                </button>
-              )
-            })}
-          </div>
-        </>
-      ) : (
-        <SentenceEditor
-          item={item}
-          mode={mode}
-          value={given}
-          onChange={setGiven}
-          onSubmit={() => submit()}
-          locked={Boolean(result)}
-        />
-      )}
-
-      {result ? <Feedback item={item} result={result} given={given} /> : null}
+      {result ? <Feedback item={item} result={result} given={result.given} /> : null}
 
       <div className="spread mt">
         {result ? (
@@ -359,13 +278,11 @@ function Question({ item, onAnswer, onNext, isLast }) {
             <Icon name="arrow" size={18} />
           </button>
         ) : (
-          <button className="primary btn-lg" onClick={() => submit()} disabled={!canSubmit}>
-            <Icon name="check" size={18} /> Svar
-          </button>
+          <span className="small muted">Svar på opgaven for at komme videre.</span>
         )}
         <span className="small muted row" style={{ gap: '0.35rem' }}>
           <Icon name="keyboard" size={15} />
-          {mode === 'choice' ? (
+          {item.type === 'mc' ? (
             <>
               <span className="kbd">1</span>–<span className="kbd">{item.options.length}</span> vælger ·
             </>
@@ -373,6 +290,6 @@ function Question({ item, onAnswer, onNext, isLast }) {
           <span className="kbd">Enter</span> {result ? 'går videre' : 'svarer'}
         </span>
       </div>
-    </>
+    </section>
   )
 }

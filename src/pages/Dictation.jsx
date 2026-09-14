@@ -5,6 +5,7 @@ import Ring from '../components/Ring.jsx'
 import SectionHead from '../components/SectionHead.jsx'
 import { dictationLevels, dictations } from '../data/dictation.js'
 import { countErrors, diffWords, normalize } from '../lib/grader.js'
+import { plural } from '../lib/media.js'
 import { loadVoices, pickVoice, segmentText, speak, speechAvailable, stop } from '../lib/speech.js'
 import { play as playSound } from '../lib/sound.js'
 import { buildSession } from '../lib/srs.js'
@@ -73,7 +74,7 @@ export default function Dictation() {
             </div>
             <div style={{ flex: '1 1 240px' }}>
               <span className="eyebrow">Diktat afsluttet</span>
-              <h1 style={{ fontSize: 'var(--t-3)' }}>{totalErrors === 0 ? 'Ikke én afvigelse' : totalErrors + ' afvigelser i alt'}</h1>
+              <h1 style={{ fontSize: 'var(--t-3)' }}>{totalErrors === 0 ? 'Ikke én afvigelse' : plural(totalErrors, 'afvigelse', 'afvigelser') + ' i alt'}</h1>
               <p style={{ marginBottom: 0 }}>
                 {clean} af {session.results.length} tekster skrevet helt korrekt.
               </p>
@@ -97,7 +98,7 @@ export default function Dictation() {
                 <div className="spread" style={{ marginBottom: '0.2rem' }}>
                   <span className="small muted">{entry.item.focus.join(' · ')}</span>
                   <span className={'chip ' + (entry.errors === 0 ? 'good' : entry.errors < 3 ? 'warn' : 'error')}>
-                    {entry.errors === 0 ? 'fejlfri' : entry.errors + ' afvigelser'}
+                    {entry.errors === 0 ? 'fejlfri' : plural(entry.errors, 'afvigelse', 'afvigelser')}
                   </span>
                 </div>
                 <div>{entry.item.text}</div>
@@ -138,7 +139,7 @@ export default function Dictation() {
           </button>
         </div>
 
-        <div className="grid grid-3 mt">
+        <div className="grid grid-3fix mt">
           <button className={'pick' + (level === 'alle' ? ' on' : '')} onClick={() => setLevel('alle')}>
             <div className="pick-head">
               <Icon name="spark" size={17} style={{ color: 'var(--accent)' }} />
@@ -172,6 +173,23 @@ export default function Dictation() {
             <Icon name="play" size={18} /> Start diktat ({Math.min(SESSION_SIZE, pool.length)} tekster)
           </button>
         </div>
+      </section>
+
+      <section className="card">
+        <SectionHead title="Sådan kører diktaten" />
+        <ul className="list-reset stacklist">
+          {[
+            ['dictation', 'Teksten deles i afsnit og læses op ét ad gangen. Du bestemmer selv tempoet.'],
+            ['refresh', 'Hvert afsnit kan høres så mange gange, du vil — genveje: Ctrl + mellemrum gentager, Ctrl + Enter tager næste afsnit.'],
+            ['check', 'Når du retter, markeres hver afvigelse ord for ord: manglende, anderledes stavet eller for meget.'],
+            ['bulb', 'Har browseren ingen dansk stemme, vises afsnittet kort i stedet — så virker øvelsen alligevel.'],
+          ].map(([icon, text]) => (
+            <li key={text} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>
+              <Icon name={icon} size={17} style={{ marginTop: '0.15rem', color: 'var(--navy)', flex: 'none' }} />
+              <span className="small" style={{ color: 'var(--ink-2)' }}>{text}</span>
+            </li>
+          ))}
+        </ul>
       </section>
     </>
   )
@@ -340,7 +358,7 @@ function Round({ session, onAnswer, onNext, onQuit }) {
                 className={'seg-dot' + (i === segIndex ? ' on' : '') + (plays[i] > 0 ? ' heard' : '')}
                 onClick={() => playSegment(i)}
                 disabled={Boolean(checked)}
-                title={'Afsnit ' + (i + 1) + (plays[i] > 0 ? ' — hørt ' + plays[i] + ' gange' : '')}
+                title={'Afsnit ' + (i + 1) + (plays[i] > 0 ? ' — hørt ' + plural(plays[i], 'gang', 'gange') : '')}
                 aria-label={'Hør afsnit ' + (i + 1)}
               />
             ))}
@@ -404,14 +422,14 @@ function Round({ session, onAnswer, onNext, onQuit }) {
         <div className={'feedback ' + (checked.errors === 0 ? 'ok' : 'bad')}>
           <div className="verdict">
             <Icon name={checked.errors === 0 ? 'check' : 'x'} size={20} strokeWidth={2.4} />
-            {checked.errors === 0 ? 'Ingen afvigelser' : checked.errors + ' afvigelser fra facit'}
+            {checked.errors === 0 ? 'Ingen afvigelser' : plural(checked.errors, 'afvigelse', 'afvigelser') + ' fra facit'}
           </div>
           <p>
             Facit: <strong>{item.text}</strong>
           </p>
           {!exact ? <Diff parts={checked.parts} legend /> : null}
           <p className="small muted" style={{ marginBottom: 0 }}>
-            Du hørte {heard} af {segments.length} afsnit, i alt {plays.reduce((sum, count) => sum + count, 0)} gange.
+            Du hørte {heard} af {segments.length} afsnit, i alt {plural(plays.reduce((sum, count) => sum + count, 0), 'gang', 'gange')}.
           </p>
         </div>
       ) : null}

@@ -126,11 +126,16 @@ fulde sammenhæng. Modelteksten står altid ved siden af, så du kan sammenligne
 
 ```
 src/lib/      router, localStorage-persistens, lektionsmotor med typespredning, Leitner-system,
-              talegenkendelse til stemmeøvelser, svarbedømmelse med diff,
-              opgave-parsing til redigering i sætningen, talesyntese med afsnitsopdeling,
-              regelbaseret tone- og rapportanalyse, lyd, tema
+              talegenkendelse til stemmeøvelser, svarbedømmelse med diff, opgave-parsing til
+              redigering i sætningen, talesyntese med afsnitsopdeling, regelbaseret tone- og
+              rapportanalyse, lyd, tema samt sprog- og datohjælpere
 src/data/     forløb og lektioner, politifaglig vidensbank, grammatikopgaver, diktattekster,
-              scenarier, skriveopgaver, regelbog og træningsplan
+              scenarier, skriveopgaver, regelbog og træningsplan — ren data, ingen logik
 src/pages/    én fil pr. rute
-src/components/ delte byggeklodser (ikoner, ringe, sætningseditor, feedback)
+src/components/ delte byggeklodser: Exercise (alle ni opgavetyper ét sted), sætningseditor,
+              ikoner, ringe, sektionsoverskrifter, makker og konfetti
 ```
+
+En opgavetype findes kun ét sted: både lektionerne i forløbet og den frie grammatiktræning tegner
+opgaven med `src/components/Exercise.jsx`. Forskellen ligger i rammen omkring — fuld skærm med liv og
+bundfeedback i lektionen, kort med regelkort i den frie træning.

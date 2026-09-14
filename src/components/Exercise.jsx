@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { grade } from '../lib/grader.js'
 import { editorMode, parsePrompt } from '../lib/items.js'
+import { plural } from '../lib/media.js'
 import { shuffle } from '../lib/srs.js'
 import { loadVoices, pickVoice, speak, speechAvailable, stop } from '../lib/speech.js'
 import { gradeSpeech, listen, recognitionSupported } from '../lib/voice.js'
@@ -288,7 +289,7 @@ function SortBuckets({ item, locked, result, onAnswer }) {
     const wrong = tokens.filter((token) => placed[token.text] !== token.bucket)
     onAnswer({
       correct: wrong.length === 0,
-      given: wrong.length ? wrong.length + ' forkert placeret' : 'alle korrekt placeret',
+      given: wrong.length ? plural(wrong.length, 'udsagn er forkert placeret', 'udsagn er forkert placeret') : 'alle korrekt placeret',
       expected: 'alle i den rigtige kasse',
     })
   }
@@ -381,7 +382,7 @@ function MatchPairs({ item, locked, result, onAnswer }) {
       reported.current = true
       onAnswer({
         correct: mistakes === 0,
-        given: mistakes === 0 ? 'parret uden fejl' : mistakes + ' forkerte forsøg',
+        given: mistakes === 0 ? 'parret uden fejl' : plural(mistakes, 'forkert forsøg', 'forkerte forsøg'),
         expected: 'alle par korrekte',
       })
     }
@@ -431,7 +432,7 @@ function MatchPairs({ item, locked, result, onAnswer }) {
         </div>
       </div>
       <p className="small muted">
-        {Object.keys(matched).length} af {total} parret{mistakes > 0 ? ' · ' + mistakes + ' forkerte forsøg' : ''}
+        {Object.keys(matched).length} af {total} parret{mistakes > 0 ? ' · ' + plural(mistakes, 'forkert forsøg', 'forkerte forsøg') : ''}
       </p>
     </>
   )

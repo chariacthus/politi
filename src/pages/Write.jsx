@@ -4,7 +4,7 @@ import ProgressBar from '../components/ProgressBar.jsx'
 import Ring from '../components/Ring.jsx'
 import SectionHead from '../components/SectionHead.jsx'
 import { assignments } from '../data/reports.js'
-import { scrollTop } from '../lib/media.js'
+import { plural, scrollTop } from '../lib/media.js'
 import { analyzeReport, reportVerdict } from '../lib/report.js'
 import { useProgress } from '../lib/state.jsx'
 
@@ -58,7 +58,7 @@ export default function Write() {
               </p>
               <div className="spread">
                 <span className="small muted">
-                  {assignment.facts.length} oplysninger · {assignment.requirements.length} krav
+                  {plural(assignment.facts.length, 'oplysning', 'oplysninger')} · {plural(assignment.requirements.length, 'krav', 'krav')}
                 </span>
                 <button className="primary" onClick={() => setActive(assignment)}>
                   <Icon name="grammar" size={16} /> Skriv
@@ -198,8 +198,8 @@ function Review({ review, assignment, showModel }) {
             <span className="eyebrow">Gennemgang</span>
             <h2 style={{ fontSize: 'var(--t-2)' }}>{reportVerdict(review.score)}</h2>
             <p style={{ marginBottom: 0 }}>
-              {review.metCount} af {review.requirements.length} krav opfyldt · {review.words} ord i{' '}
-              {review.sentences} sætninger
+              {review.metCount} af {review.requirements.length} krav opfyldt · {plural(review.words, 'ord', 'ord')} i{' '}
+              {plural(review.sentences, 'sætning', 'sætninger')}
             </p>
           </div>
         </div>

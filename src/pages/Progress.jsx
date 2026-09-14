@@ -9,6 +9,7 @@ import { daItems, daTopics } from '../data/grammar.da.js'
 import { enItems, enTopics } from '../data/grammar.en.js'
 import { assignments } from '../data/reports.js'
 import { scenarios } from '../data/scenarios.js'
+import { plural } from '../lib/media.js'
 import { Link, navigate } from '../lib/router.jsx'
 import { pathProgress, rankFor } from '../lib/lessons.js'
 import { boxCounts, topicStats } from '../lib/srs.js'
@@ -97,7 +98,7 @@ export default function Progress() {
   const scenariosDone = Object.keys(state.scenarios).length
   const reportsDone = Object.keys(state.reports).length
   const dictationsSeen = dictations.filter((d) => state.items[d.id]).length
-  const sessions = [...state.sessions].reverse().slice(0, 12)
+  const sessions = [...state.sessions].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 12)
   const mastered = boxes[4] + boxes[5]
 
   const nextSteps = []
@@ -112,7 +113,7 @@ export default function Progress() {
   if (due > 0) {
     nextSteps.push({
       icon: 'refresh',
-      title: `${due} ${due === 1 ? 'opgave er' : 'opgaver er'} forfaldne til gentagelse`,
+      title: `${due} ${due === 1 ? 'opgave er forfalden' : 'opgaver er forfaldne'} til gentagelse`,
       text: 'Gentagelse på det rigtige tidspunkt er hele grunden til, at stoffet sætter sig. Tag dem først.',
       action: { label: 'Træn gentagelserne', to: '/grammar?lang=da&topic=alle&start=1' },
     })
@@ -129,7 +130,7 @@ export default function Progress() {
   if (reportsDone < assignments.length) {
     nextSteps.push({
       icon: 'book',
-      title: `${assignments.length - reportsDone} skriveopgaver mangler`,
+      title: plural(assignments.length - reportsDone, 'skriveopgave mangler', 'skriveopgaver mangler'),
       text: 'Rapportsprog læres kun ved at skrive. Tag en opgave, og få teksten gennemgået.',
       action: { label: 'Skriv en rapport', to: '/write' },
     })
@@ -137,7 +138,7 @@ export default function Progress() {
   if (scenariosDone < scenarios.length) {
     nextSteps.push({
       icon: 'scenarios',
-      title: `${scenarios.length - scenariosDone} situationer er ikke gennemført`,
+      title: plural(scenarios.length - scenariosDone, 'situation er ikke gennemført', 'situationer er ikke gennemført'),
       text: 'Tonen i borgerkontakt er lige så afgørende som grammatikken — og den trænes på samme måde.',
       action: { label: 'Åbn situationerne', to: '/scenarios' },
     })
@@ -160,12 +161,29 @@ export default function Progress() {
       </div>
 
       <section className="card">
-        <SectionHead title="Forløbet" tail={<span className="chip accent">{rank.current.title}</span>} />
-        <div className="grid grid-4">
-          <StatCard icon="spark" label="XP" value={state.xp || 0} count hint={rank.next ? rank.next.xp - (state.xp || 0) + ' til ' + rank.next.title : 'højeste rang'} />
-          <StatCard icon="check" label="Lektioner" value={path.done + '/' + path.total} hint="klaret mindst én gang" />
-          <StatCard icon="target" label="Stjerner" value={path.stars + '/' + path.maxStars} hint="3 for en fejlfri lektion" />
-          <StatCard icon="flame" label="Streak" value={state.streak.current} count hint={'længste: ' + state.streak.longest} />
+        <SectionHead
+          title="Status"
+          tail={<span className="chip accent">{rank.current.title}</span>}
+        />
+        <div className="row" style={{ gap: '1.5rem' }}>
+          <div className="pop" style={{ textAlign: 'center' }}>
+            <Ring
+              value={mastered}
+              max={ALL_ITEMS.length}
+              size={104}
+              thickness={9}
+              label={Math.round((mastered / ALL_ITEMS.length) * 100) + '%'}
+              sub="sidder fast"
+            />
+          </div>
+          <div className="grid grid-3fix" style={{ flex: '1 1 380px' }}>
+            <StatCard icon="spark" label="XP" value={state.xp || 0} count hint={rank.next ? rank.next.xp - (state.xp || 0) + ' til ' + rank.next.title : 'højeste rang'} />
+            <StatCard icon="home" label="Lektioner" value={path.done + '/' + path.total} hint={path.stars + ' af ' + path.maxStars + ' stjerner'} />
+            <StatCard icon="flame" label="Streak" value={state.streak.current} count hint={'længste: ' + state.streak.longest} />
+            <StatCard icon="check" label="Besvarede" value={totals.seen} count hint="opgaver i alt" />
+            <StatCard icon="target" label="Træfprocent" value={totals.rate + ' %'} hint={totals.correct + ' korrekte'} />
+            <StatCard icon="layers" label="Forfaldne" value={due} count hint="klar til gentagelse" />
+          </div>
         </div>
         <div className="mt-sm">
           <ProgressBar value={path.done} max={path.total} tone="" />
@@ -203,31 +221,11 @@ export default function Progress() {
       </section>
 
       <section className="card">
-        <div className="row" style={{ gap: '1.75rem' }}>
-          <div className="pop">
-            <Ring
-              value={mastered}
-              max={ALL_ITEMS.length}
-              size={120}
-              thickness={10}
-              label={Math.round((mastered / ALL_ITEMS.length) * 100) + '%'}
-              sub="sidder fast"
-            />
-          </div>
-          <div className="grid grid-3" style={{ flex: '1 1 340px' }}>
-            <StatCard icon="check" label="Besvarede" value={totals.seen} hint="opgaver i alt" count />
-            <StatCard icon="target" label="Træfprocent" value={totals.rate + ' %'} hint={totals.correct + ' korrekte'} />
-            <StatCard icon="flame" label="Streak" value={state.streak.current} hint={'længste: ' + state.streak.longest} count />
-          </div>
-        </div>
-      </section>
-
-      <section className="card">
         <SectionHead title="Aktivitet" tail={<span className="chip">{activeDays} af 14 dage</span>} />
         <p className="small muted">Antal opgaver pr. dag. Regelmæssighed slår lange enkeltdage.</p>
         <div className="activity">
           {activity.map((day) => (
-            <div className="activity-col" key={day.key} title={`${day.date.toLocaleDateString('da-DK')}: ${day.count} opgaver`}>
+            <div className="activity-col" key={day.key} title={`${day.date.toLocaleDateString('da-DK')}: ${plural(day.count, 'opgave', 'opgaver')}`}>
               <div className="activity-bar">
                 <div
                   style={{ height: day.count ? Math.max(8, (day.count / maxActivity) * 100) + '%' : '3px' }}
@@ -258,7 +256,7 @@ export default function Progress() {
             icon="dictation"
             label="Diktat"
             value={dictationsSeen + '/' + dictations.length}
-            hint={modules.diktat ? 'tekster · ' + modules.diktat.sessions + ' sessioner' : 'tekster · ikke trænet'}
+            hint={modules.diktat ? 'tekster · ' + plural(modules.diktat.sessions, 'session', 'sessioner') : 'tekster · ikke trænet'}
           />
           <StatCard
             icon="book"
@@ -334,7 +332,7 @@ export default function Progress() {
           )}
         </div>
 
-        <div className="grid grid-3 mt">
+        <div className="grid grid-3fix mt">
           {BOXES.map((box) => (
             <div className="tile" key={box.key}>
               <span className="tile-label">

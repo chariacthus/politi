@@ -3,8 +3,8 @@ import Icon from '../components/Icon.jsx'
 import SectionHead from '../components/SectionHead.jsx'
 import { policeTopics } from '../data/police.js'
 import { rules } from '../data/rules.js'
-import { navigate } from '../lib/router.jsx'
 import { scrollTop } from '../lib/media.js'
+import { navigate } from '../lib/router.jsx'
 
 // Politifaglige emner vises i samme form som sprogreglerne.
 const policeRules = policeTopics.map((topic) => ({
@@ -80,47 +80,30 @@ export default function Rules({ params }) {
           </div>
           <span className="small muted">Vælg et emne for at folde reglen ud.</span>
         </div>
-
-        <div className="rule-index mt">
-          {list.map((rule) => (
-            <button
-              key={rule.id}
-              className={'chip rule-chip' + (openId === rule.id ? ' accent' : '')}
-              onClick={() => {
-                setOpenId(rule.id === openId ? null : rule.id)
-                scrollTop()
-              }}
-            >
-              {rule.title}
-            </button>
-          ))}
-        </div>
       </section>
 
       {open ? <RuleDetail rule={open} onClose={() => setOpenId(null)} /> : null}
 
-      {list
-        .filter((rule) => !open || rule.id !== open.id)
-        .map((rule) => (
-          <section className="card rule-teaser" key={rule.id}>
-            <div className="spread">
-              <div>
-                <h2 style={{ fontSize: 'var(--t-1)', marginBottom: '0.15rem' }}>{rule.title}</h2>
-                <p className="small muted" style={{ margin: 0 }}>
-                  {rule.short}
-                </p>
-              </div>
-              <button
-                onClick={() => {
-                  setOpenId(rule.id)
-                  scrollTop()
-                }}
-              >
-                Læs reglen <Icon name="arrow" size={16} />
-              </button>
-            </div>
-          </section>
-        ))}
+      <div className="grid grid-half">
+        {list
+          .filter((rule) => !open || rule.id !== open.id)
+          .map((rule) => (
+            <button
+              className="rule-card-btn"
+              key={rule.id}
+              onClick={() => {
+                setOpenId(rule.id)
+                scrollTop()
+              }}
+            >
+              <span className="rule-card-title">
+                {rule.title}
+                <Icon name="arrow" size={16} />
+              </span>
+              <span className="small muted">{rule.short}</span>
+            </button>
+          ))}
+      </div>
     </>
   )
 }
