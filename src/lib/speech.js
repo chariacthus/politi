@@ -105,3 +105,48 @@ export function stop() {
     /* ignoreres med vilje */
   }
 }
+
+/** Deler en tekst i sætninger — oplæseren læser og fremhæver én ad gangen. */
+export function splitSentences(text) {
+  const raw = String(text || '').replace(/\s+/g, ' ').trim()
+  if (!raw) return []
+  const parts = raw.match(/[^.!?…]+[.!?…]*\s*/g) || [raw]
+  const out = []
+  for (const part of parts) {
+    const piece = part.trim()
+    if (!piece) continue
+    // Meget korte stumper ("Fx.") hænger sammen med den foregående sætning.
+    if (out.length && piece.split(' ').length < 3) out[out.length - 1] += ' ' + piece
+    else out.push(piece)
+  }
+  return out
+}
+
+/**
+ * Læser én sætning og melder tilbage undervejs: onWord får tegnpositionen på
+ * det ord, der læses lige nu, så teksten kan følge med. Returnerer en
+ * stop-funktion.
+ */
+export function readSentence(text, { lang = 'da', rate = 1, voice = null, onWord, onEnd, onError } = {}) {
+  if (!speechAvailable()) {
+    onError?.()
+    return () => {}
+  }
+  try {
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = lang === 'en' ? 'en-GB' : 'da-DK'
+    utterance.rate = rate
+    if (voice) utterance.voice = voice
+    utterance.onboundary = (event) => {
+      if (event.name === 'word' || event.charIndex !== undefined) onWord?.(event.charIndex, event.charLength)
+    }
+    utterance.onend = () => onEnd?.()
+    utterance.onerror = () => onError?.()
+    window.speechSynthesis.speak(utterance)
+    return () => window.speechSynthesis.cancel()
+  } catch {
+    onError?.()
+    return () => {}
+  }
+}

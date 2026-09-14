@@ -6,49 +6,22 @@
 // "bank:emne", så sprog og fag kan blandes i samme lektion.
 
 export const stages = [
-  {
-    id: 't1',
-    number: 1,
-    title: 'Grundsprog',
-    level: 'Begynder',
-    blurb: 'Helt fra begyndelsen: enkle sætninger på dansk, de første ord på engelsk, tal, tid og sted.',
-    goal: 'Du kan sige og forstå det almindelige sprog, alt andet bygger på.',
-  },
-  {
-    id: 't2',
-    number: 2,
-    title: 'Klar kommunikation',
-    level: 'Øvet',
-    blurb: 'At blive forstået: høflig og tydelig tale, præcis beskrivelse, og en retskrivning der holder.',
-    goal: 'Du kan forklare dig klart — i tale og på skrift, på dansk og på engelsk.',
-  },
-  {
-    id: 't3',
-    number: 3,
-    title: 'Politifaget',
-    level: 'Fagligt',
-    blurb: 'Grundlaget under politiarbejdet: opgaven, principperne, magt, anholdelse, loven og tjenesten.',
-    goal: 'Du kender reglerne bag indgrebene og kan forklare hjemlen bag det, du gør.',
-  },
-  {
-    id: 't4',
-    number: 4,
-    title: 'Professionel',
-    level: 'Professionel',
-    blurb: 'Det færdige niveau: rapportsprog, præcision i skriften, engelsk i tjenesten og prøvens form.',
-    goal: 'Du skriver, taler og handler som en betjent forventes at gøre det.',
-  },
+  { id: 't1', number: 1, title: 'Grundlag', level: 'Begynder', units: ['u1', 'u2', 'u3'] },
+  { id: 't2', number: 2, title: 'Øvelse', level: 'Øvet', units: ['u4', 'u5', 'u6'] },
+  { id: 't3', number: 3, title: 'Scenarier', level: 'Situationer', units: ['u7', 'u8'] },
+  { id: 't4', number: 4, title: 'Prøver', level: 'Jura', units: ['u9', 'u10'] },
+  { id: 't5', number: 5, title: 'Avanceret træning', level: 'Skriftligt', units: ['u11', 'u12', 'u13'] },
+  { id: 't6', number: 6, title: 'Professionelt niveau', level: 'Professionel', units: ['u14', 'u15'] },
 ]
 
 export const units = [
   // ---------------- Trin 1 · Grundsprog ----------------
   {
     id: 'u1',
-    stageId: 't1',
     color: 'var(--brand)',
     number: 1,
     title: 'Sproget i hverdagen',
-    blurb: 'Den korte, klare sætning. Hvem gør hvad — og forskellen på det, du har set, og det, du tror.',
+    blurb: 'Den korte, klare sætning',
     lessons: [
       { id: 'u1-1', title: 'Din første sætning', sources: ['grammar:da:hverdag'], size: 5 },
       { id: 'u1-2', title: 'Set eller troet', sources: ['grammar:da:hverdag'], size: 6 },
@@ -58,11 +31,10 @@ export const units = [
   },
   {
     id: 'u2',
-    stageId: 't1',
     color: 'var(--brand-2)',
     number: 2,
     title: 'Tal, tid og sted',
-    blurb: 'Klokkeslæt, datoer, retninger og bogstavering — på dansk og på engelsk.',
+    blurb: 'Klokkeslæt, datoer og retninger',
     lessons: [
       { id: 'u2-1', title: 'Tal og klokkeslæt', sources: ['grammar:en:tal-tid'], size: 6 },
       { id: 'u2-2', title: 'Steder og vejvisning', sources: ['grammar:en:retning'], size: 6 },
@@ -72,11 +44,10 @@ export const units = [
   },
   {
     id: 'u3',
-    stageId: 't1',
     color: 'var(--accent)',
     number: 3,
     title: 'Beskriv det, du ser',
-    blurb: 'Personer, køretøjer og steder beskrevet, så en anden kan genkende dem.',
+    blurb: 'Personer, køretøjer og steder',
     lessons: [
       { id: 'u3-1', title: 'Personer og køretøjer', sources: ['grammar:da:praecis'], size: 6 },
       { id: 'u3-2', title: 'Describing people', sources: ['grammar:en:person'], size: 6 },
@@ -88,11 +59,10 @@ export const units = [
   // ---------------- Trin 2 · Klar kommunikation ----------------
   {
     id: 'u4',
-    stageId: 't2',
     color: 'var(--forest)',
     number: 4,
     title: 'Høflig og tydelig',
-    blurb: 'Præsentation, årsag og næste skridt. Hvornår man beder — og hvornår man giver en ordre.',
+    blurb: 'Tonen der får folk til at samarbejde',
     lessons: [
       { id: 'u4-1', title: 'Sig hvem du er, og hvorfor', sources: ['grammar:da:hoeflig'], size: 5 },
       { id: 'u4-2', title: 'Anmodning eller ordre', sources: ['grammar:da:hoeflig'], size: 5 },
@@ -102,11 +72,10 @@ export const units = [
   },
   {
     id: 'u5',
-    stageId: 't2',
     color: 'var(--brand)',
     number: 5,
     title: 'Retskrivning der holder',
-    blurb: 'Komma, nutids-r og de ordfælder, der afgør, om en tekst kan bruges.',
+    blurb: 'Komma, nutids-r og ordfælder',
     lessons: [
       { id: 'u5-1', title: 'Kommaet', sources: ['grammar:da:kommatering'], size: 6 },
       { id: 'u5-2', title: 'Nutids-r og ligge/lægge', sources: ['grammar:da:nutids-r', 'grammar:da:ligge-laegge'], size: 7 },
@@ -116,11 +85,10 @@ export const units = [
   },
   {
     id: 'u6',
-    stageId: 't2',
     color: 'var(--accent)',
     number: 6,
     title: 'Ordene og formerne',
-    blurb: 'Sammensatte ord, endelser, ejestedord og store bogstaver — fælderne, alle falder i.',
+    blurb: 'Sammensatte ord, endelser og store bogstaver',
     lessons: [
       { id: 'u6-1', title: 'Sammensatte ord', sources: ['grammar:da:sammensatte'], size: 6 },
       { id: 'u6-2', title: 'Endelser og ejestedord', sources: ['grammar:da:endelser', 'grammar:da:hans-sin'], size: 7 },
@@ -132,11 +100,10 @@ export const units = [
   // ---------------- Trin 3 · Politifaget ----------------
   {
     id: 'u7',
-    stageId: 't3',
     color: 'var(--brand)',
     number: 7,
     title: 'Grundlaget',
-    blurb: 'Hvad politiet er sat i verden for, hvilke grænser der gælder — og hvad fagordene betyder.',
+    blurb: 'Opgaven, principperne og fagordene',
     lessons: [
       { id: 'u7-1', title: 'Fagordene', sources: ['grammar:da:fagord'], size: 6 },
       { id: 'u7-2', title: 'Politiets opgave', sources: ['police:formaal'], size: 6 },
@@ -146,11 +113,10 @@ export const units = [
   },
   {
     id: 'u8',
-    stageId: 't3',
     color: 'var(--brick)',
     number: 8,
     title: 'Magt og indgreb',
-    blurb: 'Hvornår magt må bruges, hvordan den trappes op — og hvilken hjemmel en visitation hviler på.',
+    blurb: 'Hvornår magt må bruges — og hvordan',
     lessons: [
       { id: 'u8-1', title: 'Magtanvendelse', sources: ['police:magt'], size: 7 },
       { id: 'u8-2', title: 'Visitation og ransagning', sources: ['police:visitation'], size: 6 },
@@ -160,11 +126,10 @@ export const units = [
   },
   {
     id: 'u9',
-    stageId: 't3',
     color: 'var(--forest)',
     number: 9,
     title: 'Anholdelse og rettigheder',
-    blurb: 'Mistankekrav, 24-timersreglen, den sigtedes rettigheder og de korte frister uden for strafferetten.',
+    blurb: 'Mistanke, frister og rettigheder',
     lessons: [
       { id: 'u9-1', title: 'Anholdelse', sources: ['police:anholdelse'], size: 7 },
       { id: 'u9-2', title: 'Den sigtedes rettigheder', sources: ['police:rettigheder'], size: 6 },
@@ -174,11 +139,10 @@ export const units = [
   },
   {
     id: 'u10',
-    stageId: 't3',
     color: 'var(--accent)',
     number: 10,
     title: 'Loven i praksis',
-    blurb: 'Straffelovens kerneparagraffer og de færdselsregler, der bruges hver eneste vagt.',
+    blurb: 'Straffeloven og færdsel i praksis',
     lessons: [
       { id: 'u10-1', title: 'Kerneparagrafferne', sources: ['police:straffelov'], size: 7 },
       { id: 'u10-2', title: 'Færdsel', sources: ['police:faerdsel'], size: 7 },
@@ -188,11 +152,10 @@ export const units = [
   },
   {
     id: 'u11',
-    stageId: 't3',
     color: 'var(--brand-2)',
     number: 11,
     title: 'Tjenesten',
-    blurb: 'Tavshedspligt, notatpligt, adfærd og den melding, der skal kunne forstås første gang.',
+    blurb: 'Tavshedspligt, adfærd og melding',
     lessons: [
       { id: 'u11-1', title: 'Tavshedspligt og notatpligt', sources: ['police:tavshed'], size: 6 },
       { id: 'u11-2', title: 'Adfærd og legitimitet', sources: ['police:etik'], size: 6 },
@@ -204,11 +167,10 @@ export const units = [
   // ---------------- Trin 4 · Professionel ----------------
   {
     id: 'u12',
-    stageId: 't4',
     color: 'var(--brand)',
     number: 12,
     title: 'Rapportsprog',
-    blurb: 'Iagttagelse frem for vurdering, aktiv frem for passiv, præcision frem for omtrent.',
+    blurb: 'Fakta frem for vurdering',
     lessons: [
       { id: 'u12-1', title: 'Fakta frem for vurdering', sources: ['grammar:da:rapportsprog'], size: 6 },
       { id: 'u12-2', title: 'Aktiv form og præcision', sources: ['grammar:da:rapportsprog'], size: 6 },
@@ -218,11 +180,10 @@ export const units = [
   },
   {
     id: 'u13',
-    stageId: 't4',
     color: 'var(--brick)',
     number: 13,
     title: 'Præcision i skriften',
-    blurb: 'Tegnene ud over kommaet, ejefald og de henvisninger, der ikke må kunne misforstås.',
+    blurb: 'Tegn, ejefald og henvisninger',
     lessons: [
       { id: 'u13-1', title: 'Tegn ud over kommaet', sources: ['grammar:da:tegnsaetning'], size: 7 },
       { id: 'u13-2', title: 'Ejefald og apostrof', sources: ['grammar:da:ejefald'], size: 6 },
@@ -232,11 +193,10 @@ export const units = [
   },
   {
     id: 'u14',
-    stageId: 't4',
     color: 'var(--forest)',
     number: 14,
     title: 'Engelsk i tjenesten',
-    blurb: 'Hele vejen på engelsk: kontrol, borgerkontakt, formel tone og den skrevne rapport.',
+    blurb: 'Hele vejen på engelsk',
     lessons: [
       { id: 'u14-1', title: 'Grammatikken bag', sources: ['grammar:en:tense', 'grammar:en:agreement'], size: 7 },
       { id: 'u14-2', title: 'Ordstilling og forholdsord', sources: ['grammar:en:word-order', 'grammar:en:prepositions'], size: 7 },
@@ -246,11 +206,10 @@ export const units = [
   },
   {
     id: 'u15',
-    stageId: 't4',
     color: 'var(--accent)',
     number: 15,
     title: 'Prøvens form',
-    blurb: 'Det hele på én gang — sprog, fag og præcision, blandet som på selve prøven.',
+    blurb: 'Alt på én gang, som til prøven',
     lessons: [
       { id: 'u15-1', title: 'Blandet dansk', sources: ['grammar:da:kommatering', 'grammar:da:rapportsprog', 'grammar:da:sammensatte', 'grammar:da:tegnsaetning'], size: 10 },
       { id: 'u15-2', title: 'Blandet politifag', sources: ['police:magt', 'police:anholdelse', 'police:straffelov', 'police:tavshed'], size: 10 },
@@ -273,15 +232,18 @@ export const ranks = [
   { xp: 11000, title: 'Specialist' },
 ]
 
+const stageByUnit = {}
+for (const stage of stages) for (const id of stage.units) stageByUnit[id] = stage.id
+
 export const allLessons = units.flatMap((unit) =>
-  unit.lessons.map((lesson) => ({ ...lesson, unitId: unit.id, stageId: unit.stageId })),
+  unit.lessons.map((lesson) => ({ ...lesson, unitId: unit.id, stageId: stageByUnit[unit.id] })),
 )
 
 export function stageOf(unitId) {
-  const unit = units.find((entry) => entry.id === unitId)
-  return stages.find((stage) => stage.id === unit?.stageId) || stages[0]
+  return stages.find((stage) => stage.units.includes(unitId)) || stages[0]
 }
 
 export function unitsInStage(stageId) {
-  return units.filter((unit) => unit.stageId === stageId)
+  const stage = stages.find((entry) => entry.id === stageId)
+  return stage ? stage.units.map((id) => units.find((unit) => unit.id === id)).filter(Boolean) : []
 }

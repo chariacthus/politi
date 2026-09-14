@@ -166,13 +166,9 @@ export default function ProgressView() {
 
   return (
     <>
-      <p className="lead">Hvor du står lige nu, hvad der er forfaldent, og hvad der giver mest at træne som det næste.</p>
-
       <section className="card">
         <SectionHead title="Hvor du er i uddannelsen" tail={<span className="chip accent">Trin {stage.number}</span>} />
-        <p className="small muted">
-          {stage.title} · {stage.level}. {stage.goal}
-        </p>
+
         <div className="ladder-row">
           {stages.map((entry) => {
             const done = stageProgress(entry.id, state.lessons)
@@ -230,9 +226,7 @@ export default function ProgressView() {
             <StatCard icon="spark" label="XP" value={state.xp || 0} count hint={rank.next ? rank.next.xp - (state.xp || 0) + ' til ' + rank.next.title : 'højeste rang'} />
             <StatCard icon="home" label="Lektioner" value={path.done + '/' + path.total} hint={path.stars + ' af ' + path.maxStars + ' stjerner'} />
             <StatCard icon="flame" label="Streak" value={state.streak.current} count hint={'længste: ' + state.streak.longest} />
-            <StatCard icon="check" label="Besvarede" value={totals.seen} count hint="opgaver i alt" />
-            <StatCard icon="target" label="Træfprocent" value={totals.rate + ' %'} hint={totals.correct + ' korrekte'} />
-            <StatCard icon="layers" label="Forfaldne" value={due} count hint="klar til gentagelse" />
+            <StatCard icon="target" label="Træfprocent" value={totals.rate + ' %'} hint={totals.seen + ' besvarede'} />
           </div>
         </div>
         <div className="mt-sm">
@@ -242,7 +236,6 @@ export default function ProgressView() {
 
       <section className="card">
         <SectionHead title="Næste skridt" tail={<span className="eyebrow">prioriteret</span>} />
-        <p className="small muted">Listen er sorteret efter, hvad der rykker mest på din prøve.</p>
         <div className="steps mt-sm">
           {nextSteps.slice(0, 3).map((step) => (
             <div className="step" key={step.title}>
@@ -272,7 +265,6 @@ export default function ProgressView() {
 
       <section className="card">
         <SectionHead title="Aktivitet" tail={<span className="chip">{activeDays} af 14 dage</span>} />
-        <p className="small muted">Antal opgaver pr. dag. Regelmæssighed slår lange enkeltdage.</p>
         <div className="activity">
           {activity.map((day) => (
             <div className="activity-col" key={day.key} title={`${day.date.toLocaleDateString('da-DK')}: ${plural(day.count, 'opgave', 'opgaver')}`}>
@@ -369,10 +361,7 @@ export default function ProgressView() {
 
       <section className="card">
         <SectionHead title="Gentagelsessystemet" tail={<span className="eyebrow">5 bokse</span>} />
-        <p className="small muted">
-          Hver opgave rykker et trin op, når du svarer rigtigt, og helt ned i boks 1, når du svarer forkert.
-          Boks 5 kommer først igen efter godt to uger.
-        </p>
+        <p className="small muted">Rigtigt svar rykker en opgave et trin op. Forkert sender den ned i boks 1.</p>
 
         <div className="segbar mt-sm" role="img" aria-label="Fordeling af opgaver over boksene">
           {BOXES.map((box) =>

@@ -368,6 +368,7 @@ export function teachFor(lesson) {
       entries.push({
         id: 'police:' + topic.id,
         kind: 'Politifag',
+        lang: 'da',
         title: topic.title,
         rule: topic.rule,
         trick: topic.trick,
@@ -389,6 +390,7 @@ export function teachFor(lesson) {
       entries.push({
         id: 'grammar:' + rule.id,
         kind: rule.lang === 'en' ? 'Engelsk' : 'Dansk',
+        lang: rule.lang,
         title: rule.title,
         rule: rule.rule,
         trick: rule.trick,

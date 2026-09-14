@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Confetti from '../components/Confetti.jsx'
+import CountUp from '../components/CountUp.jsx'
 import Exercise from '../components/Exercise.jsx'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
@@ -313,7 +314,9 @@ export default function Lesson({ params }) {
           <div className="score-row">
             <div className="score-box gold">
               <span className="label">XP</span>
-              <span className="value">+{score.xp}</span>
+              <span className="value">
+                +<CountUp value={score.xp} />
+              </span>
             </div>
             <div className="score-box green">
               <span className="label">Rigtige</span>
@@ -390,7 +393,9 @@ export default function Lesson({ params }) {
           <div className="score-row">
             <div className="score-box gold">
               <span className="label">XP</span>
-              <span className="value">+{score.xp}</span>
+              <span className="value">
+                +<CountUp value={score.xp} />
+              </span>
             </div>
             <div className="score-box green">
               <span className="label">Rigtige</span>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Icon from '../components/Icon.jsx'
+import Reader from '../components/Reader.jsx'
 import SectionHead from '../components/SectionHead.jsx'
 import { policeTopics } from '../data/police.js'
 import { rules } from '../data/rules.js'
@@ -121,21 +122,11 @@ function RuleDetail({ rule, onClose }) {
         </button>
       </div>
 
-      <div className="rule-hero">
-        <div className="rule-line">
-          <Icon name="shield" size={19} />
-          <div>
-            <span className="eyebrow">Hovedregel</span>
-            <p style={{ marginBottom: 0, color: 'var(--ink)' }}>{rule.rule}</p>
-          </div>
-        </div>
-        <div className="rule-line">
-          <Icon name="bulb" size={19} />
-          <div>
-            <span className="eyebrow">Huskeregel</span>
-            <p style={{ marginBottom: 0 }}>{rule.trick}</p>
-          </div>
-        </div>
+      <Reader text={rule.rule} lang={rule.lang === 'en' ? 'en' : 'da'} label={'Hovedreglen for ' + rule.title} />
+
+      <div className="rule-line mt">
+        <Icon name="bulb" size={18} />
+        <p style={{ marginBottom: 0 }}>{rule.trick}</p>
       </div>
 
       {rule.sections.map((section) => (

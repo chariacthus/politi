@@ -37,7 +37,6 @@ export default function Shell({ path, children }) {
           </span>
           <span className="brand-text">
             <b>Politiskolen</b>
-            <span>optagelsestræning</span>
           </span>
         </Link>
 

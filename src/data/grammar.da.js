@@ -895,7 +895,7 @@ export const daItems = [
   {
     id: 'da-tegn-05', lang: 'da', topic: 'tegnsaetning', level: 3, type: 'spot',
     prompt: 'Find tegnfejlen.',
-    words: ['Han', 'råbte:', '"Slip', 'mig!",', 'og', 'trak', 'armen', 'til', 'sig.'],
+    sentence: 'Han råbte: "Slip mig!", og trak armen til sig.',
     wrong: '"Slip',
     rule: 'Et citat, der slutter med udråbstegn, beholder sit eget tegn inden for anførselstegnet — og der skal ikke komma efter: "Slip mig!" og trak armen til sig.',
     example: 'Han råbte: "Slip mig!" og trak armen til sig.',
@@ -950,7 +950,7 @@ export const daItems = [
   {
     id: 'da-tegn-11', lang: 'da', topic: 'tegnsaetning', level: 3, type: 'spot',
     prompt: 'Find tegnfejlen.',
-    words: ['Der', 'blev', 'beslaglagt', 'følgende;', 'en', 'kniv', 'og', 'en', 'telefon.'],
+    sentence: 'Der blev beslaglagt følgende; en kniv og en telefon.',
     wrong: 'følgende;',
     rule: 'Semikolon kan ikke indlede en opremsning. Det skal være kolon: "Der blev beslaglagt følgende: en kniv og en telefon."',
     example: 'Følgende blev beslaglagt: en kniv og en telefon.',
@@ -990,7 +990,7 @@ export const daItems = [
   {
     id: 'da-ejefald-05', lang: 'da', topic: 'ejefald', level: 3, type: 'spot',
     prompt: 'Find fejlen.',
-    words: ['Vidnet', 'pegede', 'på', "bilen's", 'bagagerum.'],
+    sentence: "Vidnet pegede på bilen's bagagerum.",
     wrong: "bilen's",
     rule: 'Ejefald af "bilen" er "bilens" — uden apostrof.',
     example: 'Vidnet pegede på bilens bagagerum.',
@@ -1079,7 +1079,7 @@ export const daItems = [
   {
     id: 'da-tal-05', lang: 'da', topic: 'tal-og-tid', level: 3, type: 'spot',
     prompt: 'Find fejlen.',
-    words: ['Bilen', 'kørte', 'ca', '80', 'km/t', 'i', 'en', '50-zone.'],
+    sentence: 'Bilen kørte ca 80 km/t i en 50-zone.',
     wrong: 'ca',
     rule: 'Forkortelsen "ca." skrives med punktum. Punktummet er ikke pynt — det markerer, at ordet er forkortet.',
     example: 'Bilen kørte ca. 80 km/t i en 50-zone.',
@@ -1164,7 +1164,7 @@ export const daItems = [
   {
     id: 'da-henvis-04', lang: 'da', topic: 'henvisning', level: 3, type: 'spot',
     prompt: 'Find fejlen.',
-    words: ['Vidnet,', 'der', 'vi', 'afhørte,', 'var', 'rolig.'],
+    sentence: 'Vidnet, der vi afhørte, var rolig.',
     wrong: 'der',
     rule: '"Der" kan kun være grundled. Når ledsætningen har sit eget grundled ("vi"), skal det være "som": Vidnet, som vi afhørte, var rolig.',
     example: 'Vidnet, som vi afhørte, var rolig.',
@@ -1295,7 +1295,7 @@ export const daItems = [
   {
     id: 'da-hverdag-09', lang: 'da', topic: 'hverdag', level: 2, type: 'spot',
     prompt: 'Find det ord, der ikke siger noget.',
-    words: ['Der', 'skete', 'sådan', 'lidt', 'ballade', 'ved', 'indgangen.'],
+    sentence: 'Der skete sådan lidt ballade ved indgangen.',
     wrong: 'sådan',
     rule: 'Fyldeord som "sådan lidt", "vist" og "lissom" svækker sætningen. Skriv i stedet, hvad der faktisk skete.',
     example: 'To personer skubbede til hinanden ved indgangen.',
@@ -1381,7 +1381,7 @@ export const daItems = [
   {
     id: 'da-hoeflig-08', lang: 'da', topic: 'hoeflig', level: 3, type: 'spot',
     prompt: 'Find det nedladende ord.',
-    words: ['Du', 'skal', 'bare', 'gøre,', 'som', 'jeg', 'siger,', 'lille', 'ven.'],
+    sentence: 'Du skal bare gøre, som jeg siger, lille ven.',
     wrong: 'lille',
     rule: 'Kælenavne og øgenavne er nedladende, uanset tonefaldet. De koster respekt og kan koste en klage.',
     example: 'Du skal gøre, som jeg siger.',
@@ -1460,7 +1460,7 @@ export const daItems = [
   {
     id: 'da-praecis-07', lang: 'da', topic: 'praecis', level: 3, type: 'spot',
     prompt: 'Find det ord, der er en vurdering og ikke en iagttagelse.',
-    words: ['Manden', 'var', 'aggressiv', 'og', 'slog', 'ud', 'efter', 'mig.'],
+    sentence: 'Manden var aggressiv og slog ud efter mig.',
     wrong: 'aggressiv',
     rule: '"Aggressiv" er din vurdering. "Slog ud efter mig" er det, du så — og det er det, der bærer sagen.',
     example: 'Manden slog ud efter mig med højre arm.',

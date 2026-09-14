@@ -46,6 +46,7 @@ const PATHS = {
   ),
   check: <path d="m4.5 12.5 5 5 10-11" />,
   x: <path d="M6 6l12 12M18 6 6 18" />,
+  pause: <path d="M8 5v14M16 5v14" strokeWidth="2.6" />,
   play: <path d="M7 4.5v15l13-7.5z" />,
   volume: (
     <>

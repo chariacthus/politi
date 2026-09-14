@@ -34,22 +34,17 @@ På brede skærme står navigationen i venstre skinne og statistikken — streak
 til prøven — i højre. På telefonen bliver navigationen til fire faner i bunden og statistikken til en
 stribe i toppen. Lektionen har ingen af delene: den fylder hele skærmen.
 
-## Uddannelsen: fire trin
+## Uddannelsen: seks trin
 
-| Trin | Niveau | Hvad du lærer | Mål |
-| --- | --- | --- | --- |
-| 1 · Grundsprog | Begynder | Enkle sætninger på dansk, de første ord på engelsk, tal, tid, sted og beskrivelse | Du kan sige og forstå det almindelige sprog, alt andet bygger på |
-| 2 · Klar kommunikation | Øvet | Høflig og tydelig tale, formelt engelsk, retskrivning og ordformer | Du kan forklare dig klart i tale og på skrift, på begge sprog |
-| 3 · Politifaget | Fagligt | Opgaven, principperne, magt, anholdelse, loven, tjenesten — og fagordene | Du kender reglerne bag indgrebene og kan forklare hjemlen |
-| 4 · Professionel | Professionel | Rapportsprog, præcision i skriften, engelsk i tjenesten, prøvens form | Du skriver, taler og handler som en betjent forventes at gøre |
-
-**15 enheder med 60 lektioner** på en snoet sti. Hver enhed har sin egen farve, klarede lektioner får en
+**Grundlag → Øvelse → Scenarier → Prøver → Avanceret træning → Professionelt niveau.** Seks trin, 15
+enheder, 60 lektioner. Trin 1-2 er sproget fra bunden, 3-4 er politifaget og jura, 5-6 er skriften,
+engelsk i tjenesten og prøvens form. Hver enhed har sin egen farve, klarede lektioner får en
 krone og op til tre stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til
 Specialist. Et tryk på en sten åbner et kort med, hvad lektionen indeholder.
 
 ## Systemet følger med dig
 
-- **Niveautest ved start.** Tolv opgaver på tværs af de fire trin afgør, hvor du begynder. Klarer du
+- **Niveautest ved start.** Tolv opgaver på tværs af trinnene afgør, hvor du begynder. Klarer du
   trin 1 og 2, er de låst op fra dag ét. Kan du ingenting endnu, starter du forfra — og det er det
   rigtige sted at starte. Testen kan springes over og koster ingen liv.
 - **Sværhedsgraden følger dine svar.** Hver lektion regner et niveau ud af, hvordan det er gået i netop
@@ -128,6 +123,14 @@ prøvedato, du selv sætter, og indstillingerne for tema, lyd, stemmeøvelser og
 - **Lyd og bevægelse** kvitterer for svar og oplæsning. Begge dele kan slås fra, og hele siden respekterer
   `prefers-reduced-motion`.
 
+## Oplæseren
+
+Hver regel kan læses højt. Oplæseren fremhæver den sætning — og det ord — stemmen er nået til, så en
+begynder kan følge med i teksten mens den læses. Der er play/pause, forrige og næste sætning, læs
+forfra, tre hastigheder og en fremdriftslinje, og man kan trykke direkte på en sætning for at hoppe
+dertil. Sproget følger lektionen: dansk stemme til dansk, engelsk til engelsk. Mangler browseren en
+stemme, kører oplæseren videre i læsetempo og fremhæver stadig sætningerne, så den aldrig går i stå.
+
 ## Design
 
 Ét spor, én farvefamilie. Politisporet er myndighedsblåt med en lysere azurblå accent og et køligt
@@ -141,9 +144,9 @@ så et skift af kursus skifter hele fladen.
   Sans: dér skal skriften være rolig at læse, ikke markant. Alle filer ligger i `src/fonts/` og
   indlæses lokalt — siden virker også uden netadgang. (Fraunces og IBM Plex, begge SIL Open Font
   License 1.1.)
-- **Kanter:** trin og enheder er klistermærker — tyk blækkant og en hård forskudt skygge i sporets
-  farve i stedet for en blød sky. Kortene har hjørnebeslag, der tegner sig ind. Tilbud på stien har
-  stiplet kant. Knapper og svarmuligheder har en synlig underkant, der synker, når de trykkes.
+- **Ro frem for kasser:** navigationen er ikoner og tekst med en tynd markering i kanten — ingen store
+  piller. Trinnene er en linje med et nummer og en fremdriftsstreg, enhederne en overskrift med prikker
+  for hver klaret lektion. Kortene har hjørnebeslag, og knapper har en underkant, der synker ved tryk.
 - **Bevægelse:** stenene vipper, når man rører dem, stien er tegnet med stiplede spor mellem stenene,
   trinnet fejres med en roterende stråleglorie, og et lysstrøg løber hen over primærknappen. Alt
   slukkes ved `prefers-reduced-motion`.

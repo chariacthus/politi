@@ -4,45 +4,30 @@
  * forkert. Så er øvelsen bagefter en prøve — ikke en gætteleg.
  */
 import Icon from './Icon.jsx'
+import Mascot from './Mascot.jsx'
+import Reader from './Reader.jsx'
 
 export default function Teach({ entries, onStart, onSkip, title }) {
   return (
     <div className="teach">
       <div className="teach-head">
-        <span className="teach-badge">
-          <Icon name="bulb" size={17} /> Lær først
-        </span>
+        <Mascot mood="neutral" size={46} />
         <h1>{title}</h1>
-        <p className="lead">
-          Læs reglen igennem. Den tager under et minut — og den er svaret på de fleste af opgaverne,
-          der kommer nu.
-        </p>
       </div>
 
       {entries.map((entry) => (
         <section className="teach-card" key={entry.id}>
-          <header>
-            <span className="eyebrow">{entry.kind}</span>
-            <h2>{entry.title}</h2>
-          </header>
-
-          <div className="teach-rule">
-            <Icon name="shield" size={18} />
-            <p>{entry.rule}</p>
-          </div>
+          <Reader text={entry.rule} lang={entry.lang} label={'Reglen for ' + entry.title} />
 
           {entry.trick ? (
-            <div className="teach-trick">
-              <Icon name="bulb" size={16} />
-              <p>
-                <b>Huskeregel:</b> {entry.trick}
-              </p>
-            </div>
+            <p className="teach-trick">
+              <Icon name="bulb" size={15} /> {entry.trick}
+            </p>
           ) : null}
 
           {entry.examples.length > 0 ? (
             <ul className="teach-examples list-reset">
-              {entry.examples.map((example, index) => (
+              {entry.examples.slice(0, 2).map((example, index) => (
                 <li key={index}>
                   {example.wrong ? (
                     <span className="ex wrong">
@@ -52,7 +37,7 @@ export default function Teach({ entries, onStart, onSkip, title }) {
                   <span className="ex right">
                     <Icon name="check" size={15} strokeWidth={2.6} /> {example.right}
                   </span>
-                  {example.note ? <span className="ex teach-note">{example.note}</span> : null}
+
                 </li>
               ))}
             </ul>
@@ -60,7 +45,7 @@ export default function Teach({ entries, onStart, onSkip, title }) {
 
           {entry.points.length > 0 ? (
             <ul className="teach-points list-reset">
-              {entry.points.map((point) => (
+              {entry.points.slice(0, 3).map((point) => (
                 <li key={point}>
                   <Icon name="check" size={15} strokeWidth={2.2} />
                   <span>{point}</span>
@@ -76,7 +61,7 @@ export default function Teach({ entries, onStart, onSkip, title }) {
           Jeg er klar <Icon name="arrow" size={19} />
         </button>
         <button className="skip-btn" onClick={onSkip}>
-          <Icon name="skip" size={15} /> Spring forklaringen over
+          Spring over
         </button>
       </div>
     </div>
