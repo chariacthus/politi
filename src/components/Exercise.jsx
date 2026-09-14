@@ -498,7 +498,7 @@ function SpeakTask({ item, locked, result, onAnswer }) {
 
       <div className="row mt-sm">
         {/* Oplæsning virker også uden en dansk stemme — så bruger browseren sin egen. */}
-        <button onClick={() => speak(item.target, { lang: 'da', rate: 0.9, voice })} disabled={!speechAvailable()}>
+        <button onClick={() => speak(item.target, { lang: 'da', rate: 0.9, voice })} disabled={!speechAvailable() || !voice}>
           <Icon name="volume" size={16} /> Hør modellen
         </button>
         {supported ? (

@@ -89,8 +89,23 @@ export function pickVoice(voices, lang, { name = readVoiceName() } = {}) {
   return [...onLang].sort((a, b) => score(a) - score(b))[0]
 }
 
+/**
+ * Har browseren overhovedet en stemme på sproget? Uden den ville en dansk
+ * sætning blive læst op af den engelske standardstemme — og det lyder ikke
+ * som dansk, det lyder som volapyk.
+ */
+export function hasVoice(voices, lang) {
+  return voicesFor(voices, lang).length > 0
+}
+
 export function speak(text, { lang = 'da', rate = 0.9, pitch = 0.88, voice = null, onStart, onEnd } = {}) {
   if (!speechAvailable()) return false
+  // Ingen stemme på sproget: så lader vi være. Den forkerte stemme er værre
+  // end ingen stemme, når man sidder og skal lære udtalen.
+  if (!voice) {
+    onEnd?.()
+    return false
+  }
   try {
     window.speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(text)
@@ -175,7 +190,7 @@ export function splitSentences(text) {
  * stop-funktion.
  */
 export function readSentence(text, { lang = 'da', rate = 1, pitch = 0.88, voice = null, onWord, onEnd, onError } = {}) {
-  if (!speechAvailable()) {
+  if (!speechAvailable() || !voice) {
     onError?.()
     return () => {}
   }

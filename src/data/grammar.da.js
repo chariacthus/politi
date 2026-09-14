@@ -894,9 +894,9 @@ export const daItems = [
   },
   {
     id: 'da-tegn-05', lang: 'da', topic: 'tegnsaetning', level: 3, type: 'spot',
-    prompt: 'Find tegnfejlen.',
+    prompt: 'Find tegnfejlen i citatet.',
     sentence: 'Han råbte: "Slip mig!", og trak armen til sig.',
-    wrong: '"Slip',
+    wrong: 'mig!",',
     rule: 'Et citat, der slutter med udråbstegn, beholder sit eget tegn inden for anførselstegnet — og der skal ikke komma efter: "Slip mig!" og trak armen til sig.',
     example: 'Han råbte: "Slip mig!" og trak armen til sig.',
   },
@@ -949,7 +949,7 @@ export const daItems = [
   },
   {
     id: 'da-tegn-11', lang: 'da', topic: 'tegnsaetning', level: 3, type: 'spot',
-    prompt: 'Find tegnfejlen.',
+    prompt: 'Find det forkerte tegn i opremsningen.',
     sentence: 'Der blev beslaglagt følgende; en kniv og en telefon.',
     wrong: 'følgende;',
     rule: 'Semikolon kan ikke indlede en opremsning. Det skal være kolon: "Der blev beslaglagt følgende: en kniv og en telefon."',

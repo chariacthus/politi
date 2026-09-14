@@ -214,6 +214,7 @@ function Round({ session, onAnswer, onNext, onQuit }) {
     let active = true
     loadVoices().then((voices) => {
       if (!active) return
+      // Uden en stemme på sproget falder diktaten tilbage til at vise teksten.
       setVoice(pickVoice(voices, item.lang))
       setVoiceChecked(true)
     })

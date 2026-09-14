@@ -133,8 +133,10 @@ function UnitBoard({ unit, lessons, unlocked, next, started, open, setOpen }) {
 
   return (
     <div className="unit" style={{ '--u': unit.color }}>
-      <div className={'unit-bar' + (isLocked ? ' locked' : '') + (active ? ' active' : '')}>
+      <div className={'unit-bar' + (isLocked ? ' locked' : '') + (active ? ' active' : '') + (done.done === done.total ? ' complete' : '')}>
+        <span className="unit-tag" aria-hidden="true" />
         <span className="unit-name">{unit.title}</span>
+        {done.done === done.total ? <span className="stamp">Gennemført</span> : null}
         {active ? <span className="unit-note">{unit.blurb}</span> : null}
         <span className="unit-dots" aria-label={done.done + ' af ' + done.total}>
           {unit.lessons.map((lesson) => (
@@ -228,6 +230,7 @@ function ExamNode({ stage, exam }) {
       <span className="exam-mark">
         <Icon name={passed ? 'crown' : locked ? 'lock' : 'shield'} size={20} />
       </span>
+      {passed ? <span className="stamp big">Bestået</span> : null}
       <div className="exam-text">
         <b>Eksamen</b>
         <span>{passed ? 'Bestået · ' + exam.record.stars + ' af 3 stjerner' : locked ? 'Klar enhederne først' : exam.size + ' opgaver · 2 stjerner for at bestå'}</span>

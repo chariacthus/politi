@@ -106,6 +106,7 @@ stemmeøvelse kan springes over.
 | **Diktat** | 24 tekster i fire niveauer. Teksten læses op **afsnit for afsnit**, og hvert afsnit kan høres så mange gange, du vil. Dit svar sammenlignes ord for ord med facit. |
 | **Rapport og skrivning** | 6 skriveopgaver — hændelsesrapport, anmeldelsesnotat, afhøringsreferat, notat om magtanvendelse, brev til borger og døgnrapportnotat. Du får sagens oplysninger og skriver teksten; den gennemgås automatisk. |
 | **Situationer og tone** | 6 scenarier fra virkeligt politiarbejde. Du formulerer replikken selv, får feedback på tone og sprog, vælger mellem tre svar og ser modelsvaret. |
+| **Fagordbogen** | 44 politifaglige ord forklaret i almindeligt dansk, med det engelske udtryk og en sætning på hvert sprog. Søgbar begge veje. Ligger under Regler. |
 | **Regelbogen** | 44 opslag: 12 politifaglige emner med hovedregel, huskeregel og de punkter, der skal sidde fast, samt 32 sprogregler med gennemgåede eksempler på rigtigt og forkert. |
 
 Under **Profil** ligger overblikket: prioriteret "næste skridt", aktivitet over 14 dage, træfprocent pr.
@@ -133,7 +134,9 @@ en kvint opad, forkert er én lav tone, der falder, og en bestået eksamen har s
 telefon følger et kort ryk med, og både lyd og vibration kan slås fra.
 
 Oplæseren vælger den dybeste og mest myndige stemme, browseren har på sproget, og sænker tonehøjden,
-så den lyder som en instruktør frem for en talemaskine. Vil du hellere have en anden, kan du vælge frit
+så den lyder som en instruktør frem for en talemaskine. **Mangler browseren en dansk stemme, læser den
+ikke op** — en dansk sætning læst af en engelsk stemme er værre end ingen oplæsning. I stedet fremhæver
+oplæseren sætningerne i læsetempo, så teksten stadig kan følges. Vil du hellere have en anden, kan du vælge frit
 mellem systemets stemmer under Profil → Indstillinger.
 
 ## Oplæseren

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import Reader from '../components/Reader.jsx'
 import SectionHead from '../components/SectionHead.jsx'
+import { glossary, glossaryGroups } from '../data/glossary.js'
 import { policeTopics } from '../data/police.js'
 import { rules } from '../data/rules.js'
 import { scrollTop } from '../lib/media.js'
@@ -26,6 +27,7 @@ const BANKS = {
   police: { label: 'Politifag', list: policeRules },
   da: { label: 'Dansk', list: rules.filter((rule) => rule.lang === 'da') },
   en: { label: 'Engelsk', list: rules.filter((rule) => rule.lang === 'en') },
+  ord: { label: 'Fagordbog', list: [] },
 }
 
 export default function Rules({ params }) {
@@ -55,6 +57,9 @@ export default function Rules({ params }) {
         </p>
       </div>
 
+      {lang === 'ord' ? <Glossary /> : null}
+
+      {lang === 'ord' ? null : (
       <section className="card">
         <SectionHead
           title="Emner"
@@ -83,10 +88,12 @@ export default function Rules({ params }) {
         </div>
       </section>
 
-      {open ? <RuleDetail rule={open} onClose={() => setOpenId(null)} /> : null}
+      )}
+
+      {lang === 'ord' ? null : open ? <RuleDetail rule={open} onClose={() => setOpenId(null)} /> : null}
 
       <div className="grid grid-half">
-        {list
+        {(lang === 'ord' ? [] : list)
           .filter((rule) => !open || rule.id !== open.id)
           .map((rule) => (
             <button
@@ -105,6 +112,71 @@ export default function Rules({ params }) {
             </button>
           ))}
       </div>
+    </>
+  )
+}
+
+/**
+ * Fagordbogen. Hvert ord står med en forklaring i almindeligt dansk, det
+ * engelske udtryk, og en sætning på hvert sprog — så ordet kan bruges, ikke
+ * bare genkendes.
+ */
+function Glossary() {
+  const [query, setQuery] = useState('')
+  const term = query.trim().toLowerCase()
+  const matches = term
+    ? glossary.filter(
+        (entry) =>
+          entry.da.toLowerCase().includes(term) ||
+          entry.en.toLowerCase().includes(term) ||
+          entry.forklaring.toLowerCase().includes(term),
+      )
+    : glossary
+
+  return (
+    <>
+      <div className="gloss-search">
+        <Icon name="eye" size={16} />
+        <input
+          type="text"
+          value={query}
+          placeholder="Søg efter et ord — dansk eller engelsk"
+          aria-label="Søg i fagordbogen"
+          onChange={(event) => setQuery(event.target.value)}
+        />
+        <span className="mono">{matches.length}</span>
+      </div>
+
+      {glossaryGroups.map((group) => {
+        const list = matches.filter((entry) => entry.group === group.id)
+        if (list.length === 0) return null
+        return (
+          <section className="gloss-group" key={group.id}>
+            <h2>{group.title}</h2>
+            <div className="gloss-list">
+              {list.map((entry) => (
+                <article className="gloss" key={entry.da}>
+                  <header>
+                    <b>{entry.da}</b>
+                    <span className="gloss-en">{entry.en}</span>
+                  </header>
+                  <p>{entry.forklaring}</p>
+                  <div className="gloss-use">
+                    <span>
+                      <i>DA</i> {entry.eksempel}
+                    </span>
+                    <span>
+                      <i>EN</i> {entry.engelsk}
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )
+      })}
+
+      {matches.length === 0 ? <p className="muted">Ingen ord matcher søgningen.</p> : null}
     </>
   )
 }

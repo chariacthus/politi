@@ -31,7 +31,11 @@ export default function Trail({ containerRef, count, doneCount, dep }) {
       const base = node.getBoundingClientRect()
       const points = stones.map((stone) => {
         const rect = stone.getBoundingClientRect()
-        return { x: rect.left - base.left + rect.width / 2, y: rect.top - base.top + rect.height / 2 }
+        return {
+          x: rect.left - base.left + rect.width / 2,
+          y: rect.top - base.top + rect.height / 2,
+          r: Math.max(rect.width, rect.height) / 2,
+        }
       })
       setBox({ w: base.width, h: base.height })
       setPath(curve(points))
@@ -67,25 +71,48 @@ export default function Trail({ containerRef, count, doneCount, dep }) {
     <svg className="trail" width={box.w} height={box.h} viewBox={`0 0 ${box.w} ${box.h}`} aria-hidden="true" focusable="false">
       <path className="trail-line" d={path} pathLength="1" />
       <path className="trail-done" d={path} pathLength="1" style={{ strokeDasharray: `${share} 1` }} />
+      {/* Patruljen kører ruten: en lysprik, der løber vejen igennem. */}
+      <circle className="trail-pulse" r="4">
+        <animateMotion dur={Math.max(6, count * 2.2) + 's'} repeatCount="indefinite" path={path} keyPoints="0;1" keyTimes="0;1" calcMode="linear" />
+      </circle>
     </svg>
   )
 }
 
-/** Blød kurve gennem punkterne (Catmull-Rom oversat til bézier). */
+/**
+ * Vejen mellem stenene. Hvert stykke starter og slutter på stenens kant —
+ * ikke i dens midte — og svinger ud til siden undervejs, så det ligner en
+ * vej, der kører ind til hver eneste knap i stedet for en streg, der skærer
+ * tværs igennem dem.
+ */
 function curve(points) {
   if (points.length < 2) return ''
-  let d = `M ${round(points[0].x)} ${round(points[0].y)}`
+  const parts = []
   for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] || points[i]
-    const p1 = points[i]
-    const p2 = points[i + 1]
-    const p3 = points[i + 2] || p2
-    const t = 0.32
-    const c1 = { x: p1.x + ((p2.x - p0.x) / 6) * t * 3, y: p1.y + ((p2.y - p0.y) / 6) * t * 3 }
-    const c2 = { x: p2.x - ((p3.x - p1.x) / 6) * t * 3, y: p2.y - ((p3.y - p1.y) / 6) * t * 3 }
-    d += ` C ${round(c1.x)} ${round(c1.y)}, ${round(c2.x)} ${round(c2.y)}, ${round(p2.x)} ${round(p2.y)}`
+    const a = points[i]
+    const b = points[i + 1]
+    const dx = b.x - a.x
+    const dy = b.y - a.y
+    const length = Math.hypot(dx, dy) || 1
+    // Træk enderne ind til kanten af stenen, så linjen rører den præcis.
+    const pad = 4
+    const from = { x: a.x + (dx / length) * (a.r + pad), y: a.y + (dy / length) * (a.r + pad) }
+    const to = { x: b.x - (dx / length) * (b.r + pad), y: b.y - (dy / length) * (b.r + pad) }
+
+    // Svinget: kontrolpunkterne skubbes vinkelret på retningen, skiftevis til
+    // hver side, så vejen bugter sig i stedet for at være en lige streg.
+    const side = i % 2 === 0 ? 1 : -1
+    const bend = Math.min(46, Math.max(16, Math.abs(dx) * 0.55 + 14)) * side
+    const nx = -(to.y - from.y) / length
+    const ny = (to.x - from.x) / length
+    const c1 = { x: from.x + (to.x - from.x) * 0.3 + nx * bend, y: from.y + (to.y - from.y) * 0.3 + ny * bend }
+    const c2 = { x: from.x + (to.x - from.x) * 0.7 + nx * bend, y: from.y + (to.y - from.y) * 0.7 + ny * bend }
+
+    parts.push(
+      `M ${round(from.x)} ${round(from.y)} C ${round(c1.x)} ${round(c1.y)}, ${round(c2.x)} ${round(c2.y)}, ${round(to.x)} ${round(to.y)}`,
+    )
   }
-  return d
+  return parts.join(' ')
 }
 
 function round(value) {

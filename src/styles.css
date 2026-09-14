@@ -712,6 +712,7 @@ button:focus-visible, .btn:focus-visible, a:focus-visible, input:focus-visible, 
   border-radius: var(--r-xs);
 }
 
+.segmented { flex-wrap: wrap; }
 .segmented {
   display: inline-flex;
   padding: 2px;
@@ -2370,6 +2371,15 @@ button.listening { animation: ping 1.4s var(--ease) infinite; }/* ==============
   stroke: var(--u, var(--accent));
   stroke-width: 5;
   transition: stroke-dasharray 1.1s var(--ease);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--u, var(--accent)) 45%, transparent));
+}
+.trail-pulse {
+  fill: var(--u, var(--accent));
+  opacity: 0.85;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--u, var(--accent)) 70%, transparent));
+}
+@media (prefers-reduced-motion: reduce) {
+  .trail-pulse { display: none; }
 }
 .board-row { position: relative; z-index: 1; }
 @keyframes trailIn { from { stroke-dashoffset: 1; opacity: 0; } to { stroke-dashoffset: 0; opacity: 1; } }
@@ -2538,12 +2548,25 @@ button.listening { animation: ping 1.4s var(--ease) infinite; }/* ==============
 
 .unit { margin-bottom: 0.4rem; }
 .unit-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.5rem 0.1rem;
+  padding: 0.5rem 0.1rem 0.5rem 0;
   border-bottom: 1px solid var(--line);
 }
+/* Et farvemærke i kanten — enheden skal kunne kendes på farven alene. */
+.unit-tag {
+  flex: none;
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--u, var(--accent));
+  opacity: 0.8;
+}
+.unit-bar.locked .unit-tag { background: var(--line-strong); }
+.unit-bar.active { border-bottom-color: color-mix(in srgb, var(--u, var(--accent)) 55%, transparent); }
+.unit-bar.active .unit-tag { height: 22px; opacity: 1; box-shadow: 0 0 8px color-mix(in srgb, var(--u, var(--accent)) 60%, transparent); }
 .unit-name { font-size: var(--t--1); font-weight: 600; color: var(--ink-2); }
 .unit-bar.locked .unit-name { color: var(--faint); }
 .unit-bar.active .unit-name { color: var(--u, var(--accent)); }
@@ -2565,7 +2588,22 @@ button.listening { animation: ping 1.4s var(--ease) infinite; }/* ==============
 }
 .unit-jump:hover { background: var(--surface-2); color: var(--accent); }
 
-.board { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; padding: 0.9rem 0 1.2rem; overflow-x: clip; overflow-y: visible; }
+.board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.1rem 0 1.4rem;
+  overflow-x: clip;
+  overflow-y: visible;
+  /* Et fint gitter bagved — som et kort over ruten. */
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--u, var(--accent)) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--u, var(--accent)) 7%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 75% at 50% 50%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 60% 75% at 50% 50%, #000 40%, transparent 100%);
+}
 .board-row { animation: fade 0.5s var(--ease) var(--d, 0s) backwards; }
 .stone { animation: rise 0.5s var(--ease) var(--d, 0s) backwards; }
 .stone { gap: 0.3rem; }
@@ -2929,4 +2967,145 @@ button.listening { animation: ping 1.4s var(--ease) infinite; }/* ==============
   font-size: 0.62rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
+
+/* ============================================================
+   Fagordbogen
+   ============================================================ */
+.gloss-search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.85rem;
+  margin-bottom: 1.4rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.gloss-search .icon { color: var(--faint); flex: none; }
+.gloss-search input {
+  flex: 1 1 auto;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: var(--t-0);
+  color: var(--ink);
+  width: auto;
+}
+.gloss-search input:focus { outline: none; }
+.gloss-search .mono { flex: none; font-size: 0.7rem; color: var(--muted); }
+
+.gloss-group { margin-bottom: 1.8rem; }
+.gloss-group h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: var(--t-1);
+  margin-bottom: 0.8rem;
+  color: var(--ink-2);
+}
+.gloss-group h2::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+}
+.gloss-list { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+
+.gloss {
+  position: relative;
+  padding: 0.85rem 0.95rem 0.9rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 3px 10px 10px 3px;
+  background: var(--surface);
+  transition: transform 0.16s var(--ease), border-color 0.16s var(--ease);
+}
+.gloss:hover { transform: translateX(2px); border-color: var(--accent); }
+.gloss header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; margin-bottom: 0.3rem; }
+.gloss header b { font-family: var(--display); font-size: var(--t-1); font-weight: 600; }
+.gloss-en {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.gloss p { margin: 0 0 0.55rem; font-size: var(--t--1); color: var(--ink-2); line-height: 1.5; }
+.gloss-use { display: flex; flex-direction: column; gap: 0.25rem; padding-top: 0.5rem; border-top: 1px dashed var(--line); }
+.gloss-use span { display: flex; gap: 0.5rem; font-size: var(--t--1); color: var(--muted); line-height: 1.45; }
+.gloss-use i {
+  flex: none;
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.05rem 0.25rem;
+  height: fit-content;
+}
+
+/* ---------- Stempler ----------
+   Sagsmappens sprog: det, der er klaret, får et stempel på skrå. */
+.stamp {
+  flex: none;
+  padding: 0.1rem 0.45rem;
+  border: 1.5px solid color-mix(in srgb, var(--forest) 70%, transparent);
+  border-radius: 3px;
+  color: var(--forest);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  transform: rotate(-4deg);
+  opacity: 0.85;
+  animation: stampIn 0.45s var(--ease) backwards;
+}
+.stamp.big {
+  position: absolute;
+  right: 5.5rem;
+  top: 50%;
+  margin-top: -0.7rem;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.6rem;
+  border-width: 2px;
+  transform: rotate(-8deg);
+}
+@keyframes stampIn {
+  0% { transform: rotate(-16deg) scale(2.2); opacity: 0; }
+  60% { transform: rotate(-2deg) scale(0.94); opacity: 0.95; }
+  100% { transform: rotate(-4deg) scale(1); opacity: 0.85; }
+}
+
+/* ---------- Dommen: farvet bjælke og et ord, der lander ---------- */
+.verdict-bar { border-left: 5px solid var(--line-ink); }
+.verdict-bar.ok { border-left-color: var(--forest); }
+.verdict-bar.bad { border-left-color: var(--brick); }
+.verdict-title { animation: verdictIn 0.4s var(--ease) backwards; }
+@keyframes verdictIn {
+  0% { transform: translateX(-10px) scale(0.96); opacity: 0; }
+  100% { transform: none; opacity: 1; }
+}
+
+/* ---------- Kortene får en farvet overkant ---------- */
+.card { border-top: 2px solid color-mix(in srgb, var(--accent) 30%, var(--line)); }
+
+/* ---------- Instruktørens linje skrives frem ---------- */
+.guide p {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  animation: type 0.7s steps(28, end) backwards;
+}
+@keyframes type { from { max-width: 0; } to { max-width: 100%; } }
+@media (max-width: 640px) {
+  .guide p { white-space: normal; animation: none; }
+}
+
+@media (max-width: 520px) {
+  /* Fire knapper kan ikke stå på én linje på en telefon. */
+  .segmented { flex-wrap: wrap; }
+  .segmented button { flex: 1 1 calc(50% - 0.3rem); }
 }
