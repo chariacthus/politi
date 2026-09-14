@@ -97,7 +97,7 @@ export default function Plan() {
           {examNotes.map((note) => (
             <li key={note} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>
               <Icon name="shield" size={17} style={{ marginTop: '0.2rem', color: 'var(--accent)', flex: 'none' }} />
-              <span className="small" style={{ color: 'var(--text-soft)' }}>{note}</span>
+              <span className="small" style={{ color: 'var(--ink-2)' }}>{note}</span>
             </li>
           ))}
         </ul>

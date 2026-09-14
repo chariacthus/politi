@@ -1236,3 +1236,200 @@ tbody tr:last-child td { border-bottom: 0; }
   .prompt-box, .sentence { font-size: var(--t-1); }
   .page-head { margin-bottom: 1.2rem; }
 }
+
+/* ============================================================
+   Øvelsestyper
+   ============================================================ */
+.statement {
+  border-left: 3px solid var(--brass);
+  background: var(--surface-2);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  padding: 0.8rem 1rem;
+  font-size: var(--t-1);
+  line-height: 1.5;
+}
+
+.tf-choices { grid-template-columns: 1fr 1fr; }
+@media (max-width: 480px) { .tf-choices { grid-template-columns: 1fr; } }
+.tf-choice { justify-content: flex-start; font-weight: 500; }
+
+/* Byg sætningen */
+.build-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  min-height: 3.4rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px dashed var(--line-ink);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  margin: 0.8rem 0;
+}
+.build-line.empty { justify-content: center; }
+
+.token-pool { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.4rem; }
+
+.token {
+  font-family: var(--serif);
+  font-size: var(--t-0);
+  font-weight: 500;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.token:hover:not(:disabled) { border-color: var(--navy); background: var(--surface-2); transform: translateY(-1px); }
+.token.picked { border-color: var(--navy); background: var(--navy-tint); }
+.token.static { cursor: default; border-style: dashed; color: var(--ink-2); }
+.token.match { width: 100%; text-align: left; justify-content: flex-start; font-family: var(--sans); font-size: var(--t--1); }
+.token.match.on { border-color: var(--navy); background: var(--navy-tint); box-shadow: inset 3px 0 0 var(--navy); }
+.token.match.done { opacity: 0.4; border-style: dashed; }
+
+/* Find fejlen */
+.spot-sentence { display: flex; flex-wrap: wrap; gap: 0.15rem; align-items: baseline; line-height: 1.9; }
+.spot-word {
+  font: inherit;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-xs);
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+.spot-word:hover:not(:disabled) { background: var(--navy-tint); border-color: var(--navy); transform: none; }
+.spot-word.correct { background: var(--forest-tint); border-color: var(--forest); color: var(--forest); }
+.spot-word.wrong { background: var(--brick-tint); border-color: var(--brick); color: var(--brick); text-decoration: line-through; }
+
+/* Sortér i kasser */
+.buckets { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.7rem; }
+@media (max-width: 560px) { .buckets { grid-template-columns: 1fr; } }
+.bucket { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface-2); padding: 0.7rem 0.8rem; min-height: 7rem; }
+.bucket-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 0.45rem; margin-bottom: 0.5rem; }
+.bucket-add { font-size: var(--t--2); padding: 0.2rem 0.5rem; box-shadow: none; }
+.bucket-list li { display: flex; align-items: center; gap: 0.45rem; padding: 0.28rem 0; font-size: var(--t--1); color: var(--ink-2); }
+.bucket-list li.ok { color: var(--forest); }
+.bucket-list li.bad { color: var(--brick); text-decoration: line-through; }
+.bucket-list li .icon { flex: none; }
+.bucket-remove { width: 18px; height: 18px; padding: 0; border-radius: var(--r-xs); flex: none; color: var(--muted); box-shadow: none; }
+
+/* Par sammen */
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0.8rem 0 0.5rem; }
+.match-col { display: flex; flex-direction: column; gap: 0.35rem; }
+
+/* Stemmeøvelse */
+.heard {
+  font-family: var(--mono);
+  font-size: var(--t--1);
+  border-left: 2px solid var(--navy);
+  padding: 0.3rem 0 0.3rem 0.7rem;
+  margin-top: 0.7rem;
+  color: var(--ink-2);
+}
+.heard .eyebrow { display: block; }
+button.listening { animation: ping 1.4s var(--ease) infinite; }
+
+/* ============================================================
+   Forløb og lektioner
+   ============================================================ */
+.path-top { background: linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%); }
+.path-stats { display: flex; gap: 1.4rem; }
+.path-stats b { display: block; font-family: var(--mono); font-size: 1.3rem; font-weight: 500; letter-spacing: -0.03em; line-height: 1.2; }
+.path-stats span { font-family: var(--mono); font-size: var(--t--2); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+.unit { padding-bottom: 1rem; }
+.unit.complete { border-left: 3px solid var(--forest); }
+.unit-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.85rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); margin-bottom: 0.5rem; }
+.unit-head h2 { margin: 0 0 0.15rem; font-size: var(--t-2); }
+.unit-number {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: var(--r-sm);
+  background: var(--navy);
+  color: #fbfaf6;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+}
+:root[data-theme='dark'] .unit-number { color: #0d1016; }
+.unit.complete .unit-number { background: var(--forest); border-color: var(--forest); }
+
+/* Stien: en lodret linje med knudepunkter */
+.lesson-path { position: relative; padding-left: 0.2rem; }
+.lesson-path::before {
+  content: '';
+  position: absolute;
+  left: calc(0.2rem + 17px);
+  top: 1.4rem;
+  bottom: 1.4rem;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.node { position: relative; display: flex; align-items: center; gap: 0.85rem; padding: 0.5rem 0; margin: 0; }
+.node-dot {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--muted);
+}
+.node.open .node-dot { border-color: var(--navy); color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
+.node.done .node-dot { background: var(--forest); border-color: var(--forest); color: #fbfaf6; }
+:root[data-theme='dark'] .node.done .node-dot { color: #0d1016; }
+.node.locked .node-dot { background: var(--surface-2); color: var(--line-ink); cursor: not-allowed; }
+.node.checkpoint .node-dot { border-radius: var(--r-sm); border-width: 2px; }
+.node.checkpoint.open .node-dot { border-color: var(--brass); color: var(--brass); box-shadow: 0 0 0 3px var(--brass-tint); }
+
+.node-body { min-width: 0; }
+.node-title {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  font-family: var(--serif);
+  font-size: var(--t-1);
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+}
+.node-title:hover:not(:disabled) { background: none; color: var(--navy); transform: none; text-decoration: underline; text-underline-offset: 3px; }
+.node.locked .node-title { color: var(--muted); }
+.node-meta { display: flex; align-items: center; gap: 0.5rem; }
+
+.stars { display: inline-flex; gap: 2px; align-items: center; }
+.star { color: var(--line-ink); }
+.star.on { color: var(--brass); fill: color-mix(in srgb, var(--brass) 25%, transparent); }
+
+.lesson-card { padding-top: 1rem; }
+.lesson-head { display: flex; align-items: center; gap: 0.7rem; }
+.lesson-head .bar { flex: 1; }
+.lesson-meta { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin: 0.9rem 0 0.2rem; }
+
+.sort-queue { margin: 0.8rem 0 0.9rem; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+.sort-queue li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.7rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+.sort-queue li:first-child { border-top: 0; }
+.sort-text { font-size: var(--t-0); }
+.sort-actions { display: flex; gap: 0.3rem; flex: none; }
+.sort-send { font-size: var(--t--2); padding: 0.25rem 0.6rem; border-radius: var(--r-xs); }
+.sort-send:hover:not(:disabled) { border-color: var(--navy); color: var(--navy); background: var(--navy-tint); }
+.bucket-head .chip { padding: 0.05rem 0.4rem; }

@@ -2,7 +2,8 @@ import Shell from './components/Shell.jsx'
 import { useRoute } from './lib/router.jsx'
 import Dictation from './pages/Dictation.jsx'
 import Grammar from './pages/Grammar.jsx'
-import Home from './pages/Home.jsx'
+import Lesson from './pages/Lesson.jsx'
+import Path from './pages/Path.jsx'
 import Plan from './pages/Plan.jsx'
 import Progress from './pages/Progress.jsx'
 import Rules from './pages/Rules.jsx'
@@ -10,7 +11,8 @@ import Scenarios from './pages/Scenarios.jsx'
 import Write from './pages/Write.jsx'
 
 const ROUTES = {
-  '/': Home,
+  '/': Path,
+  '/lesson': Lesson,
   '/grammar': Grammar,
   '/dictation': Dictation,
   '/scenarios': Scenarios,

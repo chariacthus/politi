@@ -124,8 +124,8 @@ function Editor({ assignment, onDone, onExit }) {
           <ul className="list-reset">
             {assignment.guidance.map((line) => (
               <li key={line} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.55rem', marginBottom: '0.4rem' }}>
-                <Icon name="check" size={15} strokeWidth={2.2} style={{ marginTop: '0.28rem', color: 'var(--ok)', flex: 'none' }} />
-                <span className="small" style={{ color: 'var(--text-soft)' }}>{line}</span>
+                <Icon name="check" size={15} strokeWidth={2.2} style={{ marginTop: '0.28rem', color: 'var(--forest)', flex: 'none' }} />
+                <span className="small" style={{ color: 'var(--ink-2)' }}>{line}</span>
               </li>
             ))}
           </ul>
@@ -224,10 +224,10 @@ function Review({ review, assignment, showModel }) {
                 name={requirement.met ? 'check' : 'x'}
                 size={18}
                 strokeWidth={2.3}
-                style={{ marginTop: '0.15rem', color: requirement.met ? 'var(--ok)' : 'var(--error)', flex: 'none' }}
+                style={{ marginTop: '0.15rem', color: requirement.met ? 'var(--forest)' : 'var(--brick)', flex: 'none' }}
               />
               <div>
-                <div style={{ fontWeight: 560, color: requirement.met ? 'var(--text)' : 'var(--error)' }}>{requirement.label}</div>
+                <div style={{ fontWeight: 560, color: requirement.met ? 'var(--text)' : 'var(--brick)' }}>{requirement.label}</div>
                 {!requirement.met ? <div className="small muted">{requirement.hint}</div> : null}
               </div>
             </li>

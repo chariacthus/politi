@@ -163,8 +163,8 @@ function Play({ scenario, onDone, onExit }) {
           <ul className="list-reset stacklist">
             {scenario.principles.map((principle) => (
               <li key={principle} className="row" style={{ flexWrap: 'nowrap', alignItems: 'flex-start', gap: '0.7rem' }}>
-                <Icon name="check" size={17} strokeWidth={2.2} style={{ marginTop: '0.2rem', color: 'var(--ok)', flex: 'none' }} />
-                <span style={{ color: 'var(--text-soft)' }}>{principle}</span>
+                <Icon name="check" size={17} strokeWidth={2.2} style={{ marginTop: '0.2rem', color: 'var(--forest)', flex: 'none' }} />
+                <span style={{ color: 'var(--ink-2)' }}>{principle}</span>
               </li>
             ))}
           </ul>

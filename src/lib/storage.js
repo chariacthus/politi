@@ -11,6 +11,8 @@ export function emptyState() {
     streak: { current: 0, longest: 0, lastDay: null },
     scenarios: {},
     reports: {},
+    lessons: {},
+    xp: 0,
     planDone: {},
   }
 }
@@ -58,6 +60,8 @@ function migrate(state) {
     streak: { ...base.streak, ...(state.streak || {}) },
     scenarios: state.scenarios && typeof state.scenarios === 'object' ? state.scenarios : base.scenarios,
     reports: state.reports && typeof state.reports === 'object' ? state.reports : base.reports,
+    lessons: state.lessons && typeof state.lessons === 'object' ? state.lessons : base.lessons,
+    xp: Number.isFinite(state.xp) ? state.xp : base.xp,
     planDone: state.planDone && typeof state.planDone === 'object' ? state.planDone : base.planDone,
   }
 }

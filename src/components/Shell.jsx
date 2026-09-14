@@ -7,7 +7,7 @@ import { applyTheme, readTheme } from '../lib/theme.js'
 import Icon from './Icon.jsx'
 
 const NAV = [
-  { to: '/', label: 'Forside', icon: 'home', group: null },
+  { to: '/', label: 'Forløb', icon: 'home', group: null },
   { to: '/grammar', label: 'Grammatik', icon: 'grammar', group: 'Træning' },
   { to: '/dictation', label: 'Diktat', icon: 'dictation', group: null },
   { to: '/write', label: 'Rapport', icon: 'book', group: null },
@@ -19,14 +19,14 @@ const NAV = [
 
 // Mobilen har plads til seks faner; resten ligger i "Mere".
 const TABS = [
-  { to: '/', label: 'Hjem', icon: 'home' },
+  { to: '/', label: 'Forløb', icon: 'home' },
   { to: '/grammar', label: 'Grammatik', icon: 'grammar' },
   { to: '/dictation', label: 'Diktat', icon: 'dictation' },
   { to: '/write', label: 'Rapport', icon: 'book' },
-  { to: '/scenarios', label: 'Situation', icon: 'scenarios' },
+  { to: '/rules', label: 'Regler', icon: 'bulb' },
 ]
 const MORE = [
-  { to: '/rules', label: 'Regelbogen', icon: 'bulb', text: 'Reglerne med eksempler og typiske fejl' },
+  { to: '/scenarios', label: 'Situationer', icon: 'scenarios', text: 'Tone og kommunikation under pres' },
   { to: '/progress', label: 'Fremskridt', icon: 'progress', text: 'Hvor du står, og hvad du skal træne nu' },
   { to: '/plan', label: 'Træningsplan', icon: 'plan', text: 'Otte uger frem mod prøvedatoen' },
 ]

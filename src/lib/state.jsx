@@ -63,6 +63,27 @@ export function ProgressProvider({ children }) {
         })
       },
 
+      recordLesson(lessonId, { stars, xp, correct, asked, seconds }) {
+        update((prev) => {
+          const previous = prev.lessons[lessonId] || { stars: 0, runs: 0, best: 0 }
+          return {
+            ...prev,
+            lessons: {
+              ...prev.lessons,
+              [lessonId]: {
+                stars: Math.max(previous.stars, stars),
+                runs: previous.runs + 1,
+                best: Math.max(previous.best, correct),
+                last: new Date().toISOString(),
+              },
+            },
+            xp: (prev.xp || 0) + xp,
+            sessions: [...prev.sessions, { date: new Date().toISOString(), module: 'lektion', lang: 'da', topic: lessonId, asked, correct, seconds }].slice(-100),
+            streak: bumpStreak(prev.streak),
+          }
+        })
+      },
+
       setExamDate(date) {
         update((prev) => ({ ...prev, examDate: date || null }))
       },

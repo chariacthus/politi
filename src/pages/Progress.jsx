@@ -10,6 +10,7 @@ import { enItems, enTopics } from '../data/grammar.en.js'
 import { assignments } from '../data/reports.js'
 import { scenarios } from '../data/scenarios.js'
 import { Link, navigate } from '../lib/router.jsx'
+import { pathProgress, rankFor } from '../lib/lessons.js'
 import { boxCounts, topicStats } from '../lib/srs.js'
 import { useProgress } from '../lib/state.jsx'
 
@@ -17,11 +18,11 @@ const ALL_ITEMS = [...daItems, ...enItems]
 
 const BOXES = [
   { key: 0, label: 'Ikke set', hint: 'endnu ikke mødt', color: 'var(--border-strong)' },
-  { key: 1, label: 'Boks 1', hint: 'igen samme dag', color: 'var(--error)' },
-  { key: 2, label: 'Boks 2', hint: 'igen efter 1 dag', color: 'var(--warn)' },
-  { key: 3, label: 'Boks 3', hint: 'igen efter 3 dage', color: 'color-mix(in srgb, var(--warn) 45%, var(--ok))' },
-  { key: 4, label: 'Boks 4', hint: 'igen efter 1 uge', color: 'color-mix(in srgb, var(--ok) 75%, var(--accent))' },
-  { key: 5, label: 'Boks 5', hint: 'igen efter 16 dage', color: 'var(--ok)' },
+  { key: 1, label: 'Boks 1', hint: 'igen samme dag', color: 'var(--brick)' },
+  { key: 2, label: 'Boks 2', hint: 'igen efter 1 dag', color: 'var(--brass)' },
+  { key: 3, label: 'Boks 3', hint: 'igen efter 3 dage', color: 'color-mix(in srgb, var(--brass) 45%, var(--forest))' },
+  { key: 4, label: 'Boks 4', hint: 'igen efter 1 uge', color: 'color-mix(in srgb, var(--forest) 75%, var(--accent))' },
+  { key: 5, label: 'Boks 5', hint: 'igen efter 16 dage', color: 'var(--forest)' },
 ]
 
 function titleFor(lang, topicId) {
@@ -91,6 +92,8 @@ export default function Progress() {
     return byModule
   }, [state.sessions])
 
+  const path = useMemo(() => pathProgress(state.lessons), [state.lessons])
+  const rank = useMemo(() => rankFor(state.xp || 0), [state.xp])
   const scenariosDone = Object.keys(state.scenarios).length
   const reportsDone = Object.keys(state.reports).length
   const dictationsSeen = dictations.filter((d) => state.items[d.id]).length
@@ -98,6 +101,14 @@ export default function Progress() {
   const mastered = boxes[4] + boxes[5]
 
   const nextSteps = []
+  if (path.done < path.total) {
+    nextSteps.push({
+      icon: 'home',
+      title: `Forløbet: ${path.done} af ${path.total} lektioner klaret`,
+      text: 'Forløbet tager dig gennem politiets regelgrundlag og sproget i den rækkefølge, det bygger på hinanden.',
+      action: { label: 'Fortsæt forløbet', to: '/' },
+    })
+  }
   if (due > 0) {
     nextSteps.push({
       icon: 'refresh',
@@ -147,6 +158,19 @@ export default function Progress() {
         <h1>Fremskridt</h1>
         <p>Hvor du står lige nu, hvad der er forfaldent, og hvad der giver mest at træne som det næste.</p>
       </div>
+
+      <section className="card">
+        <SectionHead title="Forløbet" tail={<span className="chip accent">{rank.current.title}</span>} />
+        <div className="grid grid-4">
+          <StatCard icon="spark" label="XP" value={state.xp || 0} count hint={rank.next ? rank.next.xp - (state.xp || 0) + ' til ' + rank.next.title : 'højeste rang'} />
+          <StatCard icon="check" label="Lektioner" value={path.done + '/' + path.total} hint="klaret mindst én gang" />
+          <StatCard icon="target" label="Stjerner" value={path.stars + '/' + path.maxStars} hint="3 for en fejlfri lektion" />
+          <StatCard icon="flame" label="Streak" value={state.streak.current} count hint={'længste: ' + state.streak.longest} />
+        </div>
+        <div className="mt-sm">
+          <ProgressBar value={path.done} max={path.total} tone="" />
+        </div>
+      </section>
 
       <section className="card">
         <SectionHead title="Næste skridt" tail={<span className="eyebrow">prioriteret</span>} />
