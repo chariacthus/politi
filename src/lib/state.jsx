@@ -84,6 +84,16 @@ export function ProgressProvider({ children }) {
         })
       },
 
+      /** Bestået springtest: enheden og alt før den åbnes. */
+      unlockUnit(unitIds) {
+        const list = Array.isArray(unitIds) ? unitIds : [unitIds]
+        update((prev) => {
+          const unlocked = { ...prev.unlocked }
+          for (const id of list) unlocked[id] = true
+          return { ...prev, unlocked }
+        })
+      },
+
       setExamDate(date) {
         update((prev) => ({ ...prev, examDate: date || null }))
       },

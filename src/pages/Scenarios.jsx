@@ -40,7 +40,7 @@ export default function Scenarios() {
   return (
     <>
       <div className="page-head">
-        <span className="eyebrow">Træning</span>
+        <span className="eyebrow">Øv</span>
         <h1>Situationer og tone</h1>
         <p>
           Seks situationer fra almindeligt politiarbejde. For hver replik formulerer du dit eget svar og får

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import Icon from '../components/Icon.jsx'
 import ProgressBar from '../components/ProgressBar.jsx'
 import Ring from '../components/Ring.jsx'
@@ -31,9 +31,8 @@ function titleFor(lang, topicId) {
   return list.find((entry) => entry.id === topicId)?.title || topicId
 }
 
-export default function Progress() {
-  const { state, resetAll } = useProgress()
-  const [confirming, setConfirming] = useState(false)
+export default function ProgressView() {
+  const { state } = useProgress()
 
   const stats = useMemo(() => topicStats(ALL_ITEMS, state.items), [state.items])
   const boxes = useMemo(() => boxCounts(ALL_ITEMS, state.items), [state.items])
@@ -154,11 +153,7 @@ export default function Progress() {
 
   return (
     <>
-      <div className="page-head">
-        <span className="eyebrow">Overblik</span>
-        <h1>Fremskridt</h1>
-        <p>Hvor du står lige nu, hvad der er forfaldent, og hvad der giver mest at træne som det næste.</p>
-      </div>
+      <p className="lead">Hvor du står lige nu, hvad der er forfaldent, og hvad der giver mest at træne som det næste.</p>
 
       <section className="card">
         <SectionHead
@@ -389,31 +384,6 @@ export default function Progress() {
         )}
       </section>
 
-      <section className="card">
-        <SectionHead title="Nulstil" />
-        <p className="small muted">
-          Sletter alle svar, sessioner, scenarie- og rapportresultater samt din træningsplan i denne browser.
-          Kan ikke fortrydes.
-        </p>
-        {confirming ? (
-          <div className="row">
-            <button
-              className="primary"
-              onClick={() => {
-                resetAll()
-                setConfirming(false)
-              }}
-            >
-              <Icon name="trash" size={17} /> Ja, slet alt
-            </button>
-            <button onClick={() => setConfirming(false)}>Fortryd</button>
-          </div>
-        ) : (
-          <button onClick={() => setConfirming(true)}>
-            <Icon name="trash" size={17} /> Nulstil alle data
-          </button>
-        )}
-      </section>
     </>
   )
 }

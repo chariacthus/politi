@@ -46,7 +46,7 @@ export default function Rules({ params }) {
   return (
     <>
       <div className="page-head">
-        <span className="eyebrow">Lær</span>
+        <span className="eyebrow">Regler</span>
         <h1>Regelbogen</h1>
         <p>
           Reglerne bag politiarbejdet og bag sproget: hovedregel, huskeregel, eksempler og de fejl, folk oftest
@@ -202,7 +202,7 @@ function RuleDetail({ rule, onClose }) {
       ) : (
         <div className="row mt">
           <button className="primary btn-lg" onClick={() => navigate('/')}>
-            <Icon name="play" size={18} /> Træn det i forløbet
+            <Icon name="play" size={18} /> Træn det på stien
           </button>
         </div>
       )}

@@ -124,6 +124,20 @@ const PATHS = {
     </>
   ),
   spark: <path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z" />,
+  user: (
+    <>
+      <circle cx="12" cy="8.5" r="3.8" />
+      <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0" />
+    </>
+  ),
+  bolt: <path d="M13.5 3 5.5 13.5H11l-.5 7.5 8-10.5H13z" />,
+  gear: (
+    <>
+      <circle cx="12" cy="12" r="3.2" />
+      <path d="M12 2.8v2.4M12 18.8v2.4M4.5 12H2.1M21.9 12h-2.4M6.7 6.7 5 5M19 19l-1.7-1.7M6.7 17.3 5 19M19 5l-1.7 1.7" />
+    </>
+  ),
+  skip: <path d="M5 5.5v13l9-6.5zM16.5 5.5v13" />,
 }
 
 export default function Icon({ name, size = 20, className = '', strokeWidth = 1.8, ...rest }) {

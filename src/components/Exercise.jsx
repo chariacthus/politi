@@ -36,8 +36,9 @@ export default function Exercise({ item, locked, result, onAnswer }) {
 }
 
 /** Overskriften over opgaven: den korte instruktion. */
+// Opgaveteksten er skærmens overskrift — også for skærmlæsere.
 function Instruction({ children }) {
-  return <p className="task-instruction">{children}</p>
+  return <h1 className="task-instruction">{children}</h1>
 }
 
 /* ---------------- Valg, hul, komma og rettelse (grammatikbanken) ---------------- */

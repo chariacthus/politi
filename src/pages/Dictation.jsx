@@ -113,7 +113,7 @@ export default function Dictation() {
   return (
     <>
       <div className="page-head">
-        <span className="eyebrow">Træning</span>
+        <span className="eyebrow">Øv</span>
         <h1>Diktat</h1>
         <p>
           Teksten læses op, og du skriver den. Hver afvigelse markeres ord for ord — tegnsætning og store

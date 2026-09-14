@@ -5,7 +5,7 @@ import { examNotes, weeks } from '../data/plan.js'
 import { longDate } from '../lib/media.js'
 import { daysUntil, useProgress } from '../lib/state.jsx'
 
-export default function Plan() {
+export default function PlanView() {
   const { state, setExamDate, togglePlanTask } = useProgress()
   const days = daysUntil(state.examDate)
 
@@ -17,11 +17,9 @@ export default function Plan() {
 
   return (
     <>
-      <div className="page-head">
-        <span className="eyebrow">Overblik</span>
-        <h1>Træningsplan</h1>
-        <p>Otte uger fra grundregler til prøvesimulering. Sæt din prøvedato, så markeres den uge, du bør være i.</p>
-      </div>
+      <p className="lead">
+        Otte uger fra grundregler til prøvesimulering. Sæt din prøvedato, så markeres den uge, du bør være i.
+      </p>
 
       <section className="card">
         <div className="row" style={{ gap: '1.5rem' }}>

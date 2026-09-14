@@ -95,12 +95,16 @@ export function spreadTypes(list) {
 }
 
 export function scoreLesson(results, size) {
-  const correct = results.filter((entry) => entry.correct).length
-  const mistakes = results.length - correct
+  // Sprunget over tæller hverken for eller imod — opgaven er bare ikke besvaret.
+  const answered = results.filter((entry) => !entry.skipped)
+  const correct = answered.filter((entry) => entry.correct).length
+  const mistakes = answered.length - correct
   const perfect = mistakes === 0
-  const xp = correct * 10 + 15 + (perfect ? 25 : 0)
-  const stars = perfect ? 3 : mistakes <= Math.max(1, Math.round(size * 0.2)) ? 2 : 1
-  return { correct, mistakes, xp, stars, perfect }
+  const skipped = results.length - answered.length
+  const xp = correct * 10 + 15 + (perfect && skipped === 0 ? 25 : 0)
+  const full = perfect && skipped === 0
+  const stars = full ? 3 : mistakes <= Math.max(1, Math.round(size * 0.2)) ? 2 : 1
+  return { correct, mistakes, skipped, asked: answered.length, xp, stars, perfect: full }
 }
 
 export function rankFor(xp) {
@@ -116,19 +120,59 @@ export function rankFor(xp) {
   return { current, next, into: xp - current.xp, span: next ? next.xp - current.xp : 0 }
 }
 
-/** En lektion er åben, når den forrige er klaret mindst én gang. */
-export function lessonState(lessonId, lessons = {}) {
+/**
+ * En lektion er åben, når den forrige er klaret mindst én gang — eller når
+ * enheden er låst op med en springtest.
+ */
+export function lessonState(lessonId, lessons = {}, unlocked = {}) {
   const index = allLessons.findIndex((lesson) => lesson.id === lessonId)
   if (index < 0) return 'locked'
+  const lesson = allLessons[index]
   const record = lessons[lessonId]
   if (record?.stars > 0) return 'done'
-  if (index === 0) return 'open'
+  if (index === 0 || unlocked[lesson.unitId]) return 'open'
   const previous = lessons[allLessons[index - 1].id]
   return previous?.stars > 0 ? 'open' : 'locked'
 }
 
-export function nextLesson(lessons = {}) {
-  return allLessons.find((lesson) => lessonState(lesson.id, lessons) === 'open') || null
+export function nextLesson(lessons = {}, unlocked = {}) {
+  return allLessons.find((lesson) => lessonState(lesson.id, lessons, unlocked) === 'open') || null
+}
+
+/** Enheden er låst, hvis ingen af dens lektioner kan åbnes. */
+export function unitLocked(unit, lessons = {}, unlocked = {}) {
+  return unit.lessons.every((lesson) => lessonState(lesson.id, lessons, unlocked) === 'locked')
+}
+
+/** Enhederne til og med den valgte — dem en bestået springtest åbner. */
+export function unitsUpTo(unitId) {
+  const index = units.findIndex((unit) => unit.id === unitId)
+  if (index < 0) return []
+  return units.slice(0, index + 1).map((unit) => unit.id)
+}
+
+/** Springtesten: et bredt udsnit af hele enhedens stof. */
+export const JUMP_SIZE = 12
+export const JUMP_PASS = 0.8
+
+export function jumpTest(unit) {
+  const sources = []
+  for (const lesson of unit.lessons) {
+    for (const source of lesson.sources) if (!sources.includes(source)) sources.push(source)
+  }
+  return {
+    id: 'jump-' + unit.id,
+    unitId: unit.id,
+    title: 'Springtest: ' + unit.title,
+    sources,
+    size: JUMP_SIZE,
+    jump: true,
+  }
+}
+
+/** Hvilken enhed hører lektionen til? */
+export function unitOf(lessonId) {
+  return units.find((unit) => unit.lessons.some((lesson) => lesson.id === lessonId)) || null
 }
 
 export function pathProgress(lessons = {}) {

@@ -105,7 +105,7 @@ export default function Grammar({ params }) {
   return (
     <>
       <div className="page-head">
-        <span className="eyebrow">Træning</span>
+        <span className="eyebrow">Øv</span>
         <h1>Grammatik</h1>
         <p>
           Femten opgaver ad gangen. Forkerte svar kommer igen, indtil de sidder fast. Vælg et emne — eller træn

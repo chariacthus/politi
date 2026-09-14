@@ -4,7 +4,7 @@ import Exercise from '../components/Exercise.jsx'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
 import { allLessons, units } from '../data/path.js'
-import { buildLesson, scoreLesson } from '../lib/lessons.js'
+import { JUMP_PASS, buildLesson, jumpTest, scoreLesson, unitsUpTo } from '../lib/lessons.js'
 import { plural, scrollTop } from '../lib/media.js'
 import { Link, navigate } from '../lib/router.jsx'
 import { play as playSound } from '../lib/sound.js'
@@ -17,9 +17,11 @@ const CHEERS = ['Flot!', 'Præcis.', 'Den sad.', 'Godt set.', 'Lige i skabet.', 
 const MISSES = ['Ikke helt.', 'Tæt på.', 'Nej — se her.', 'Den var svær.']
 
 export default function Lesson({ params }) {
-  const { state, recordAnswer, recordLesson } = useProgress()
-  const lesson = allLessons.find((entry) => entry.id === params.id)
-  const unit = units.find((entry) => entry.id === lesson?.unitId)
+  const { state, recordAnswer, recordLesson, unlockUnit } = useProgress()
+  // To slags sessioner: en almindelig lektion, eller en springtest på en hel enhed.
+  const jumpUnit = params.jump ? units.find((entry) => entry.id === params.jump) : null
+  const lesson = jumpUnit ? jumpTest(jumpUnit) : allLessons.find((entry) => entry.id === params.id)
+  const unit = jumpUnit || units.find((entry) => entry.id === lesson?.unitId)
 
   const [queue, setQueue] = useState(() => (lesson ? buildLesson(lesson, state.items, { voice: voicePreference() }) : []))
   const [index, setIndex] = useState(0)
@@ -38,9 +40,12 @@ export default function Lesson({ params }) {
 
   const score = useMemo(() => scoreLesson(results, total || 1), [results, total])
 
+  const passedJump = Boolean(jumpUnit) && score.asked > 0 && score.correct / score.asked >= JUMP_PASS
+
   useEffect(() => {
     if (!done || reported.current || results.length === 0) return
     reported.current = true
+    if (jumpUnit && passedJump) unlockUnit(unitsUpTo(jumpUnit.id))
     recordLesson(lesson.id, {
       stars: score.stars,
       xp: score.xp,
@@ -49,7 +54,7 @@ export default function Lesson({ params }) {
       seconds: Math.round((Date.now() - startedAt.current) / 1000),
     })
     playSound('done')
-  }, [done, results, score, lesson, recordLesson])
+  }, [done, results, score, lesson, recordLesson, jumpUnit, passedJump, unlockUnit])
 
   // Enter fører videre, når svaret er afgivet — hele vejen gennem lektionen.
   useEffect(() => {
@@ -68,7 +73,7 @@ export default function Lesson({ params }) {
         <div className="celebrate">
           <h1>Lektionen findes ikke</h1>
           <Link className="btn-3d" to="/">
-            Til forløbet
+            Til stien
           </Link>
         </div>
       </div>
@@ -109,7 +114,8 @@ export default function Lesson({ params }) {
   }
 
   function next() {
-    const wasWrong = current && !current.correct
+    // Sprunget over? Så kommer den ikke igen — du valgte den fra med vilje.
+    const wasWrong = current && !current.correct && !current.skipped
     setCurrent(null)
     // Den, der gik galt, kommer igen sidst i lektionen — én gang.
     if (wasWrong && !item.repeated) setQueue((prev) => [...prev, { ...item, repeated: true }])
@@ -123,19 +129,89 @@ export default function Lesson({ params }) {
       <div className="play">
         <div className="celebrate">
           <Mascot mood="sad" size={116} />
-          <h1>Livene er brugt op</h1>
+          <h1>{jumpUnit ? 'Springtesten stoppede her' : 'Livene er brugt op'}</h1>
           <p className="lead">
-            Du nåede {plural(results.filter((entry) => entry.correct).length, 'rigtig', 'rigtige')}. Læs reglen
-            igennem, og tag den igen — det er sådan, det sætter sig.
+            Du nåede {plural(results.filter((entry) => entry.correct).length, 'rigtig', 'rigtige')}.{' '}
+            {jumpUnit
+              ? 'Fem fejl, og testen stopper. Tag enheden på stien — den lærer dig stoffet undervejs.'
+              : 'Læs reglen igennem, og tag den igen — det er sådan, det sætter sig.'}
           </p>
           <div className="row" style={{ justifyContent: 'center', marginTop: '1.2rem' }}>
             <button className="btn-3d" onClick={restart}>
               <Icon name="refresh" size={18} /> Prøv igen
             </button>
             <button className="btn-3d ghost" onClick={() => navigate('/')}>
-              Til forløbet
+              Til stien
             </button>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  const wrongList = results.some((entry) => !entry.correct) ? (
+    <div className="card mt" style={{ textAlign: 'left' }}>
+      <h2 style={{ fontSize: 'var(--t-1)' }}>Det, der drillede</h2>
+      <ul className="list-reset stacklist">
+        {results
+          .filter((entry) => !entry.correct)
+          .map((entry, i) => (
+            <li key={entry.item.id + i}>
+              <div className="small muted">{entry.item.prompt}</div>
+              <div>
+                Rigtigt: <strong>{formatExpected(entry)}</strong>
+              </div>
+              <div className="small muted">{entry.item.rule}</div>
+            </li>
+          ))}
+      </ul>
+    </div>
+  ) : null
+
+  if (done && jumpUnit) {
+    const share = score.asked > 0 ? Math.round((score.correct / score.asked) * 100) : 0
+    return (
+      <div className="play">
+        <div className="celebrate">
+          {passedJump ? <Confetti /> : null}
+          <Mascot mood={passedJump ? 'happy' : 'sad'} size={116} />
+          <h1>{passedJump ? 'Springtest bestået' : 'Ikke bestået'}</h1>
+          <span className="eyebrow">Enhed {jumpUnit.number} · {jumpUnit.title}</span>
+          <p className="lead">
+            {passedJump
+              ? `Du ramte ${share} % — enhed 1 til ${jumpUnit.number} er nu åbne. Du kan stadig tage lektionerne for stjernerne.`
+              : `Du ramte ${share} %, og der skal ${Math.round(JUMP_PASS * 100)} % til. Tag enheden på stien i stedet — det er hurtigere end at gætte.`}
+          </p>
+
+          <div className="score-row">
+            <div className="score-box gold">
+              <span className="label">XP</span>
+              <span className="value">+{score.xp}</span>
+            </div>
+            <div className="score-box green">
+              <span className="label">Rigtige</span>
+              <span className="value">
+                {score.correct}/{score.asked}
+              </span>
+            </div>
+            <div className="score-box">
+              <span className="label">Krav</span>
+              <span className="value">{Math.round(JUMP_PASS * 100)}%</span>
+            </div>
+          </div>
+
+          <div className="row" style={{ justifyContent: 'center' }}>
+            <button className="btn-3d" onClick={() => navigate('/')}>
+              Til stien <Icon name="arrow" size={18} />
+            </button>
+            {!passedJump ? (
+              <button className="btn-3d ghost" onClick={restart}>
+                <Icon name="refresh" size={18} /> Prøv testen igen
+              </button>
+            ) : null}
+          </div>
+
+          {wrongList}
         </div>
       </div>
     )
@@ -194,7 +270,7 @@ export default function Lesson({ params }) {
               </button>
             ) : (
               <button className="btn-3d" onClick={() => navigate('/')}>
-                Til forløbet
+                Til stien
               </button>
             )}
             <button className="btn-3d ghost" onClick={() => navigate('/')}>
@@ -202,24 +278,7 @@ export default function Lesson({ params }) {
             </button>
           </div>
 
-          {results.some((entry) => !entry.correct) ? (
-            <div className="card mt" style={{ textAlign: 'left' }}>
-              <h2 style={{ fontSize: 'var(--t-1)' }}>Det, der drillede</h2>
-              <ul className="list-reset stacklist">
-                {results
-                  .filter((entry) => !entry.correct)
-                  .map((entry, i) => (
-                    <li key={entry.item.id + i}>
-                      <div className="small muted">{entry.item.prompt}</div>
-                      <div>
-                        Rigtigt: <strong>{formatExpected(entry)}</strong>
-                      </div>
-                      <div className="small muted">{entry.item.rule}</div>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ) : null}
+          {wrongList}
         </div>
       </div>
     )
@@ -254,10 +313,22 @@ export default function Lesson({ params }) {
       <div className={'play-body' + (current && !current.correct && !current.skipped ? ' shake' : '')}>
         <div className="spread" style={{ marginBottom: '0.4rem' }}>
           <span className="eyebrow">{unit?.title}</span>
-          <span className="chip">{lesson.checkpoint ? 'tjek' : lesson.title}</span>
+          <span className="chip">{jumpUnit ? 'springtest' : lesson.checkpoint ? 'tjek' : lesson.title}</span>
         </div>
 
         <Exercise key={item.id + index} item={item} locked={Boolean(current)} result={current} onAnswer={answer} />
+
+        {!current ? (
+          <div className="play-skip">
+            <button
+              className="skip-btn"
+              onClick={() => answer({ correct: false, skipped: true, given: 'sprunget over', expected: formatExpected({ item }) })}
+            >
+              <Icon name="skip" size={16} /> Spring over
+            </button>
+            <span className="small muted">Koster ikke et liv — opgaven kommer igen en anden dag.</span>
+          </div>
+        ) : null}
       </div>
 
       {current ? (
@@ -269,7 +340,7 @@ export default function Lesson({ params }) {
                 <Icon name={current.skipped ? 'arrow' : current.correct ? 'check' : 'x'} size={22} strokeWidth={2.6} />
                 {current.skipped ? 'Sprunget over' : current.correct ? pick(CHEERS, index) : pick(MISSES, index)}
               </div>
-              {!current.correct && !current.skipped ? (
+              {!current.correct ? (
                 <p>
                   Rigtigt svar: <span className="answer">{formatExpected({ item, ...current })}</span>
                 </p>

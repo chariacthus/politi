@@ -6,11 +6,27 @@ sværest at træne alene: **skriftlig dansk**, **rapportsprog** og **tonen i bor
 Siden kører helt i browseren. Der er ingen server, ingen konto og ingen data, der forlader maskinen —
 fremskridt gemmes i browserens `localStorage`.
 
-## Forløbet
+## Sådan er appen skruet sammen
+
+Der er fire steder at være — ikke en menu med otte punkter:
+
+| | |
+| --- | --- |
+| **Lær** | Stien: spilbrættet med enheder og lektioner. Appens forside. |
+| **Øv** | Fri træning: grammatik, diktat, rapport og situationer, plus genveje til det, du er svagest i. |
+| **Regler** | Regelbogen: politifag og sprog med hovedregel, huskeregel og eksempler. |
+| **Profil** | Fremskridt, træningsplan og indstillinger i tre faner. |
+
+På brede skærme står navigationen i venstre skinne og statistikken — streak, dagens mål, rang og dage
+til prøven — i højre. På telefonen bliver navigationen til fire faner i bunden og statistikken til en
+stribe i toppen. Lektionen har ingen af delene: den fylder hele skærmen.
+
+## Stien
 
 Forsiden er et spilbræt, ikke et dashboard: **6 enheder med 24 korte lektioner** på en snoet sti, der
 bygger oven på hinanden. Hver enhed har sin egen farve, klarede lektioner får en guldkrone og op til tre
-stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til Specialist.
+stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger til Specialist. Et tryk på en
+sten åbner et kort med, hvad lektionen indeholder, og hvad knappen gør.
 
 **Sådan spilles det:**
 
@@ -22,7 +38,12 @@ stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger ti
   til hele forklaringen. Enter fører videre.
 - **Fejring til sidst:** konfetti ved en fejlfri lektion, stjerner, XP og liv tilbage — og direkte videre
   til næste lektion.
-- **Dagens mål** er 60 XP og vises som en ring i toppen sammen med streak og samlet XP.
+- **Dagens mål** er 60 XP og vises som en ring sammen med streak og samlet XP.
+- **Spring over:** enhver opgave kan springes over. Det koster ikke et liv, giver ingen XP, og opgaven
+  bliver stående som ubesvaret — så den kommer igen en anden dag.
+- **Spring videre:** kan du stoffet i forvejen, behøver du ikke tage enhederne i rækkefølge. En låst
+  enhed har en **springtest** på 12 opgaver fra hele enhedens stof. Rammer du 80 %, åbnes enheden og
+  alle enheder før den; du kan stadig tage lektionerne bagefter for stjernerne.
 
 | Enhed | Indhold |
 | --- | --- |
@@ -33,7 +54,7 @@ stjerner, og den næste har en hoppende START-boble. Rangen går fra Ansøger ti
 | 5 · Tjenesten | Tavshedspligt og notatpligt, adfærd og legitimitet, melding og radio |
 | 6 · Sproget hele vejen | Nutids-r, ligge/lægge, sammensatte ord, endelser, ejestedord |
 
-**92 politifaglige opgaver** over 12 emner ligger bag lektionerne — politiloven i praksis, straffelovens
+**94 politifaglige opgaver** over 12 emner ligger bag lektionerne — politiloven i praksis, straffelovens
 kerneparagraffer, færdselsreglerne, tavshedspligt, etik og radioprocedure — hver med en forklaring på
 hvorfor, og med henvisning til grundlaget.
 
@@ -44,7 +65,7 @@ eller falsk, skriv ordet direkte i sætningen, sæt kommaerne ved at klikke, ret
 byg sætningen af løse ord, find fejlen i sætningen, sortér udsagn i to kasser, og par begreb med
 betydning. To ens typer kommer aldrig efter hinanden, hvis det kan undgås.
 
-**Stemmeøvelser** er frivillige og slås til på forsiden. Så bliver du bedt om at sige replikken højt —
+**Stemmeøvelser** er frivillige og slås til under Profil → Indstillinger. Så bliver du bedt om at sige replikken højt —
 meldingen over radioen, sætningen ved en anholdelse, åbningen ved en standsning — og browserens
 talegenkendelse tjekker, om de nødvendige led er med. Du kan altid høre modellen læst op, og enhver
 stemmeøvelse kan springes over.
@@ -58,8 +79,10 @@ stemmeøvelse kan springes over.
 | **Rapport og skrivning** | 6 skriveopgaver — hændelsesrapport, anmeldelsesnotat, afhøringsreferat, notat om magtanvendelse, brev til borger og døgnrapportnotat. Du får sagens oplysninger og skriver teksten; den gennemgås automatisk. |
 | **Situationer og tone** | 6 scenarier fra virkeligt politiarbejde. Du formulerer replikken selv, får feedback på tone og sprog, vælger mellem tre svar og ser modelsvaret. |
 | **Regelbogen** | 28 opslag: 12 politifaglige emner med hovedregel, huskeregel og de punkter, der skal sidde fast, samt 16 sprogregler med 66 gennemgåede eksempler. |
-| **Fremskridt** | Prioriteret "næste skridt", aktivitet over 14 dage, træfprocent pr. emne, Leitner-bokse, modulstatus og sessionshistorik. |
-| **Træningsplan** | Otte ugers progression frem mod en prøvedato, du selv sætter. |
+
+Under **Profil** ligger overblikket: prioriteret "næste skridt", aktivitet over 14 dage, træfprocent pr.
+emne, Leitner-bokse, modulstatus og sessionshistorik — plus den otte uger lange træningsplan frem mod en
+prøvedato, du selv sætter, og indstillingerne for tema, lyd, stemmeøvelser og nulstilling.
 
 ## Sådan er det bygget til at lære fra sig
 
@@ -88,7 +111,7 @@ for bløde skygger og store radier.
   over 8:1 i kontrast og sekundær tekst over 4,2:1.
 - **Bevægelse** bruges til at forklare, ikke til at pynte: ringe tegnes ind, tal tælles op,
   svarmuligheder folder sig ud efter hinanden, og sektionslinjer trækkes fra venstre. Alt slukkes ved
-  `prefers-reduced-motion`, og lydkvitteringerne har en afbryder i sidepanelet.
+  `prefers-reduced-motion`, og lydkvitteringerne har en afbryder under Profil → Indstillinger.
 
 ## Kom i gang
 
@@ -131,9 +154,11 @@ src/lib/      router, localStorage-persistens, lektionsmotor med typespredning, 
               rapportanalyse, lyd, tema samt sprog- og datohjælpere
 src/data/     forløb og lektioner, politifaglig vidensbank, grammatikopgaver, diktattekster,
               scenarier, skriveopgaver, regelbog og træningsplan — ren data, ingen logik
-src/pages/    én fil pr. rute
-src/components/ delte byggeklodser: Exercise (alle ni opgavetyper ét sted), sætningseditor,
-              ikoner, ringe, sektionsoverskrifter, makker og konfetti
+src/pages/    én fil pr. rute — Path (stien), Lesson (fuldskærm), Practice (Øv-hub),
+              Profile (fremskridt, plan og indstillinger i faner), Rules og de fire moduler
+src/components/ delte byggeklodser: Shell (skinner og faner), Stats (streak, mål, rang),
+              Exercise (alle ni opgavetyper ét sted), sætningseditor, ikoner, ringe,
+              sektionsoverskrifter, makker og konfetti
 ```
 
 En opgavetype findes kun ét sted: både lektionerne i forløbet og den frie grammatiktræning tegner

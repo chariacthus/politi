@@ -1,100 +1,110 @@
-import { useMemo, useState } from 'react'
-import CountUp from '../components/CountUp.jsx'
+/**
+ * Stien. Seks enheder, fire lektioner i hver, en sten ad gangen. Tryk på en
+ * sten for at se, hvad den indeholder — og spring en hel enhed over med en
+ * springtest, hvis du allerede kan stoffet.
+ */
+import { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
 import Mascot from '../components/Mascot.jsx'
-import Ring from '../components/Ring.jsx'
 import { units } from '../data/path.js'
-import { lessonState, nextLesson, pathProgress, rankFor, unitProgress } from '../lib/lessons.js'
-import { Link, navigate } from '../lib/router.jsx'
+import { JUMP_SIZE, lessonState, nextLesson, pathProgress, unitLocked, unitProgress } from '../lib/lessons.js'
+import { navigate } from '../lib/router.jsx'
 import { useProgress } from '../lib/state.jsx'
-import { recognitionSupported, setVoicePreference, voicePreference } from '../lib/voice.js'
-
-const DAILY_GOAL = 60
 
 // Stien slår ud til siderne, så den ligner en vej og ikke en liste.
 const SHIFTS = [0, 1, 2, 1, 0, -1, -2, -1]
 
-const FREE = [
-  { to: '/dictation', icon: 'dictation', title: 'Diktat' },
-  { to: '/write', icon: 'book', title: 'Rapport' },
-  { to: '/scenarios', icon: 'scenarios', title: 'Situationer' },
-  { to: '/grammar', icon: 'grammar', title: 'Fri grammatik' },
-  { to: '/rules', icon: 'bulb', title: 'Regelbogen' },
-  { to: '/progress', icon: 'progress', title: 'Fremskridt' },
-]
-
 export default function Path() {
   const { state } = useProgress()
-  const [voice, setVoice] = useState(voicePreference)
+  const [open, setOpen] = useState(null)
 
   const progress = useMemo(() => pathProgress(state.lessons), [state.lessons])
-  const rank = useMemo(() => rankFor(state.xp || 0), [state.xp])
-  const next = useMemo(() => nextLesson(state.lessons), [state.lessons])
-  const today = useMemo(() => xpToday(state), [state])
+  const next = useMemo(() => nextLesson(state.lessons, state.unlocked), [state.lessons, state.unlocked])
 
-  const goalDone = today >= DAILY_GOAL
+  // Esc lukker boblen, og et klik ved siden af gør det samme.
+  useEffect(() => {
+    if (!open) return undefined
+    function onKey(event) {
+      if (event.key === 'Escape') setOpen(null)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
 
   return (
-    <div className="board-page">
-      <div className="hud">
-        <span className="hud-item flame" title="Dage i træk">
-          <Icon name="flame" size={20} /> {state.streak.current}
-        </span>
-        <span className="hud-item xp" title="Samlet XP">
-          <Icon name="spark" size={20} /> <CountUp value={state.xp || 0} />
-        </span>
-        <span className="hud-goal" title={'Dagens mål: ' + DAILY_GOAL + ' XP'}>
-          <Ring value={Math.min(today, DAILY_GOAL)} max={DAILY_GOAL} size={30} thickness={4} tone={goalDone ? 'ok' : ''} />
-          <span className="small muted mono">
-            {today}/{DAILY_GOAL}
-          </span>
-        </span>
-        <span className="hud-item rank">{rank.current.title}</span>
-      </div>
-
+    <div className="board-page" onClick={() => setOpen(null)}>
       <div className="mascot-strip">
-        <Mascot mood={goalDone ? 'happy' : 'neutral'} size={74} />
+        <Mascot mood={progress.done > 0 ? 'happy' : 'neutral'} size={70} />
         <div className="speech">
           {progress.done === 0
             ? 'Vi starter fra toppen. Første lektion tager fem minutter.'
-            : goalDone
-              ? 'Dagens mål er i hus. Alt herfra er overskud.'
-              : next
-                ? `Næste op: ${next.title}.`
-                : 'Hele forløbet er klaret — kør en runde igen for stjernerne.'}
+            : next
+              ? `Næste op: ${next.title}.`
+              : 'Hele forløbet er klaret — tag en runde igen for stjernerne.'}
         </div>
       </div>
 
       {units.map((unit) => {
         const done = unitProgress(unit, state.lessons)
         const complete = done.done === done.total
+        const locked = unitLocked(unit, state.lessons, state.unlocked)
         return (
           <section key={unit.id} style={{ '--u': unit.color }}>
-            <div className="unit-banner">
+            <div className={'unit-banner' + (locked ? ' locked' : '')}>
               <div style={{ flex: '1 1 240px', minWidth: 0 }}>
                 <span className="eyebrow">Enhed {unit.number}</span>
                 <h2>{unit.title}</h2>
                 <p>{unit.blurb}</p>
               </div>
-              <span className="chip">
-                {complete ? <Icon name="crown" size={13} /> : null}
-                {done.done}/{done.total}
-              </span>
+              <div className="unit-tail">
+                <span className="chip">
+                  {complete ? <Icon name="crown" size={13} /> : null}
+                  {done.done}/{done.total}
+                </span>
+                {locked ? (
+                  <button
+                    className="jump-btn"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      navigate('/lesson?jump=' + unit.id)
+                    }}
+                  >
+                    <Icon name="skip" size={16} /> Spring videre
+                  </button>
+                ) : null}
+              </div>
             </div>
 
             <div className="board">
               {unit.lessons.map((lesson, lessonIndex) => {
-                const status = lessonState(lesson.id, state.lessons)
+                const status = lessonState(lesson.id, state.lessons, state.unlocked)
                 const record = state.lessons[lesson.id]
                 const isNext = next?.id === lesson.id
                 return (
-                  <div className="board-row" data-shift={SHIFTS[lessonIndex % SHIFTS.length]} key={lesson.id}>
-                    <div className={'stone ' + status + (lesson.checkpoint ? ' checkpoint' : '') + (isNext ? ' next' : '')}>
-                      {isNext ? <span className="start-bubble">{progress.done === 0 ? 'START' : 'FORTSÆT'}</span> : null}
+                  <div
+                    className={'board-row' + (open === lesson.id ? ' popped' : '')}
+                    data-shift={SHIFTS[lessonIndex % SHIFTS.length]}
+                    key={lesson.id}
+                  >
+                    <div
+                      className={
+                        'stone ' +
+                        status +
+                        (lesson.checkpoint ? ' checkpoint' : '') +
+                        (isNext ? ' next' : '') +
+                        (open === lesson.id ? ' popped' : '')
+                      }
+                    >
+                      {isNext && open !== lesson.id ? (
+                        <span className="start-bubble">{progress.done === 0 ? 'START' : 'FORTSÆT'}</span>
+                      ) : null}
                       <button
                         className="stone-btn"
-                        disabled={status === 'locked'}
-                        onClick={() => navigate('/lesson?id=' + lesson.id)}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setOpen(open === lesson.id ? null : lesson.id)
+                        }}
+                        aria-expanded={open === lesson.id}
                         aria-label={lesson.title + (status === 'locked' ? ' (låst)' : '')}
                       >
                         {status === 'locked' ? (
@@ -115,6 +125,17 @@ export default function Path() {
                           ))}
                         </span>
                       ) : null}
+
+                      {open === lesson.id ? (
+                        <NodeCard
+                          lesson={lesson}
+                          unit={unit}
+                          status={status}
+                          record={record}
+                          index={lessonIndex}
+                          onClose={() => setOpen(null)}
+                        />
+                      ) : null}
                     </div>
                   </div>
                 )
@@ -129,40 +150,47 @@ export default function Path() {
         <span className="small">
           {progress.done}/{progress.total} lektioner · {progress.stars}/{progress.maxStars} stjerner
         </span>
-        <button
-          className="btn-3d ghost"
-          onClick={() => {
-            const nextValue = !voice
-            setVoice(nextValue)
-            setVoicePreference(nextValue)
-          }}
-          title={recognitionSupported() ? undefined : 'Browseren understøtter ikke talegenkendelse — modellen kan stadig læses op'}
-        >
-          <Icon name="dictation" size={17} /> Stemmeøvelser: {voice ? 'til' : 'fra'}
-        </button>
       </div>
-
-      <div className="free-strip">
-        {FREE.map((entry) => (
-          <Link key={entry.to} to={entry.to} className="free-chip">
-            <Icon name={entry.icon} size={17} />
-            {entry.title}
-          </Link>
-        ))}
-      </div>
-
-      <p className="small muted" style={{ textAlign: 'center', margin: '1rem auto 0' }}>
-        Indholdet er skrevet ud fra politiets regelgrundlag og almindelige retskrivningsregler — ikke officielt
-        undervisningsmateriale. Kontrollér gældende regler på retsinformation.dk.
-      </p>
     </div>
   )
 }
 
-/** XP tjent i dag, udregnet af sessionshistorikken. */
-function xpToday(state) {
-  const day = new Date().toISOString().slice(0, 10)
-  return state.sessions
-    .filter((session) => session.module === 'lektion' && String(session.date).slice(0, 10) === day)
-    .reduce((sum, session) => sum + (session.xp || session.correct * 10 + 15), 0)
+/** Boblen over stenen: hvad lektionen er, og hvad knappen gør. */
+function NodeCard({ lesson, unit, status, record, index, onClose }) {
+  const locked = status === 'locked'
+  return (
+    <div className="node-card" style={{ '--u': unit.color }} onClick={(event) => event.stopPropagation()}>
+      <span className="eyebrow">
+        Enhed {unit.number} · lektion {index + 1} af {unit.lessons.length}
+      </span>
+      <b>{lesson.title}</b>
+      <p className="small">
+        {locked
+          ? 'Klar lektionerne før denne — eller tag enhedens springtest, hvis du allerede kan stoffet.'
+          : lesson.checkpoint
+            ? `Tjek på hele enheden: ${lesson.size} opgaver på tværs af emnerne.`
+            : `${lesson.size} opgaver · ${status === 'done' ? 'klaret' : 'ikke taget endnu'}`}
+      </p>
+      {record ? (
+        <span className="node-stars">
+          {[1, 2, 3].map((star) => (
+            <Icon key={star} name="spark" size={15} className={star <= record.stars ? 'star on' : 'star'} />
+          ))}
+        </span>
+      ) : null}
+
+      {locked ? (
+        <button className="btn-3d ghost sm" onClick={() => navigate('/lesson?jump=' + unit.id)}>
+          <Icon name="skip" size={16} /> Springtest ({JUMP_SIZE} opgaver)
+        </button>
+      ) : (
+        <button className="btn-3d sm" onClick={() => navigate('/lesson?id=' + lesson.id)}>
+          {status === 'done' ? 'Øv igen' : 'Start'} <Icon name="arrow" size={16} />
+        </button>
+      )}
+      <button className="node-close" onClick={onClose} aria-label="Luk">
+        <Icon name="x" size={15} />
+      </button>
+    </div>
+  )
 }

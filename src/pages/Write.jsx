@@ -31,7 +31,7 @@ export default function Write() {
   return (
     <>
       <div className="page-head">
-        <span className="eyebrow">Træning</span>
+        <span className="eyebrow">Øv</span>
         <h1>Rapport og skrivning</h1>
         <p>
           Du får sagens råmateriale — tid, sted, personer og hvad der skete — og skriver teksten selv. Bagefter
